@@ -6,14 +6,25 @@ import {useHistory} from 'react-router-dom';
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 import "styles/views/Game.scss";
+import React from 'react';
+import axios, { AxiosError, AxiosInstance } from 'axios';
 
-const Player = ({user}) => (
+interface User {
+  id: number;
+  username: string;
+  name: string;
+}
+
+
+const Player = ({ user }: { user: User }) => (
   <div className="player container">
     <div className="player username">{user.username}</div>
     <div className="player name">{user.name}</div>
     <div className="player id">id: {user.id}</div>
   </div>
 );
+
+
 
 Player.propTypes = {
   user: PropTypes.object
@@ -28,7 +39,7 @@ const Game = () => {
   // keep its value throughout render cycles.
   // a component can have as many state variables as you like.
   // more information can be found under https://reactjs.org/docs/hooks-state.html
-  const [users, setUsers] = useState(null);
+  const [users, setUsers] = useState<User[] | null>(null);
 
   const logout = () => {
     localStorage.removeItem('token');
@@ -62,7 +73,7 @@ const Game = () => {
 
         // See here to get more data.
         console.log(response);
-      } catch (error) {
+      } catch (error: AxiosError | any) {
         console.error(`Something went wrong while fetching the users: \n${handleError(error)}`);
         console.error("Details:", error);
         alert("Something went wrong while fetching the users! See the console for details.");
@@ -78,7 +89,7 @@ const Game = () => {
     content = (
       <div className="game">
         <ul className="game user-list">
-          {users.map(user => (
+          {users.map(user=> (
             <Player user={user} key={user.id}/>
           ))}
         </ul>

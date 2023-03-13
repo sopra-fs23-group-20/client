@@ -1,5 +1,6 @@
 import {Redirect} from "react-router-dom";
 import PropTypes from "prop-types";
+import React, { FC }  from 'react';
 
 /**
  * routeProtectors interfaces can tell the router whether or not it should allow navigation to a requested route.
@@ -10,9 +11,15 @@ import PropTypes from "prop-types";
  * @Guard
  * @param props
  */
-export const GameGuard = props => {
+
+
+interface GameGuardProps {
+  children: React.ReactNode;
+}
+
+export const GameGuard: FC<GameGuardProps> = ({ children }) => {
   if (localStorage.getItem("token")) {
-    return props.children;
+    return <>{children}</>;
   }
   return <Redirect to="/login"/>;
 };
