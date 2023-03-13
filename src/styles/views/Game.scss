@@ -31,6 +31,16 @@
     margin: 0.5em 0;
   }
 }
+.horizontalgap {
+  &.container{
+    float: left;
+    overflow: hidden;
+    height: 200px;
+    width:  200px;
+    ;
+  }
+  
+}
 
 .player {
   &.container {

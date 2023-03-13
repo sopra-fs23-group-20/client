@@ -1,4 +1,4 @@
-import React, { useState, useEffect, KeyboardEvent } from "react";
+import React, { useState, useEffect } from "react";
 import { api, handleError } from "helpers/api";
 import User from "models/User";
 import { useHistory } from "react-router-dom";
@@ -6,7 +6,7 @@ import { Button } from "components/ui/Button";
 import "styles/views/Login.scss";
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
-import axios, { AxiosError, AxiosInstance } from "axios";
+import { AxiosError } from "axios";
 
 interface FormFieldProps {
   label: string;
@@ -53,7 +53,7 @@ FormField.propTypes = {
   onChange: PropTypes.func.isRequired,
 };
 
-const Login: React.FC = () => {
+const Register: React.FC = () => {
   const history = useHistory();
 
   const [username, setUsername] = useState<string | null>(null);
@@ -62,7 +62,7 @@ const Login: React.FC = () => {
   const doLogin = async () => {
     try {
       const requestBody = JSON.stringify({ username, password });
-      const response = await api.post("/users/login", requestBody);
+      const response = await api.post("/users", requestBody);
 
       const user = new User(response.data);
 
@@ -106,7 +106,7 @@ const Login: React.FC = () => {
   return (
     <BaseContainer>
       <div className="login container">
-        <h1>Login to your account</h1>
+        <h1>Register a new account</h1>
         <div className="login form">
           <FormField
             label="Username"
@@ -122,10 +122,10 @@ const Login: React.FC = () => {
             <Button
               disabled={!username || !password}
               width="100%"
+              style={{ fontWeight: 800, color: "white" }}
               onClick={() => doLogin()}
-              style={{ color: "white" }}
             >
-              Login
+              Register
             </Button>
           </div>
         </div>
@@ -137,17 +137,21 @@ const Login: React.FC = () => {
           justifyContent: "center",
         }}
       >
-        <p>Not Yet a User? </p>
+        <p>Already a User? </p>
         <br />
         <Button
-          onClick={() => history.push(`/register`)}
-          style={{ marginLeft: "10px", color: "white" }}
+          onClick={() => history.push(`/login`)}
+          style={{
+            marginLeft: "10px",
+            fontWeight: 800,
+            color: "White",
+          }}
         >
-          Register
+          Login
         </Button>
       </div>
     </BaseContainer>
   );
 };
 
-export default Login;
+export default Register;
