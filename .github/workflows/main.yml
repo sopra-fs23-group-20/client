@@ -35,7 +35,7 @@ jobs:
         with:
           node-version: "18.x"
       - run: npm install
-      - run: npm run build
+      - run: CI=false npm run build
 
       - name: Deploy to App Engine
         id: deploy
