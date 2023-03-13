@@ -1,12 +1,12 @@
-import axios from 'axios';
+import axios, { AxiosError, AxiosInstance } from 'axios';
 import { getDomain } from 'helpers/getDomain';
 
-export const api = axios.create({
+export const api: AxiosInstance = axios.create({
   baseURL: getDomain(),
   headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
 });
 
-export const handleError = error => {
+export const handleError = (error: AxiosError): string => {
   const response = error.response;
 
   // catch 4xx and 5xx status codes
