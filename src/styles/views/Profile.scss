@@ -1,0 +1,17 @@
+@import 'styles/theme';
+.text-input-field {
+  margin-left: 5px;
+  border: none;
+  border-radius: 0.75em;
+  background: transparentize(white, 0.85);
+  color: $textColor;
+  }
+
+  .date-input-field {
+    margin-left: 5px;
+    border: none;
+    border-radius: 0.75em;
+    background: transparentize(white, 0.85);
+    color: $textColor;
+    }
+  
