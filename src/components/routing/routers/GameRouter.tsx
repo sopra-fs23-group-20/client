@@ -3,7 +3,7 @@ import Game from "components/views/Game";
 import PropTypes from "prop-types";
 import React, { FC } from "react";
 import Profile from "components/views/Profile";
-import Countries from "components/views/Countries";
+import CountriesOverview from "components/views/CountriesOverview";
 
 interface GameRouterProps {
   base: string;
@@ -26,7 +26,7 @@ const GameRouter: FC<GameRouterProps> = ({ base }) => {
       </Route>
 
       <Route exact path="/game/countries">
-        <Countries />
+        <CountriesOverview />
       </Route>
     </div>
   );
