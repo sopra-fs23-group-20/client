@@ -4,7 +4,7 @@ import Country from "models/Country";
 
 const MapContainer: React.FC<Country> = (country: Country) => {
   const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: "AIzaSyCGpjoidns0V63_IcMTuOzMdeI8pPD7D9Q",
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY || "",
   });
 
   const mapContainerStyle = {
