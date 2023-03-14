@@ -19,7 +19,7 @@ const CountryElement: React.FC<Country> = (country: Country) => {
             src={country.flag}
             alt={`${country.name} flag`}
             style={{
-              maxWidth: "50%",
+              maxWidth: "100%",
               marginBottom: "10px",
             }}
           />
