@@ -49,7 +49,7 @@ const MapContainer: React.FC<Country> = (country: Country) => {
             visibility: "on",
           },
           {
-            color: "#000000",
+            color: "#FF0000",
           },
           {
             weight: 2,
@@ -62,8 +62,6 @@ const MapContainer: React.FC<Country> = (country: Country) => {
     mapTypeId: "hybrid",
     tilt: 0,
     mapTypeControlOptions: {
-      style: window.google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
-      position: window.google.maps.ControlPosition.TOP_CENTER,
       mapTypeIds: ["hybrid", "roadmap"],
     },
   };
