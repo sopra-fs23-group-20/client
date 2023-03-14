@@ -8,7 +8,7 @@ const MapContainer: React.FC<Country> = (country: Country) => {
   });
 
   const mapContainerStyle = {
-    width: "50%",
+    width: "90%",
     height: "500px",
   };
 
