@@ -10,9 +10,9 @@ import User from "models/User";
 import React from "react";
 import { AxiosError } from "axios";
 import Country from "models/Country";
-import CountryMap from "components/ui/CountryMap";
+import CountryElement from "components/ui/CountryContainer";
 
-const Countries: React.FC = () => {
+const CountriesOverview: React.FC = () => {
   const history = useHistory();
 
   const [countries, setCountries] = useState<Country[] | null>(null);
@@ -42,24 +42,13 @@ const Countries: React.FC = () => {
   }
 
   let content = <div></div>;
-
   if (countries) {
     content = (
       <div className="game">
         <ul className="game user-list">
           {countries.map((country) => (
             <div>
-              <h1>Name: {country.name} </h1>
-              <h2>Population: {country.population}</h2>
-              {country.flag ? <img src={country.flag}></img> : <div></div>}
-              {country.longitude && country.latitude ? (
-                CountryMap(country.longitude, country.latitude)
-              ) : (
-                <div></div>
-              )}
-              <br></br>
-              <br></br>
-              <br></br>
+              <CountryElement {...country} />
             </div>
           ))}
         </ul>
@@ -101,4 +90,4 @@ const Countries: React.FC = () => {
   );
 };
 
-export default Countries;
+export default CountriesOverview;
