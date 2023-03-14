@@ -14,7 +14,16 @@ const CountryElement: React.FC<Country> = (country: Country) => {
       <h1>Name: {country.name}</h1>
       <h2>Population: {country.population}</h2>
       {country.flag ? (
-        <img src={country.flag} alt={`${country.name} flag`} />
+        <div style={{ textAlign: "left" }}>
+          <img
+            src={country.flag}
+            alt={`${country.name} flag`}
+            style={{
+              maxWidth: "50%",
+              marginBottom: "10px",
+            }}
+          />
+        </div>
       ) : null}
       <MapContainer {...country} />
       <br />
