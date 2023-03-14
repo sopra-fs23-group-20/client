@@ -143,6 +143,17 @@ const Game: React.FC = () => {
           >
             Settings
           </Button>
+          <Button
+            width="100%"
+            onClick={() => history.push("/game/countries")}
+            style={{
+              marginTop: "10px",
+              fontWeight: 800,
+              color: "White",
+            }}
+          >
+            Checkout all Countries
+          </Button>
         </div>
       </div>
     );
