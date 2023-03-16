@@ -10,7 +10,7 @@ import User from "models/User";
 import React from "react";
 import { AxiosError } from "axios";
 
-const Game: React.FC = () => {
+const MainPage: React.FC = () => {
   const history = useHistory();
 
   const [users, setUsers] = useState<User[] | null>(null);
@@ -32,6 +32,24 @@ const Game: React.FC = () => {
       localStorage.removeItem("token");
       localStorage.removeItem("id");
       history.push("/login");
+    } catch (error) {
+      console.error(error);
+      localStorage.removeItem("token");
+      localStorage.removeItem("id");
+      history.push("/login");
+    }
+  };
+
+  const createGame = async (): Promise<void> => {
+    try {
+      const response = await api.post("/games", {
+        username: currentUser?.username,
+      });
+
+      const gameId = response.data.id;
+
+      // Redirect the user to the game page
+      history.push(`/game/lobby/${gameId}`);
     } catch (error) {
       console.error(error);
       localStorage.removeItem("token");
@@ -154,6 +172,17 @@ const Game: React.FC = () => {
           >
             Checkout all Countries
           </Button>
+          <Button
+            width="100%"
+            onClick={() => createGame()}
+            style={{
+              marginTop: "10px",
+              fontWeight: 800,
+              color: "White",
+            }}
+          >
+            Start a new Game
+          </Button>
         </div>
       </div>
     );
@@ -182,4 +211,4 @@ const Game: React.FC = () => {
   );
 };
 
-export default Game;
+export default MainPage;

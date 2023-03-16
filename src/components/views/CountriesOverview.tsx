@@ -10,7 +10,7 @@ import User from "models/User";
 import React from "react";
 import { AxiosError } from "axios";
 import Country from "models/Country";
-import CountryElement from "components/ui/CountryContainer";
+import CountryContainer from "components/ui/CountryContainer";
 
 const CountriesOverview: React.FC = () => {
   const history = useHistory();
@@ -48,7 +48,7 @@ const CountriesOverview: React.FC = () => {
         <ul className="game user-list">
           {countries.map((country) => (
             <div>
-              <CountryElement {...country} />
+              <CountryContainer {...country} />
             </div>
           ))}
         </ul>

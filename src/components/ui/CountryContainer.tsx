@@ -3,7 +3,7 @@ import Country from "models/Country";
 import { LoadScript } from "@react-google-maps/api";
 import MapContainer from "./MapContainer";
 
-const CountryElement: React.FC<Country> = (country: Country) => {
+const CountryContainer: React.FC<Country> = (country: Country) => {
   if (!country.longitude || !country.latitude) {
     // Country does not have longitude and latitude
     return null;
@@ -33,4 +33,4 @@ const CountryElement: React.FC<Country> = (country: Country) => {
   );
 };
 //AIzaSyCGpjoidns0V63_IcMTuOzMdeI8pPD7D9Q
-export default CountryElement;
+export default CountryContainer;
