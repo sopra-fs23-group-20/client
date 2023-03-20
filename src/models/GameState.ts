@@ -1,6 +1,5 @@
 enum GameState{
-    WAITING_FOR_PLAYERS,
-    SETUP,
+  SETUP,
     GUESSING,
     SCOREBOARD,
     ENDED

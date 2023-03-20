@@ -46,7 +46,7 @@ const MainPage: React.FC = () => {
         username: currentUser?.username,
       });
 
-      const gameId = response.data.id;
+      const gameId = response.data.gameId;
 
       // Redirect the user to the game page
       history.push(`/game/lobby/${gameId}`);
