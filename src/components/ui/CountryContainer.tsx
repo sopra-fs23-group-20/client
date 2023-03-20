@@ -8,11 +8,12 @@ const CountryContainer: React.FC<Country> = (country: Country) => {
     // Country does not have longitude and latitude
     return null;
   }
-
+  return <div></div>;
+  /*
   return (
     <div>
       <h1>Name: {country.name}</h1>
-      <h2>Population: {country.population}</h2>
+      Population: {country.population}
       {country.flag ? (
         <div style={{ textAlign: "left" }}>
           <img
@@ -31,6 +32,7 @@ const CountryContainer: React.FC<Country> = (country: Country) => {
       <br />
     </div>
   );
+  */
 };
 //AIzaSyCGpjoidns0V63_IcMTuOzMdeI8pPD7D9Q
 export default CountryContainer;

@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@emotion/react": "^11.10.6",
+    "@emotion/styled": "^11.10.6",
+    "@mui/material": "^5.11.13",
     "@react-google-maps/api": "^2.18.1",
     "@stomp/stompjs": "^7.0.0",
     "@types/jest": "^29.4.0",

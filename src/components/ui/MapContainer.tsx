@@ -73,8 +73,8 @@ const MapContainer: React.FC<Country> = (country: Country) => {
 
   if (country.latitude != null && country.longitude != null) {
     center = {
-      lat: country.latitude,
-      lng: country.longitude,
+      lat: country.latitude.valueOf(),
+      lng: country.longitude.valueOf(),
     };
   }
   if (loadError) return <div>Error loading maps</div>;
