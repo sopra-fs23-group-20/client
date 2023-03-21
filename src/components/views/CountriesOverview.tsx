@@ -11,6 +11,8 @@ import React from "react";
 import { AxiosError } from "axios";
 import Country from "models/Country";
 import CountryContainer from "components/ui/CountryContainer";
+import SwitzerlandOutline from "components/ui/SwitzerlandOutline";
+import CountryOutline from "components/ui/CountryOutline";
 
 const CountriesOverview: React.FC = () => {
   const history = useHistory();
@@ -59,6 +61,8 @@ const CountriesOverview: React.FC = () => {
 
   return (
     <BaseContainer className="game container">
+      <CountryOutline countryCode="USA" />
+      <SwitzerlandOutline />
       {content}
       <div>
         <Button
