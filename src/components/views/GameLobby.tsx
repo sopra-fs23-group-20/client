@@ -23,6 +23,7 @@ import CategoryTypes from "models/CategoryTypes";
 import MapContainer from "components/ui/MapContainer";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
+import CountryOutline from "components/ui/CountryOutline";
 
 const GameLobby: React.FC = () => {
   const history = useHistory();
@@ -267,14 +268,15 @@ const GameLobby: React.FC = () => {
       );
       break;
     case GameState.GUESSING:
-      let currentCountry = new Country(null, null, null, null, null);
+      let currentCountry = new Country(null, null, null, null, null, null);
       if (location && location[0] && location[1]) {
         currentCountry = new Country(
           null,
           population,
           flag,
           location[0],
-          location[1]
+          location[1],
+          null
         );
       }
       return (
@@ -307,9 +309,11 @@ const GameLobby: React.FC = () => {
             ) : (
               <div></div>
             )}
-
-            {outline ? <h2>Outline: {outline.toString()}</h2> : <div></div>}
-
+            {outline ? (
+              <CountryOutline country={outline.toString()} />
+            ) : (
+              <div></div>
+            )}
             {location ? (
               <MapContainer {...currentCountry}> </MapContainer>
             ) : (
@@ -361,7 +365,6 @@ const GameLobby: React.FC = () => {
           <Button onClick={() => startGame()}>Start Game</Button>
         </BaseContainer>
       );
-      break;
   }
 };
 
