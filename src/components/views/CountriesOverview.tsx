@@ -21,6 +21,7 @@ const CountriesOverview: React.FC = () => {
     async function getCountries(): Promise<void> {
       try {
         const response = await api.get("/countries");
+        console.log(response.data);
         if (response.data.length != 0) {
           setCountries(response.data);
         }

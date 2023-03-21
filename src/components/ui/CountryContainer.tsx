@@ -8,16 +8,15 @@ const CountryContainer: React.FC<Country> = (country: Country) => {
     // Country does not have longitude and latitude
     return null;
   }
-  return <div></div>;
-  /*
+
   return (
-    <div>
+    <>
       <h1>Name: {country.name}</h1>
-      Population: {country.population}
+      <h2>Population: {country.population?.toString()}</h2>
       {country.flag ? (
         <div style={{ textAlign: "left" }}>
           <img
-            src={country.flag}
+            src={country.flag.toString()}
             alt={`${country.name} flag`}
             style={{
               maxWidth: "100%",
@@ -30,9 +29,8 @@ const CountryContainer: React.FC<Country> = (country: Country) => {
       <br />
       <br />
       <br />
-    </div>
+    </>
   );
-  */
 };
 //AIzaSyCGpjoidns0V63_IcMTuOzMdeI8pPD7D9Q
 export default CountryContainer;
