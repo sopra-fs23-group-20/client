@@ -18,9 +18,9 @@ const CountryOutline: React.FC<CountryOutlineProps> = ({ country }) => {
     return <div>Country not found</div>;
   }
 
-  const width = 500;
+  const width = 800;
   const height = 500;
-  const padding = 10;
+  const padding = 40;
 
   const bounds = geoBounds(countryJSON);
   const topLeft = bounds[0];
@@ -43,7 +43,12 @@ const CountryOutline: React.FC<CountryOutlineProps> = ({ country }) => {
   const pathData = pathGenerator(countryJSON);
 
   return (
-    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`}>
+    <svg
+      width={width}
+      height={height}
+      viewBox={`0 0 ${width} ${height}`}
+      style={{ backgroundColor: "#000000" }}
+    >
       <path
         d={pathData || ""}
         fill="#EAEAEC"
