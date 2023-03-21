@@ -1,44 +1,58 @@
-import React from "react";
-import { ComposableMap, Geographies, Geography } from "react-simple-maps";
 import geoJSONCountries from "./countries.json";
 
+import React from "react";
+import { geoPath, geoIdentity, geoBounds } from "d3-geo";
+
 interface CountryOutlineProps {
-  countryCode: string;
+  country: string;
 }
 
-const CountryOutline: React.FC<CountryOutlineProps> = ({ countryCode }) => {
-  const country = geoJSONCountries.features.find(
-    (feature: any) => feature.properties.ISO_A3 === countryCode
-  );
+const CountryOutline: React.FC<CountryOutlineProps> = ({ country }) => {
+  const countryJSON = JSON.parse(country);
+  //const country = geoJSONCountries.features.find(
+  //  (feature: any) => feature.properties.ISO_A3 === countryCode
+  //);
 
-  if (!country) {
+  console.log(countryJSON);
+  if (!countryJSON) {
     return <div>Country not found</div>;
   }
 
+  const width = 500;
+  const height = 500;
+  const padding = 10;
+
+  const bounds = geoBounds(countryJSON);
+  const topLeft = bounds[0];
+  const bottomRight = bounds[1];
+
+  const scale = Math.min(
+    (width - padding * 2) / (bottomRight[0] - topLeft[0]),
+    (height - padding * 2) / (bottomRight[1] - topLeft[1])
+  );
+
+  const translateX = (width - (bottomRight[0] + topLeft[0]) * scale) / 2;
+  const translateY = (height + (bottomRight[1] + topLeft[1]) * scale) / 2;
+
+  const projection = geoIdentity()
+    .scale(scale)
+    .reflectY(true)
+    .translate([translateX, translateY]);
+
+  const pathGenerator = geoPath().projection(projection);
+  const pathData = pathGenerator(countryJSON);
+
   return (
-    <div>
-      <ComposableMap
-        width={400}
-        height={200}
-        projectionConfig={{
-          scale: 100,
-        }}
-      >
-        <Geographies geography={[country]}>
-          {({ geographies }) => (
-            <Geography
-              key={geographies[0].properties.ISO_A3}
-              geography={geographies[0]}
-              fill="#EAEAEC"
-              stroke="#D6D6DA"
-              strokeWidth={0.75}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          )}
-        </Geographies>
-      </ComposableMap>
-    </div>
+    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`}>
+      <path
+        d={pathData || ""}
+        fill="#EAEAEC"
+        stroke="#D6D6DA"
+        strokeWidth={0.75}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
   );
 };
 

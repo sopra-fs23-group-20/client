@@ -2,6 +2,7 @@ import React from "react";
 import Country from "models/Country";
 import { LoadScript } from "@react-google-maps/api";
 import MapContainer from "./MapContainer";
+import CountryOutline from "./CountryOutline";
 
 const CountryContainer: React.FC<Country> = (country: Country) => {
   if (!country.longitude || !country.latitude) {
@@ -25,6 +26,13 @@ const CountryContainer: React.FC<Country> = (country: Country) => {
           />
         </div>
       ) : null}
+      <div>
+        {country.outline ? (
+          <CountryOutline country={country.outline.toString()}></CountryOutline>
+        ) : (
+          <div />
+        )}
+      </div>
       <MapContainer {...country} />
       <br />
       <br />

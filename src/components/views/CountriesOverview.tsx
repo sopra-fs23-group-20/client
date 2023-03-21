@@ -11,13 +11,13 @@ import React from "react";
 import { AxiosError } from "axios";
 import Country from "models/Country";
 import CountryContainer from "components/ui/CountryContainer";
-import SwitzerlandOutline from "components/ui/SwitzerlandOutline";
 import CountryOutline from "components/ui/CountryOutline";
 
 const CountriesOverview: React.FC = () => {
   const history = useHistory();
 
   const [countries, setCountries] = useState<Country[] | null>(null);
+  const [outlines, setOutlines] = useState<String[] | null>(null);
 
   useEffect(() => {
     async function getCountries(): Promise<void> {
@@ -26,6 +26,7 @@ const CountriesOverview: React.FC = () => {
         console.log(response.data);
         if (response.data.length != 0) {
           setCountries(response.data);
+          setOutlines(response.data.map((country: any) => country.outline));
         }
       } catch (error) {
         console.error(error);
@@ -61,8 +62,6 @@ const CountriesOverview: React.FC = () => {
 
   return (
     <BaseContainer className="game container">
-      <CountryOutline countryCode="USA" />
-      <SwitzerlandOutline />
       {content}
       <div>
         <Button
