@@ -34,7 +34,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "18.x"
-      - run: npm install
+      - run: npm install --force
       - run: CI=false npm run build
 
       - name: Deploy to App Engine
