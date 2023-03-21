@@ -9,6 +9,10 @@ import "styles/views/Game.scss";
 import User from "models/User";
 import React from "react";
 import { AxiosError } from "axios";
+import SwitzerlandOutline from "components/ui/SwitzerlandOutline";
+import CountryOutline from "components/ui/CountryOutline";
+import CountryOutline2 from "components/ui/CountryOutline2";
+import CountryOutline3 from "components/ui/CountryOutline3";
 
 const MainPage: React.FC = () => {
   const history = useHistory();
@@ -204,6 +208,10 @@ const MainPage: React.FC = () => {
   return (
     <BaseContainer className="game container">
       <h1>Users Overview</h1>
+      <CountryOutline countryCode="CHE" />
+      <CountryOutline2 countryCode="CHE" />
+      <CountryOutline3 countryCode="CHE" />
+
       {usercontent}
       <p>Click on users to see their details</p>
       {content}
