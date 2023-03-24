@@ -79,7 +79,6 @@ const MapContainer: React.FC<Country> = (country: Country) => {
   }
   if (loadError) return <div>Error loading maps</div>;
   if (!isLoaded) return <div>Loading maps</div>;
-
   return (
     <div>
       <GoogleMap

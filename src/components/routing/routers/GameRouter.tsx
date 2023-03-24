@@ -18,7 +18,7 @@ const GameRouter: FC<GameRouterProps> = ({ base }) => {
         <Route path="dashboard" element={<MainPage />} />
         <Route path="profile/:userID" element={<Profile />} />
         <Route path="countries" element={<CountriesOverview />} />
-        <Route path="lobby/:userID" element={<GameLobby />} />
+        <Route path="lobby/:gameID" element={<GameLobby />} />
       </Routes>
     </div>
   );
