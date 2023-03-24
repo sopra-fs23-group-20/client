@@ -30,11 +30,11 @@ const GameLobby: React.FC = () => {
 
   const [gameState, setGameState] = useState<GameState | null>(null);
   const [timeRemaining, setTimeRemaining] = useState<Number>(0);
-  const [population, setPopulation] = useState<Number | null>(null);
-  const [location, setLocation] = useState<Array<Number> | null>(null);
-  const [capital, setCapital] = useState<String | null>(null);
-  const [flag, setFlag] = useState<String | null>(null);
-  const [outline, setOutline] = useState<String | null>(null);
+
+  const [currentCountryHint, setCurrentCountryHint] = useState<Country>(
+    new Country(null, null, null, null, null, null)
+  );
+
   const [valueEntered, setValueEntered] = useState<string | null>(null);
   const [countryToGuess, setCountryToGuess] = useState<String | null>(null);
   const [allCountries, setAllCountries] = useState<Array<string>>([]);
@@ -118,22 +118,17 @@ const GameLobby: React.FC = () => {
             setGameState(convertToGameStateEnum(websocketPacket.payload));
             break;
           case WebsocketType.CATEGORYUPDATE:
-            {
-              const category = new Category(
-                websocketPacket.payload.type,
+            setCurrentCountryHint(
+              new Country(
+                null,
+                websocketPacket.payload.population,
                 websocketPacket.payload.capital,
                 websocketPacket.payload.flag,
                 websocketPacket.payload.location,
-                websocketPacket.payload.population,
                 websocketPacket.payload.outline
-              );
+              )
+            );
 
-              setPopulation(category.population);
-              setLocation(category.location);
-              setCapital(category.capital);
-              setFlag(category.flag);
-              setOutline(category.outline);
-            }
             break;
           case WebsocketType.TIMEUPDATE:
             console.log("Setting remaining time to: ", websocketPacket.payload);
@@ -268,17 +263,6 @@ const GameLobby: React.FC = () => {
       );
       break;
     case GameState.GUESSING:
-      let currentCountry = new Country(null, null, null, null, null, null);
-      if (location && location[0] && location[1]) {
-        currentCountry = new Country(
-          null,
-          population,
-          flag,
-          location[0],
-          location[1],
-          null
-        );
-      }
       return (
         <BaseContainer>
           <div>
@@ -302,28 +286,31 @@ const GameLobby: React.FC = () => {
               <div></div>
             )}
 
-            {population ? (
+            {currentCountryHint.population ? (
               <h2>
-                Population: {formatNumber(population.valueOf()).toString()}{" "}
+                Population:{" "}
+                {formatNumber(
+                  currentCountryHint.population.valueOf()
+                ).toString()}{" "}
               </h2>
             ) : (
               <div></div>
             )}
-            {outline ? (
-              <CountryOutline country={outline.toString()} />
+            {currentCountryHint.outline ? (
+              <CountryOutline country={currentCountryHint.outline.toString()} />
             ) : (
               <div></div>
             )}
-            {location ? (
-              <MapContainer {...currentCountry}> </MapContainer>
+            {currentCountryHint.location ? (
+              <MapContainer {...currentCountryHint}> </MapContainer>
             ) : (
               <div></div>
             )}
 
-            {flag ? (
+            {currentCountryHint.flag ? (
               <div>
                 <img
-                  src={flag.toString()}
+                  src={currentCountryHint.flag.toString()}
                   style={{
                     maxWidth: "100%",
                     marginBottom: "10px",
@@ -334,7 +321,11 @@ const GameLobby: React.FC = () => {
               <div></div>
             )}
 
-            {capital ? <h2> Capital: {capital.toString()} </h2> : <div></div>}
+            {currentCountryHint.capital ? (
+              <h2> Capital: {currentCountryHint.capital.toString()} </h2>
+            ) : (
+              <div></div>
+            )}
           </div>
         </BaseContainer>
       );

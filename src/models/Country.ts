@@ -1,19 +1,19 @@
-
+import Location from "./Location";
   
   class Country {
     name: String | null;
     population: Number | null;
+    capital: String | null;
     flag: String | null;
-    longitude: Number | null;
-    latitude: Number | null;
+    location: Location | null;
     outline: String | null;
   
-    constructor(name: string | null, population: Number | null, flag: String | null, longitude: Number | null, latitude: Number | null, outline: String | null) {
+    constructor(name: string | null, population: Number | null, capital: String|null, flag: String | null, location: Location | null , outline: String | null) {
       this.name = name;
       this.population = population;
+      this.capital = capital;
       this.flag = flag;
-      this.longitude = longitude;
-      this.latitude = latitude;
+      this.location =  location
       this.outline = outline;
     }
   }
