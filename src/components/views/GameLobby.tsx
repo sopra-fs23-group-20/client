@@ -1,38 +1,42 @@
 import { useEffect, useState } from "react";
 import { api, handleError } from "helpers/api";
-import { Spinner } from "components/ui/Spinner";
 import { Button } from "components/ui/Button";
 import { useNavigate } from "react-router-dom";
 import BaseContainer from "components/ui/BaseContainer";
-import PropTypes from "prop-types";
 import "styles/views/Game.scss";
 import User from "models/User";
-import React from "react";
 import { AxiosError } from "axios";
 import { Client } from "@stomp/stompjs";
+import { useRef } from "react";
 import SockJS from "sockjs-client";
-import GameInfo from "models/GameInfo";
 import GameState from "models/GameState";
-import CountryContainer from "components/ui/CountryContainer";
 import Country from "models/Country";
 import { getDomain } from "helpers/getDomain";
 import WebsocketType from "models/WebsocketType";
 import WebsocketPacket from "models/WebsocketPacket";
-import Category from "models/Category";
-import CategoryTypes from "models/CategoryTypes";
 import MapContainer from "components/ui/MapContainer";
 import Autocomplete from "@mui/material/Autocomplete";
 import CountryOutline from "components/ui/CountryOutline";
 import { TextField } from "@mui/material";
+import React, { useMemo } from "react";
 
 const GameLobby: React.FC = () => {
   const navigate = useNavigate();
 
-  const [gameState, setGameState] = useState<GameState | null>(null);
-  const [timeRemaining, setTimeRemaining] = useState<Number>(0);
+  const [gameState, setGameState] = useState<GameState | null>(GameState.SETUP);
+  const [timeRemaining, setTimeRemaining] = useState<number>(0);
+
+  const isMounted = useRef(false);
 
   const [currentCountryHint, setCurrentCountryHint] = useState<Country>(
     new Country(null, null, null, null, null, null)
+  );
+
+  const gameStateMemo = useMemo(() => gameState, [gameState]);
+  const timeRemainingMemo = useMemo(() => timeRemaining, [timeRemaining]);
+  const currentCountryHintMemo = useMemo(
+    () => currentCountryHint,
+    [currentCountryHint]
   );
 
   const [valueEntered, setValueEntered] = useState<string | null>(null);
@@ -78,20 +82,23 @@ const GameLobby: React.FC = () => {
   }
 
   useEffect(() => {
-    async function fetchData(): Promise<void> {
-      try {
-        const response = await api.get("/games/" + gameId + "/countries");
-        console.log("The response is: ", response);
-        setAllCountries(response.data);
-      } catch (error: AxiosError | any) {
-        alert(error.response.data.message);
-        localStorage.removeItem("token");
-        localStorage.removeItem("id");
-        navigate("/register");
-        console.error(error);
+    if (!isMounted.current) {
+      async function fetchData(): Promise<void> {
+        try {
+          const response = await api.get("/games/" + gameId + "/countries");
+          console.log("The response is: ", response);
+          setAllCountries(response.data);
+        } catch (error: AxiosError | any) {
+          alert(error.response.data.message);
+          localStorage.removeItem("token");
+          localStorage.removeItem("id");
+          navigate("/register");
+          console.error(error);
+        }
       }
+      fetchData();
+      isMounted.current = true;
     }
-    fetchData();
   }, []);
 
   useEffect(() => {
@@ -118,17 +125,18 @@ const GameLobby: React.FC = () => {
             setGameState(convertToGameStateEnum(websocketPacket.payload));
             break;
           case WebsocketType.CATEGORYUPDATE:
-            setCurrentCountryHint(
-              new Country(
-                null,
-                websocketPacket.payload.population,
-                websocketPacket.payload.capital,
-                websocketPacket.payload.flag,
-                websocketPacket.payload.location,
-                websocketPacket.payload.outline
-              )
-            );
-
+            if (websocketPacket.payload.hasOwnProperty("location")) {
+              setCurrentCountryHint(
+                new Country(
+                  null,
+                  websocketPacket.payload.population,
+                  websocketPacket.payload.capital,
+                  websocketPacket.payload.flag,
+                  websocketPacket.payload.location,
+                  websocketPacket.payload.outline
+                )
+              );
+            }
             break;
           case WebsocketType.TIMEUPDATE:
             console.log("Setting remaining time to: ", websocketPacket.payload);
@@ -138,11 +146,12 @@ const GameLobby: React.FC = () => {
           //
         }
       });
-
-      stompClient.publish({
-        destination: `/game/${gameId}/join`,
-        body: "",
-      });
+      if (stompClient && stompClient.connected) {
+        stompClient.publish({
+          destination: `/game/${gameId}/join`,
+          body: "",
+        });
+      }
     };
 
     stompClient.onStompError = (frame) => {
@@ -152,10 +161,12 @@ const GameLobby: React.FC = () => {
     stompClient.activate();
 
     return () => {
-      stompClient.publish({
-        destination: `/game/${gameId}/leave`,
-        body: "",
-      });
+      if (stompClient && stompClient.connected) {
+        stompClient.publish({
+          destination: `/game/${gameId}/leave`,
+          body: "",
+        });
+      }
       stompClient.deactivate();
     };
   }, [websocketUrl, gameId]);
@@ -171,36 +182,29 @@ const GameLobby: React.FC = () => {
     }
   }
 
-  async function getStatsManually(): Promise<void> {
-    try {
-      const request = await api.get(`/games/${gameId}`);
-    } catch (error: AxiosError | any) {
-      alert(
-        `Something went wrong while starting the game: \n${handleError(error)}`
-      );
-    }
-  }
-
   useEffect(() => {
-    async function fetchUser(): Promise<void> {
-      try {
-        let id = localStorage.getItem("id");
+    if (!isMounted.current) {
+      async function fetchUser(): Promise<void> {
+        try {
+          let id = localStorage.getItem("id");
 
-        const response = await api.get(`/users/${id}`, {
-          headers: {
-            Authorization: localStorage.getItem("token")!,
-          },
-        });
+          const response = await api.get(`/users/${id}`, {
+            headers: {
+              Authorization: localStorage.getItem("token")!,
+            },
+          });
 
-        setCurrentUser(response.data);
-      } catch (error) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("id");
-        navigate("/register");
-        console.error(error);
+          setCurrentUser(response.data);
+        } catch (error) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("id");
+          navigate("/register");
+          console.error(error);
+        }
       }
+      fetchUser();
+      isMounted.current = true;
     }
-    fetchUser();
   }, []);
 
   async function submitGuess(): Promise<void> {
@@ -251,7 +255,7 @@ const GameLobby: React.FC = () => {
     return formattedNumber.replace(/,/g, "'");
   };
 
-  switch (gameState) {
+  switch (gameStateMemo) {
     case GameState.SETUP:
       return (
         <BaseContainer>
@@ -261,7 +265,6 @@ const GameLobby: React.FC = () => {
           <Button onClick={() => startGame()}>Start Game</Button>
         </BaseContainer>
       );
-      break;
     case GameState.GUESSING:
       return (
         <BaseContainer>
@@ -329,7 +332,6 @@ const GameLobby: React.FC = () => {
           </div>
         </BaseContainer>
       );
-      break;
     case GameState.SCOREBOARD:
       return (
         <BaseContainer>
