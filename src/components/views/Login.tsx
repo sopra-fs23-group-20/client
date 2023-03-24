@@ -1,7 +1,7 @@
 import React, { useState, useEffect, KeyboardEvent } from "react";
 import { api, handleError } from "helpers/api";
 import User from "models/User";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Button } from "components/ui/Button";
 import "styles/views/Login.scss";
 import BaseContainer from "components/ui/BaseContainer";
@@ -54,7 +54,7 @@ FormField.propTypes = {
 };
 
 const Login: React.FC = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const [username, setUsername] = useState<string | null>(null);
   const [password, setPassword] = useState<string | null>(null);
@@ -77,7 +77,7 @@ const Login: React.FC = () => {
         throw new Error("No id received");
       }
 
-      history.push(`/game`);
+      navigate(`/game`);
     } catch (error: AxiosError | any) {
       alert(`Something went wrong during the login: \n${handleError(error)}`);
     }
@@ -140,7 +140,7 @@ const Login: React.FC = () => {
         <p>Not Yet a User? </p>
         <br />
         <Button
-          onClick={() => history.push(`/register`)}
+          onClick={() => navigate(`/register`)}
           style={{ marginLeft: "10px", color: "white" }}
         >
           Register

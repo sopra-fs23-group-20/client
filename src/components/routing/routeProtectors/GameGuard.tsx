@@ -1,17 +1,6 @@
-import {Redirect} from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import PropTypes from "prop-types";
-import React, { FC }  from 'react';
-
-/**
- * routeProtectors interfaces can tell the router whether or not it should allow navigation to a requested route.
- * They are functional components. Based on the props passed, a route gets rendered.
- * In this case, if the user is authenticated (i.e., a token is stored in the local storage)
- * {props.children} are rendered --> The content inside the <GameGuard> in the App.js file, i.e. the user is able to access the main app.
- * If the user isn't authenticated, the components redirects to the /login screen
- * @Guard
- * @param props
- */
-
+import React, { FC } from "react";
 
 interface GameGuardProps {
   children: React.ReactNode;
@@ -21,9 +10,9 @@ export const GameGuard: FC<GameGuardProps> = ({ children }) => {
   if (localStorage.getItem("token")) {
     return <>{children}</>;
   }
-  return <Redirect to="/login"/>;
+  return <Navigate to="/login" replace />;
 };
 
 GameGuard.propTypes = {
-  children: PropTypes.node
+  children: PropTypes.node,
 };

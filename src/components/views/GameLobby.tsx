@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { api, handleError } from "helpers/api";
 import { Spinner } from "components/ui/Spinner";
 import { Button } from "components/ui/Button";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 import "styles/views/Game.scss";
@@ -22,11 +22,11 @@ import Category from "models/Category";
 import CategoryTypes from "models/CategoryTypes";
 import MapContainer from "components/ui/MapContainer";
 import Autocomplete from "@mui/material/Autocomplete";
-import TextField from "@mui/material/TextField";
 import CountryOutline from "components/ui/CountryOutline";
+import { TextField } from "@mui/material";
 
 const GameLobby: React.FC = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const [gameState, setGameState] = useState<GameState | null>(null);
   const [timeRemaining, setTimeRemaining] = useState<Number>(0);
@@ -87,7 +87,7 @@ const GameLobby: React.FC = () => {
         alert(error.response.data.message);
         localStorage.removeItem("token");
         localStorage.removeItem("id");
-        history.push("/register");
+        navigate("/register");
         console.error(error);
       }
     }
@@ -196,7 +196,7 @@ const GameLobby: React.FC = () => {
       } catch (error) {
         localStorage.removeItem("token");
         localStorage.removeItem("id");
-        history.push("/register");
+        navigate("/register");
         console.error(error);
       }
     }
@@ -236,13 +236,13 @@ const GameLobby: React.FC = () => {
       const gameId = response.data.gameId;
 
       // Redirect the user to the game page
-      history.push(`/game/lobby/${gameId}`);
+      navigate(`/game/lobby/${gameId}`);
       window.location.reload();
     } catch (error) {
       console.error(error);
       localStorage.removeItem("token");
       localStorage.removeItem("id");
-      history.push("/login");
+      navigate("/login");
     }
   };
 
@@ -339,7 +339,7 @@ const GameLobby: React.FC = () => {
             <Button onClick={(e) => createGame()}>New Game</Button>
             <Button
               onClick={() => {
-                history.push("/game");
+                navigate("/game");
               }}
             >
               Back to Main Page

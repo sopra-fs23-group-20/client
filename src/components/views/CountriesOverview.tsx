@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { api, handleError } from "helpers/api";
 import { Spinner } from "components/ui/Spinner";
 import { Button } from "components/ui/Button";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 import "styles/views/Game.scss";
@@ -12,9 +12,10 @@ import { AxiosError } from "axios";
 import Country from "models/Country";
 import CountryContainer from "components/ui/CountryContainer";
 import CountryOutline from "components/ui/CountryOutline";
+import { Container } from "@mui/material";
 
 const CountriesOverview: React.FC = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const [countries, setCountries] = useState<Country[] | null>(null);
   const [outlines, setOutlines] = useState<String[] | null>(null);
@@ -61,12 +62,12 @@ const CountriesOverview: React.FC = () => {
   }
 
   return (
-    <BaseContainer className="game container">
+    <Container>
       {content}
       <div>
         <Button
           width="100%"
-          onClick={() => history.push("/game")}
+          onClick={() => navigate("/game")}
           style={{
             fontWeight: 800,
             color: "White",
@@ -90,7 +91,7 @@ const CountriesOverview: React.FC = () => {
           </Button>
         )}
       </div>
-    </BaseContainer>
+    </Container>
   );
 };
 
