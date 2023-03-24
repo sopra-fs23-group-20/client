@@ -1,4 +1,4 @@
-import { Redirect, Route } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import MainPage from "components/views/MainPage";
 import PropTypes from "prop-types";
 import React, { FC } from "react";
@@ -11,30 +11,15 @@ interface GameRouterProps {
 }
 
 const GameRouter: FC<GameRouterProps> = ({ base }) => {
-  /**
-   * "this.props.base" is "/app" because as been passed as a prop in the parent of GameRouter, i.e., App.js
-   */
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
-      <Route exact path={`${base}/dashboard`}>
-        <MainPage />
-      </Route>
-
-      <Route exact path={`${base}`}>
-        <Redirect to={`${base}/dashboard`} />
-      </Route>
-
-      <Route exact path="/game/profile/:userID">
-        <Profile />
-      </Route>
-
-      <Route exact path="/game/countries">
-        <CountriesOverview />
-      </Route>
-
-      <Route exact path="/game/lobby/:userID">
-        <GameLobby />
-      </Route>
+      <Routes>
+        <Route index element={<Navigate to={`${base}/dashboard`} />} />
+        <Route path="dashboard" element={<MainPage />} />
+        <Route path="profile/:userID" element={<Profile />} />
+        <Route path="countries" element={<CountriesOverview />} />
+        <Route path="lobby/:userID" element={<GameLobby />} />
+      </Routes>
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { api, handleError } from "helpers/api";
 import User from "models/User";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Button } from "components/ui/Button";
 import "styles/views/Login.scss";
 import BaseContainer from "components/ui/BaseContainer";
@@ -12,7 +12,7 @@ import { AxiosError } from "axios";
 
 const Profile: React.FC = () => {
   const id = window.location.pathname.split("/").pop();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [editMode, setEditMode] = useState<boolean>(false);
 
@@ -62,12 +62,12 @@ const Profile: React.FC = () => {
         //look for error code 404 and go back to main page
         if (error.response.status === 404) {
           alert(error.response.data.message);
-          history.push("/game");
+          navigate("/game");
         } else {
           alert(error.response.data.message);
           localStorage.removeItem("token");
           localStorage.removeItem("id");
-          history.push("/register");
+          navigate("/register");
           console.error(error);
         }
       }
@@ -184,17 +184,14 @@ const Profile: React.FC = () => {
               Edit your Profile
             </Button>
             <Button
-              onClick={() => history.push("/game")}
+              onClick={() => navigate("/game")}
               style={{ marginLeft: "10px", color: "white" }}
             >
               Back to Users Overview
             </Button>
           </div>
         ) : (
-          <Button
-            onClick={() => history.push("/game")}
-            style={{ color: "white" }}
-          >
+          <Button onClick={() => navigate("/game")} style={{ color: "white" }}>
             Back to Users Overview
           </Button>
         )}

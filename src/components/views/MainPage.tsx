@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { api, handleError } from "helpers/api";
 import { Spinner } from "components/ui/Spinner";
 import { Button } from "components/ui/Button";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 import "styles/views/Game.scss";
@@ -11,7 +11,7 @@ import React from "react";
 import { AxiosError } from "axios";
 
 const MainPage: React.FC = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const [users, setUsers] = useState<User[] | null>(null);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -31,12 +31,12 @@ const MainPage: React.FC = () => {
 
       localStorage.removeItem("token");
       localStorage.removeItem("id");
-      history.push("/login");
+      navigate("/login");
     } catch (error) {
       console.error(error);
       localStorage.removeItem("token");
       localStorage.removeItem("id");
-      history.push("/login");
+      navigate("/login");
     }
   };
 
@@ -49,12 +49,12 @@ const MainPage: React.FC = () => {
       const gameId = response.data.gameId;
 
       // Redirect the user to the game page
-      history.push(`/game/lobby/${gameId}`);
+      navigate(`/game/lobby/${gameId}`);
     } catch (error) {
       console.error(error);
       localStorage.removeItem("token");
       localStorage.removeItem("id");
-      history.push("/login");
+      navigate("/login");
     }
   };
 
@@ -69,7 +69,7 @@ const MainPage: React.FC = () => {
   const Player = ({ user }: PlayerProps): JSX.Element => (
     <div className="player container">
       <div className="player username">
-        <Button onClick={() => history.push(`/game/profile/${user.id}`)}>
+        <Button onClick={() => navigate(`/game/profile/${user.id}`)}>
           <span style={{ color: "MediumAquaMarine", fontWeight: 800 }}>
             {user.username}{" "}
           </span>
@@ -96,7 +96,7 @@ const MainPage: React.FC = () => {
         alert(error.response.data.message);
         localStorage.removeItem("token");
         localStorage.removeItem("id");
-        history.push("/register");
+        navigate("/register");
         console.error(error);
       }
     }
@@ -118,7 +118,7 @@ const MainPage: React.FC = () => {
       } catch (error) {
         localStorage.removeItem("token");
         localStorage.removeItem("id");
-        history.push("/register");
+        navigate("/register");
         console.error(error);
       }
     }
@@ -126,7 +126,7 @@ const MainPage: React.FC = () => {
   }, []);
 
   const goToSettings = async (): Promise<void> => {
-    history.push(`/game/profile/${currentUser?.id}`);
+    navigate(`/game/profile/${currentUser?.id}`);
   };
 
   let content = <div></div>;
@@ -163,7 +163,7 @@ const MainPage: React.FC = () => {
           </Button>
           <Button
             width="100%"
-            onClick={() => history.push("/game/countries")}
+            onClick={() => navigate("/game/countries")}
             style={{
               marginTop: "10px",
               fontWeight: 800,

@@ -1,6 +1,6 @@
-import { Redirect } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import PropTypes from "prop-types";
-import React, { FC } from 'react';
+import React, { FC } from "react";
 
 interface LoginGuardProps {
   children: React.ReactNode;
@@ -11,9 +11,9 @@ export const LoginGuard: FC<LoginGuardProps> = ({ children }) => {
     return <>{children}</>;
   }
   // if user is already logged in, redirects to the main /app
-  return <Redirect to="/game"/>;
+  return <Navigate to="/game" />;
 };
 
 LoginGuard.propTypes = {
-  children: PropTypes.node.isRequired
+  children: PropTypes.node.isRequired,
 };

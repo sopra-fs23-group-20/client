@@ -1,12 +1,41 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import ReactDOM from "react-dom/client";
 import "styles/index.scss";
 import App from "./App";
+import { createTheme, ThemeProvider } from "@mui/material";
 
-/**
- * This is the entry point of your React application where the root element is in the public/index.html.
- * We call this a “root” DOM node because everything inside it will be managed by React DOM.
- * Applications built with just React usually have a single root DOM node.
- * More: https://reactjs.org/docs/rendering-elements.html
- */
-ReactDOM.render(<App />, document.getElementById("root"));
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: "#1e1e1e",
+    },
+    secondary: {
+      main: "#f5f5f5",
+    },
+  },
+  typography: {
+    fontFamily: "Roboto",
+    h1: {
+      fontSize: "2.5rem",
+      fontWeight: 700,
+    },
+    h2: {
+      fontSize: "2rem",
+      fontWeight: 700,
+    },
+    h3: {
+      fontSize: "1.5rem",
+      fontWeight: 700,
+    },
+  },
+});
+
+const root = ReactDOM.createRoot(
+  document.getElementById("root") as HTMLElement
+);
+
+root.render(
+  <ThemeProvider theme={theme}>
+    <App />
+  </ThemeProvider>
+);

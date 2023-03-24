@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { api, handleError } from "helpers/api";
 import User from "models/User";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Button } from "components/ui/Button";
 import "styles/views/Login.scss";
 import BaseContainer from "components/ui/BaseContainer";
@@ -54,12 +54,12 @@ FormField.propTypes = {
 };
 
 const Register: React.FC = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const [username, setUsername] = useState<string | null>(null);
   const [password, setPassword] = useState<string | null>(null);
 
-  const doLogin = async () => {
+  const doLogin = useCallback(async () => {
     try {
       const requestBody = JSON.stringify({ username, password });
       const response = await api.post("/users", requestBody);
@@ -77,11 +77,11 @@ const Register: React.FC = () => {
         throw new Error("No id received");
       }
 
-      history.push(`/game`);
+      navigate(`/game`);
     } catch (error: AxiosError | any) {
       alert(`Something went wrong during the login: \n${handleError(error)}`);
     }
-  };
+  }, [username, password, navigate]);
 
   useEffect(() => {
     const listener = (event: Event) => {
@@ -140,7 +140,7 @@ const Register: React.FC = () => {
         <p>Already a User? </p>
         <br />
         <Button
-          onClick={() => history.push(`/login`)}
+          onClick={() => navigate(`/login`)}
           style={{
             marginLeft: "10px",
             fontWeight: 800,
