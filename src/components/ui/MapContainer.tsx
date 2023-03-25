@@ -1,4 +1,4 @@
-import { GoogleMap, useLoadScript, Marker } from "@react-google-maps/api";
+import { GoogleMap, useLoadScript, MarkerF } from "@react-google-maps/api";
 import * as React from "react";
 import Country from "models/Country";
 
@@ -8,8 +8,8 @@ const MapContainer: React.FC<Country> = (country: Country) => {
   });
 
   const mapContainerStyle = {
-    width: "90%",
-    height: "500px",
+    width: 500,
+    height: 350,
   };
 
   const mapOptions = {
@@ -87,7 +87,7 @@ const MapContainer: React.FC<Country> = (country: Country) => {
         zoom={5}
         options={mapOptions}
       >
-        <Marker position={center} />
+        <MarkerF position={center} />
       </GoogleMap>
     </div>
   );

@@ -2,13 +2,12 @@ import React, { useState, useEffect } from "react";
 import { api, handleError } from "helpers/api";
 import User from "models/User";
 import { useNavigate } from "react-router-dom";
-import { Button } from "components/ui/Button";
-import "styles/views/Login.scss";
-import BaseContainer from "components/ui/BaseContainer";
-import PropTypes from "prop-types";
-import "styles/views/Profile.scss";
-import { Spinner } from "components/ui/Spinner";
+import { Button, Container, TextField, Typography } from "@mui/material";
 import { AxiosError } from "axios";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import dayjs from "dayjs";
 
 const Profile: React.FC = () => {
   const id = window.location.pathname.split("/").pop();
@@ -81,59 +80,62 @@ const Profile: React.FC = () => {
   if (editMode && currentUser) {
     content = (
       <div>
-        <h2>
+        <Typography variant="h3">
           Username:
-          <input
-            type="text"
-            className="text-input-field"
+          <TextField
             value={username!}
             onChange={(e) => setUsername(e.target.value)}
+            size="small"
+            sx={{ marginLeft: 2 }}
           />
-        </h2>
-        <h2>Status: {currentUser.status}</h2>
-        <h2>
+        </Typography>
+
+        <Typography variant="h4" sx={{ marginTop: 2 }}>
+          Status: {currentUser.status}{" "}
+        </Typography>
+
+        <Typography variant="h4" sx={{ marginTop: 2 }}>
           Creation Date:{" "}
-          {new Date(currentUser.creation_date!).toLocaleDateString("de-DE", {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric",
-          })}
-        </h2>
-        <h2>
-          <form>
-            <label>
-              Birthday:
-              <input
-                type="date"
-                name="date"
-                value={
-                  birthday ? new Date(birthday).toISOString().slice(0, 10) : ""
-                }
-                onChange={(e) =>
-                  e.target.value
-                    ? setBirthday(new Date(e.target.value))
-                    : setBirthday(null)
-                }
-              />
-            </label>
-          </form>
-        </h2>
+          {currentUser.creation_date
+            ? new Date(currentUser.creation_date).toLocaleDateString("de-DE", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+              })
+            : "No Creation Date"}
+        </Typography>
+
+        <Typography variant="h4" sx={{ marginTop: 3 }}>
+          Birthday:
+          <LocalizationProvider dateAdapter={AdapterDayjs} locale="en">
+            <DatePicker
+              label="Select date"
+              sx={{ marginLeft: 2 }}
+              value={dayjs(birthday)}
+              onAccept={(newValue) => {
+                newValue ? setBirthday(newValue.toDate()) : setBirthday(null);
+              }}
+            />
+          </LocalizationProvider>
+        </Typography>
+
         {String(localStorage.getItem("id")) === String(currentUser.id) ? (
           <div>
             <Button
+              variant="outlined"
               onClick={() => {
                 setUsername(currentUser.username);
                 setBirthday(new Date(currentUser.birthday!));
                 setEditMode(false);
               }}
-              style={{ color: "white" }}
             >
               Discard
             </Button>
             <Button
+              variant="outlined"
+              sx={{ margin: 2 }}
               disabled={!username}
               onClick={() => saveChanges()}
-              style={{ marginLeft: "10px", color: "white" }}
             >
               Save
             </Button>
@@ -148,57 +150,59 @@ const Profile: React.FC = () => {
   if (currentUser && !editMode) {
     content = (
       <div>
-        <h2>
+        <Typography variant="h3">
           Username:{" "}
           <span style={{ color: "MediumAquaMarine" }}>
             {currentUser.username}
           </span>
-        </h2>
-        <h2>Status: {currentUser.status}</h2>
-        <h2>
+        </Typography>
+        <Typography sx={{ marginTop: 2 }} variant="h4">
+          Status: {currentUser.status}
+        </Typography>
+        <Typography variant="h4" sx={{ marginTop: 2 }}>
           Creation Date:{" "}
           {new Date(currentUser.creation_date!).toLocaleDateString("de-DE", {
             day: "2-digit",
             month: "2-digit",
             year: "numeric",
           })}
-        </h2>
+        </Typography>
         {currentUser.birthday ? (
-          <h2>
+          <Typography variant="h4" sx={{ marginTop: 2 }}>
             Birthday:{" "}
-            {new Date(currentUser.birthday).toLocaleDateString("de-DE", {
-              day: "2-digit",
-              month: "2-digit",
-              year: "numeric",
-            })}
-          </h2>
+            {currentUser.birthday
+              ? new Date(currentUser.birthday).toLocaleDateString("de-DE", {
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "numeric",
+                })
+              : "No Birthday"}
+          </Typography>
         ) : (
           <div></div>
         )}
         {String(localStorage.getItem("id")) === String(currentUser.id) ? (
-          <div>
-            <Button
-              onClick={() => setEditMode(true)}
-              style={{ color: "white" }}
-            >
-              Edit your Profile
-            </Button>
-            <Button
-              onClick={() => navigate("/game")}
-              style={{ marginLeft: "10px", color: "white" }}
-            >
-              Back to Users Overview
-            </Button>
-          </div>
-        ) : (
-          <Button onClick={() => navigate("/game")} style={{ color: "white" }}>
-            Back to Users Overview
+          <Button
+            variant="outlined"
+            onClick={() => setEditMode(true)}
+            sx={{ marginTop: 2 }}
+          >
+            Edit your Profile
           </Button>
+        ) : (
+          <></>
         )}
+        <Button
+          onClick={() => navigate("/game")}
+          sx={{ marginTop: 2, marginLeft: 2 }}
+          variant="outlined"
+        >
+          Back to Users Overview
+        </Button>
       </div>
     );
   }
-  return <BaseContainer className="game container">{content}</BaseContainer>;
+  return <Container> {content}</Container>;
 };
 
 export default Profile;

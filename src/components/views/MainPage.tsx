@@ -1,11 +1,16 @@
 import { useEffect, useState } from "react";
 import { api, handleError } from "helpers/api";
-import { Spinner } from "components/ui/Spinner";
-import { Button } from "components/ui/Button";
+import {
+  Button,
+  List,
+  Typography,
+  ListItem,
+  Container,
+  Box,
+  Grid,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
-import "styles/views/Game.scss";
 import User from "models/User";
 import React from "react";
 import { AxiosError } from "axios";
@@ -68,13 +73,7 @@ const MainPage: React.FC = () => {
 
   const Player = ({ user }: PlayerProps): JSX.Element => (
     <div className="player container">
-      <div className="player username">
-        <Button onClick={() => navigate(`/game/profile/${user.id}`)}>
-          <span style={{ color: "MediumAquaMarine", fontWeight: 800 }}>
-            {user.username}{" "}
-          </span>
-        </Button>
-      </div>
+      <div className="player username"></div>
     </div>
   );
 
@@ -129,62 +128,29 @@ const MainPage: React.FC = () => {
     navigate(`/game/profile/${currentUser?.id}`);
   };
 
-  let content = <div></div>;
+  let content = <></>;
 
   if (users) {
     content = (
-      <div className="game">
-        <ul className="game user-list">
+      <Box
+        sx={{
+          maxHeight: 500, // Adjust this value according to your desired maximum list height
+          overflow: "auto",
+        }}
+      >
+        <List>
           {users.map((user) => (
-            <Player user={user} key={user.id} />
+            <ListItem key={user.id}>
+              <Button
+                variant="contained"
+                onClick={() => navigate(`/game/profile/${user.id}`)}
+              >
+                <Typography variant="h6"> {user.username}</Typography>
+              </Button>
+            </ListItem>
           ))}
-        </ul>
-        <div>
-          <Button
-            width="40%"
-            onClick={() => logout()}
-            style={{
-              fontWeight: 800,
-              color: "White",
-            }}
-          >
-            Logout
-          </Button>
-          <Button
-            width="40%"
-            onClick={() => goToSettings()}
-            style={{
-              marginLeft: "10px",
-              fontWeight: 800,
-              color: "White",
-            }}
-          >
-            Settings
-          </Button>
-          <Button
-            width="100%"
-            onClick={() => navigate("/game/countries")}
-            style={{
-              marginTop: "10px",
-              fontWeight: 800,
-              color: "White",
-            }}
-          >
-            Checkout all Countries
-          </Button>
-          <Button
-            width="100%"
-            onClick={() => createGame()}
-            style={{
-              marginTop: "10px",
-              fontWeight: 800,
-              color: "White",
-            }}
-          >
-            Start a new Game
-          </Button>
-        </div>
-      </div>
+        </List>
+      </Box>
     );
   }
 
@@ -192,22 +158,52 @@ const MainPage: React.FC = () => {
 
   if (currentUser) {
     usercontent = (
-      <p>
+      <Typography variant="h4">
         You are currently logged in as:{" "}
         <span style={{ color: "MediumAquaMarine", fontWeight: 800 }}>
           {currentUser.username}
         </span>
-      </p>
+      </Typography>
     );
   }
 
   return (
-    <BaseContainer className="game container">
-      <h1>Users Overview</h1>
+    <Container>
+      <Typography variant="h1">Users Overview</Typography>
       {usercontent}
-      <p>Click on users to see their details</p>
+      <Typography variant="h4">Click on users to see their details</Typography>
       {content}
-    </BaseContainer>
+      <Grid container spacing={1}>
+        <Grid item xs={5}>
+          <Button
+            variant="outlined"
+            onClick={() => navigate("/game/countries")}
+            sx={{ marginTop: 4 }}
+          >
+            Checkout all Countries
+          </Button>
+        </Grid>
+        <Grid item xs={5}>
+          <Button
+            sx={{ marginTop: 4 }}
+            variant="outlined"
+            onClick={() => createGame()}
+          >
+            Start a new Game
+          </Button>
+        </Grid>
+        <Grid item xs={5}>
+          <Button variant="outlined" onClick={() => logout()}>
+            Logout
+          </Button>
+        </Grid>
+        <Grid item xs={5}>
+          <Button variant="outlined" onClick={() => goToSettings()}>
+            Settings
+          </Button>
+        </Grid>
+      </Grid>
+    </Container>
   );
 };
 

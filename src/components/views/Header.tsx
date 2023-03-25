@@ -1,5 +1,5 @@
+import { Typography } from "@mui/material";
 import React from "react";
-import "styles/views/Header.scss";
 
 interface HeaderProps {
   height: number;
@@ -7,7 +7,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ height }) => (
   <div className="header container" style={{ height: `${height}px` }}>
-    <h1 className="header title">GuessTheCountry</h1>
+    <Typography variant="h1">GuessTheCountry</Typography>
   </div>
 );
 
