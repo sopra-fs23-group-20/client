@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import { api, handleError } from "helpers/api";
-import { Button } from "components/ui/Button";
+import { Button, Container, Typography, Box, Grid } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import BaseContainer from "components/ui/BaseContainer";
-import "styles/views/Game.scss";
 import User from "models/User";
 import { AxiosError } from "axios";
 import { Client } from "@stomp/stompjs";
@@ -14,11 +12,11 @@ import Country from "models/Country";
 import { getDomain } from "helpers/getDomain";
 import WebsocketType from "models/WebsocketType";
 import WebsocketPacket from "models/WebsocketPacket";
-import MapContainer from "components/ui/MapContainer";
-import Autocomplete from "@mui/material/Autocomplete";
-import CountryOutline from "components/ui/CountryOutline";
-import { TextField } from "@mui/material";
 import React, { useMemo } from "react";
+import GuessingComponent from "components/ui/GameComponents/GuessingComponent";
+import ScoreboardComponent from "components/ui/GameComponents/ScoreboardComponent";
+import SetupComponent from "components/ui/GameComponents/SetupComponent";
+import EndedComponent from "components/ui/GameComponents/EndedComponent";
 
 const GameLobby: React.FC = () => {
   const navigate = useNavigate();
@@ -39,7 +37,6 @@ const GameLobby: React.FC = () => {
     [currentCountryHint]
   );
 
-  const [valueEntered, setValueEntered] = useState<string | null>(null);
   const [countryToGuess, setCountryToGuess] = useState<String | null>(null);
   const [allCountries, setAllCountries] = useState<Array<string>>([]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -171,17 +168,6 @@ const GameLobby: React.FC = () => {
     };
   }, [websocketUrl, gameId]);
 
-  async function startGame(): Promise<void> {
-    try {
-      await api.put(`/games/${gameId}/start`);
-      setGameState(GameState.GUESSING);
-    } catch (error: AxiosError | any) {
-      alert(
-        `Something went wrong while starting the game: \n${handleError(error)}`
-      );
-    }
-  }
-
   useEffect(() => {
     if (!isMounted.current) {
       async function fetchUser(): Promise<void> {
@@ -206,20 +192,6 @@ const GameLobby: React.FC = () => {
       isMounted.current = true;
     }
   }, []);
-
-  async function submitGuess(): Promise<void> {
-    try {
-      console.log("Submitting guess", valueEntered);
-      const request = await api.post(`/games/${gameId}/guesses`, {
-        username: currentUser?.username,
-        guess: valueEntered,
-      });
-      const requestBody = request.data;
-      alert("Your guess was correct!");
-    } catch (error: AxiosError | any) {
-      alert(error.response.data.message);
-    }
-  }
 
   async function getCountry(): Promise<void> {
     try {
@@ -250,115 +222,49 @@ const GameLobby: React.FC = () => {
     }
   };
 
-  const formatNumber = (number: number): string => {
-    const formattedNumber = new Intl.NumberFormat("en-US").format(number);
-    return formattedNumber.replace(/,/g, "'");
-  };
+  let content = <Typography variant="h2">Loading...</Typography>;
 
   switch (gameStateMemo) {
     case GameState.SETUP:
-      return (
-        <BaseContainer>
-          <div>
-            <h1>You are now in a Game!</h1>
-          </div>
-          <Button onClick={() => startGame()}>Start Game</Button>
-        </BaseContainer>
-      );
+      content = <SetupComponent {...{ gameId: gameId }} />;
+      break;
     case GameState.GUESSING:
-      return (
-        <BaseContainer>
-          <div>
-            <Autocomplete
-              disablePortal
-              id="combo-box-demo"
-              options={allCountries}
-              sx={{ width: 300 }}
-              onChange={(event, value) => setValueEntered(value)}
-              renderInput={(params) => (
-                <TextField {...params} label="Enter your Guess here" />
-              )}
-            />
-          </div>
-          <Button onClick={() => submitGuess()}>Submit your Guess</Button>
-          <div>
-            <h1>You are now in a Game!</h1>
-            {timeRemaining ? (
-              <h2>Time Remaining: {timeRemaining.toString()} </h2>
-            ) : (
-              <div></div>
-            )}
-
-            {currentCountryHint.population ? (
-              <h2>
-                Population:{" "}
-                {formatNumber(
-                  currentCountryHint.population.valueOf()
-                ).toString()}{" "}
-              </h2>
-            ) : (
-              <div></div>
-            )}
-            {currentCountryHint.outline ? (
-              <CountryOutline country={currentCountryHint.outline.toString()} />
-            ) : (
-              <div></div>
-            )}
-            {currentCountryHint.location ? (
-              <MapContainer {...currentCountryHint}> </MapContainer>
-            ) : (
-              <div></div>
-            )}
-
-            {currentCountryHint.flag ? (
-              <div>
-                <img
-                  src={currentCountryHint.flag.toString()}
-                  style={{
-                    maxWidth: "100%",
-                    marginBottom: "10px",
-                  }}
-                />
-              </div>
-            ) : (
-              <div></div>
-            )}
-
-            {currentCountryHint.capital ? (
-              <h2> Capital: {currentCountryHint.capital.toString()} </h2>
-            ) : (
-              <div></div>
-            )}
-          </div>
-        </BaseContainer>
+      content = (
+        <GuessingComponent
+          {...{
+            currentCountryHint: currentCountryHint,
+            timeRemaining: timeRemaining,
+            allCountries: allCountries,
+            gameId: gameId,
+            currentUser: currentUser,
+          }}
+        />
       );
+      break;
     case GameState.SCOREBOARD:
-      return (
-        <BaseContainer>
-          <div>
-            <h2>Now the Scoreboard should be shown</h2>
-            <h2>The country to guess was: {countryToGuess}</h2>
-            <Button onClick={(e) => createGame()}>New Game</Button>
-            <Button
-              onClick={() => {
-                navigate("/game");
-              }}
-            >
-              Back to Main Page
-            </Button>
-          </div>
-        </BaseContainer>
+      content = (
+        <ScoreboardComponent
+          {...{ countryToGuess: countryToGuess, currentUser: currentUser }}
+        />
       );
-    default:
-      return (
-        <BaseContainer>
-          <div>
-            <h1>You are now in a Game!</h1>
-          </div>
-          <Button onClick={() => startGame()}>Start Game</Button>
-        </BaseContainer>
-      );
+      break;
+    case GameState.ENDED:
+      content = <EndedComponent />;
+      break;
   }
+
+  return (
+    <Container
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      {content}
+    </Container>
+  );
 };
 
 export default GameLobby;

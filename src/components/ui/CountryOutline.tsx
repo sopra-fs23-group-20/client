@@ -1,5 +1,3 @@
-import geoJSONCountries from "./countries.json";
-
 import React from "react";
 import { geoPath, geoIdentity, geoBounds } from "d3-geo";
 
@@ -18,8 +16,8 @@ const CountryOutline: React.FC<CountryOutlineProps> = ({ country }) => {
     return <div>Country not found</div>;
   }
 
-  const width = 800;
-  const height = 500;
+  const width = 500;
+  const height = 350;
   const padding = 40;
 
   const bounds = geoBounds(countryJSON);
@@ -47,7 +45,7 @@ const CountryOutline: React.FC<CountryOutlineProps> = ({ country }) => {
       width={width}
       height={height}
       viewBox={`0 0 ${width} ${height}`}
-      style={{ backgroundColor: "#000000" }}
+      style={{ backgroundColor: "#000000", marginTop: 10 }}
     >
       <path
         d={pathData || ""}

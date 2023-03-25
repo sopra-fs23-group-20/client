@@ -1,9 +1,8 @@
 import React from "react";
 import Country from "models/Country";
-import { LoadScript } from "@react-google-maps/api";
 import MapContainer from "./MapContainer";
 import CountryOutline from "./CountryOutline";
-import { Container, Typography } from "@mui/material";
+import { Avatar, Container, Typography, Grid } from "@mui/material";
 
 const CountryContainer: React.FC<Country> = (country: Country) => {
   if (!country.location) {
@@ -13,32 +12,33 @@ const CountryContainer: React.FC<Country> = (country: Country) => {
 
   return (
     <Container>
-      <Typography variant="h1">Name: {country.name} </Typography>
-      <h2>Population: {country.population?.toString()}</h2>
-      <h2>Capital: {country.capital}</h2>
+      <Typography sx={{ marginTop: 4 }} variant="h2">
+        Name: {country.name}{" "}
+      </Typography>
+      <Typography sx={{ marginTop: 1 }} variant="h3">
+        Population: {country.population?.toString()}
+      </Typography>
+      <Typography sx={{ marginTop: 1 }} variant="h3">
+        Capital: {country.capital}
+      </Typography>
       {country.flag ? (
         <div style={{ textAlign: "left" }}>
-          <img
+          <Avatar
+            variant="square"
+            sx={{ width: 500, height: 350, marginTop: 1 }}
             src={country.flag.toString()}
             alt={`${country.name} flag`}
-            style={{
-              maxWidth: "100%",
-              marginBottom: "10px",
-            }}
           />
         </div>
       ) : null}
-      <div>
+      <Typography variant="h3">
         {country.outline ? (
           <CountryOutline country={country.outline.toString()}></CountryOutline>
         ) : (
           <div />
         )}
-      </div>
+      </Typography>
       <MapContainer {...country} />
-      <br />
-      <br />
-      <br />
     </Container>
   );
 };

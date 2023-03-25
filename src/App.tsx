@@ -1,18 +1,33 @@
 import Header from "./components/views/Header";
 import AppRouter from "./components/routing/routers/AppRouter";
-import React from 'react';
+import React from "react";
+import {
+  Box,
+  CssBaseline,
+  createTheme,
+  ThemeProvider,
+  adaptV4Theme,
+} from "@mui/material";
+import darkTheme from "styles/darkTheme";
+import lightTheme from "styles/lightTheme";
 
-/**
- * Happy coding!
- * React Template by Lucas Pelloni
- * Overhauled by Kyrill Hux
- */
 const App = () => {
   return (
-    <div>
-      <Header height={100}/>
-      <AppRouter/>
-    </div>
+    <>
+      <CssBaseline />
+      <Box
+        sx={{
+          minHeight: "100vh",
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          margin: 0,
+        }}
+      >
+        <AppRouter />
+      </Box>
+    </>
   );
 };
 

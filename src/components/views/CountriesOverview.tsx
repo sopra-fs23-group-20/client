@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
 import { api, handleError } from "helpers/api";
-import { Spinner } from "components/ui/Spinner";
-import { Button } from "components/ui/Button";
 import { useNavigate } from "react-router-dom";
-import BaseContainer from "components/ui/BaseContainer";
-import PropTypes from "prop-types";
-import "styles/views/Game.scss";
-import User from "models/User";
 import React from "react";
-import { AxiosError } from "axios";
 import Country from "models/Country";
 import CountryContainer from "components/ui/CountryContainer";
-import CountryOutline from "components/ui/CountryOutline";
-import { Container } from "@mui/material";
+import {
+  Container,
+  Typography,
+  Box,
+  List,
+  ListItem,
+  Grid,
+} from "@mui/material";
+import Button from "@mui/material/Button";
 
 const CountriesOverview: React.FC = () => {
   const navigate = useNavigate();
@@ -49,44 +49,44 @@ const CountriesOverview: React.FC = () => {
   let content = <div></div>;
   if (countries) {
     content = (
-      <div className="game">
-        <ul className="game user-list">
-          {countries.map((country) => (
-            <div>
-              <CountryContainer {...country} />
-            </div>
-          ))}
-        </ul>
-      </div>
+      <Grid container spacing={5}>
+        {countries.map((country, index) => (
+          <Grid item xs={6} key={index}>
+            <List>
+              <ListItem>
+                <CountryContainer {...country} />
+              </ListItem>
+            </List>
+          </Grid>
+        ))}
+      </Grid>
     );
   }
 
   return (
-    <Container>
+    <Container
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        marginTop: 4,
+      }}
+    >
+      <Typography variant="h1">Countries Overview</Typography>
+      <Button
+        sx={{ marginTop: 4 }}
+        variant="outlined"
+        onClick={() => navigate("/game")}
+      >
+        Back to Users Overview
+      </Button>
       {content}
       <div>
-        <Button
-          width="100%"
-          onClick={() => navigate("/game")}
-          style={{
-            fontWeight: 800,
-            color: "White",
-          }}
-        >
-          Back to Users Overview
-        </Button>
         {countries ? (
-          <div></div>
+          <></>
         ) : (
-          <Button
-            width="100%"
-            onClick={() => createCountries()}
-            style={{
-              fontWeight: 800,
-              color: "White",
-              marginTop: "10px",
-            }}
-          >
+          <Button onClick={() => createCountries()} sx={{ marginTop: 4 }}>
             Generate All Countries from API
           </Button>
         )}
