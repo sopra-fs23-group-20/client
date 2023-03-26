@@ -20,15 +20,27 @@ import React, { useMemo } from "react";
 import HintComponent from "../HintComponent";
 
 interface Props {
-  countryToGuess: String | null;
   currentUser: User | null;
+  gameId: string | undefined;
 }
 
 const ScoreboardComponent: React.FC<Props> = (props) => {
-  const countryToGuess = props.countryToGuess;
   const currentUser = props.currentUser;
-
+  const gameId = props.gameId;
   const navigate = useNavigate();
+  const [currentCountry, setCurrentCountry] = useState<string | null>(null);
+  useEffect(() => {
+    const getCurrentCountry = async () => {
+      try {
+        const response = await api.get(`/games/${gameId}/country`);
+        const country = response.data;
+        setCurrentCountry(country);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getCurrentCountry();
+  }, [gameId]);
 
   const createGame = async (): Promise<void> => {
     try {
@@ -57,7 +69,7 @@ const ScoreboardComponent: React.FC<Props> = (props) => {
           Now the Scoreboard should be shown
         </Typography>
         <Typography variant="h4" sx={{ marginTop: 2 }}>
-          The country to guess was: {countryToGuess}
+          The country to guess was: {currentCountry}
         </Typography>
         <Button
           sx={{ marginTop: 2 }}
