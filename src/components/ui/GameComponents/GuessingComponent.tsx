@@ -23,7 +23,6 @@ const GuessingComponent: React.FC<Props> = (props) => {
   const timeRemaining = props.timeRemaining;
   const gameId = props.gameId;
   const currentUser = props.currentUser;
-
   const [valueEntered, setValueEntered] = useState<string | null>(null);
 
   async function submitGuess(): Promise<void> {

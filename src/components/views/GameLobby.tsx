@@ -244,7 +244,7 @@ const GameLobby: React.FC = () => {
     case GameState.SCOREBOARD:
       content = (
         <ScoreboardComponent
-          {...{ countryToGuess: countryToGuess, currentUser: currentUser }}
+          {...{ currentUser: currentUser, gameId: gameId }}
         />
       );
       break;
