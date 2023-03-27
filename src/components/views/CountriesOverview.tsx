@@ -18,7 +18,6 @@ const CountriesOverview: React.FC = () => {
   const navigate = useNavigate();
 
   const [countries, setCountries] = useState<Country[] | null>(null);
-  const [outlines, setOutlines] = useState<String[] | null>(null);
 
   useEffect(() => {
     async function getCountries(): Promise<void> {
@@ -26,8 +25,19 @@ const CountriesOverview: React.FC = () => {
         const response = await api.get("/countries");
         console.log(response.data);
         if (response.data.length != 0) {
-          setCountries(response.data);
-          setOutlines(response.data.map((country: any) => country.outline));
+          setCountries(
+            response.data.map(
+              (getCountry: any) =>
+                new Country(
+                  getCountry.name,
+                  getCountry.population,
+                  getCountry.capital,
+                  getCountry.flag,
+                  getCountry.location,
+                  getCountry.outline.outline
+                )
+            )
+          );
         }
       } catch (error) {
         console.error(error);
@@ -49,16 +59,24 @@ const CountriesOverview: React.FC = () => {
   let content = <div></div>;
   if (countries) {
     content = (
-      <Grid container spacing={5}>
-        {countries.map((country, index) => (
-          <Grid item xs={6} key={index}>
-            <List>
-              <ListItem>
-                <CountryContainer {...country} />
-              </ListItem>
-            </List>
-          </Grid>
-        ))}
+      <Grid container spacing={3}>
+        <Grid item xs={12}>
+          <div
+            style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}
+          >
+            {countries.map((country, index) => (
+              <div
+                style={{ flex: "1 1 auto", minWidth: "200px", padding: "8px" }}
+              >
+                <List>
+                  <ListItem>
+                    <CountryContainer {...country} />
+                  </ListItem>
+                </List>
+              </div>
+            ))}
+          </div>
+        </Grid>
       </Grid>
     );
   }
