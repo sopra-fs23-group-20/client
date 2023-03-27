@@ -16,6 +16,7 @@ const Profile: React.FC = () => {
   const [editMode, setEditMode] = useState<boolean>(false);
 
   const [username, setUsername] = useState<string | null>(null);
+  const [password, setPassword] = useState<string | null>(null);
   const [birthday, setBirthday] = useState<Date | null>(null);
 
   const saveChanges = async () => {
@@ -23,6 +24,7 @@ const Profile: React.FC = () => {
       console.log("Updating User");
       let requestBody = {
         username: username,
+        password: password,
         birthday: birthday,
         status: "ONLINE",
       };
@@ -34,11 +36,13 @@ const Profile: React.FC = () => {
       setEditMode(false);
       const copyCurrentUser = { ...currentUser! };
       copyCurrentUser.username = username!;
+      copyCurrentUser.password = password!;
       copyCurrentUser.birthday = birthday!;
       setCurrentUser(copyCurrentUser);
     } catch (error: AxiosError | any) {
       alert(error.response.data.message);
       currentUser ? setUsername(currentUser.username) : setUsername(null);
+      currentUser ? setPassword(currentUser.password) : setPassword(null);
       currentUser ? setBirthday(currentUser.birthday) : setBirthday(null);
       setEditMode(false);
     }
@@ -54,6 +58,7 @@ const Profile: React.FC = () => {
 
         setCurrentUser(response.data);
         setUsername(response.data.username);
+        setPassword(response.data.password);
         response.data.birthday
           ? setBirthday(new Date(response.data.birthday))
           : setBirthday(null);
@@ -89,7 +94,15 @@ const Profile: React.FC = () => {
             sx={{ marginLeft: 2 }}
           />
         </Typography>
-
+        <Typography variant="h3">
+          Password:
+          <TextField
+            value={password!}
+            onChange={(e) => setPassword(e.target.value)}
+            size="small"
+            sx={{ marginLeft: 2.8 }}
+          />
+        </Typography>
         <Typography variant="h4" sx={{ marginTop: 2 }}>
           Status: {currentUser.status}{" "}
         </Typography>
@@ -125,6 +138,7 @@ const Profile: React.FC = () => {
               variant="outlined"
               onClick={() => {
                 setUsername(currentUser.username);
+                setPassword(currentUser.password);
                 setBirthday(new Date(currentUser.birthday!));
                 setEditMode(false);
               }}
