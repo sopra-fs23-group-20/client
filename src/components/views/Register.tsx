@@ -2,10 +2,17 @@ import React, { useState, useEffect, useCallback } from "react";
 import { api, handleError } from "helpers/api";
 import User from "models/User";
 import { useNavigate } from "react-router-dom";
-import { Button, TextField, Typography } from "@mui/material";
+import {
+  Button,
+  TextField,
+  Typography,
+  InputAdornment,
+  IconButton,
+} from "@mui/material";
 import { AxiosError } from "axios";
 import { Container } from "@mui/system";
 import Box from "@mui/material/Box";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 
 interface FormFieldProps {
   label: string;
@@ -18,6 +25,11 @@ const Register: React.FC = () => {
 
   const [username, setUsername] = useState<string | null>(null);
   const [password, setPassword] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handlePasswordToggle = () => {
+    setShowPassword(!showPassword);
+  };
 
   const doLogin = useCallback(async () => {
     try {
@@ -89,9 +101,23 @@ const Register: React.FC = () => {
       <TextField
         size="small"
         placeholder="password"
+        type={showPassword ? "text" : "password"}
         value={password}
         sx={{ marginTop: 1 }}
         onChange={(e) => setPassword(e.target.value)}
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <IconButton
+                edge="end"
+                aria-label="toggle password visibility"
+                onClick={handlePasswordToggle}
+              >
+                {showPassword ? <FiEyeOff /> : <FiEye />}
+              </IconButton>
+            </InputAdornment>
+          ),
+        }}
       />
       <Button
         sx={{ margin: 3 }}
