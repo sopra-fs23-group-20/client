@@ -40,6 +40,7 @@ const Profile: React.FC = () => {
         password: password,
         birthday: birthday,
         nationality: nationality,
+        profilePicture: profilePicture,
         status: "ONLINE",
       };
       console.log(" The Request Body is: ", requestBody);
@@ -118,6 +119,9 @@ const Profile: React.FC = () => {
         response.data.nationality
           ? setNationality(response.data.nationality)
           : setNationality(null);
+        response.data.profilePicture
+          ? setProfilePicture(response.data.profilePicture)
+          : setProfilePicture(null);
       } catch (error: AxiosError | any) {
         if (error.response.status === 404) {
           alert(error.response.data.message);
@@ -256,6 +260,7 @@ const Profile: React.FC = () => {
                 setPassword(currentUser.password);
                 setBirthday(new Date(currentUser.birthday!));
                 setNationality(currentUser.nationality);
+                setProfilePicture(currentUser.profilePicture);
                 setEditMode(false);
               }}
             >
