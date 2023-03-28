@@ -5,6 +5,8 @@ interface UserData {
   status: string | null;
   birthday: Date | null;
   creation_date: Date | null;
+  profilePicture: string | null;
+  nationality: string | null;
 }
 
 class User {
@@ -14,6 +16,8 @@ class User {
   status: string | null;
   birthday: Date | null;
   creation_date: Date | null;
+  profilePicture: string | null;
+  nationality: string | null;
 
   constructor(
     data: UserData = {
@@ -23,6 +27,8 @@ class User {
       status: null,
       birthday: null,
       creation_date: null,
+      profilePicture: null,
+      nationality: null,
     }
   ) {
     this.id = data.id ?? null;
@@ -31,6 +37,8 @@ class User {
     this.status = data.status ?? null;
     this.birthday = data.birthday ?? null;
     this.creation_date = data.creation_date ?? null;
+    this.profilePicture = data.profilePicture ?? null;
+    this.nationality = data.nationality ?? null;
   }
 }
 
