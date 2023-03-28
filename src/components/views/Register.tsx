@@ -13,6 +13,8 @@ import { AxiosError } from "axios";
 import { Container } from "@mui/system";
 import Box from "@mui/material/Box";
 import { FiEye, FiEyeOff } from "react-icons/fi";
+import Logo from "./images/GTCText.png";
+
 
 interface FormFieldProps {
   label: string;
@@ -84,6 +86,7 @@ const Register: React.FC = () => {
         justifyContent: "center",
       }}
     >
+      <img src={Logo} alt="Logo"/>
       <Typography variant="h1">Register a new account</Typography>
       <Typography variant="h3" sx={{ marginTop: 5 }}>
         Username
