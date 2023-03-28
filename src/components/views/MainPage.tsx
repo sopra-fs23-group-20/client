@@ -13,13 +13,60 @@ import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import User from "models/User";
 import React from "react";
-import { AxiosError } from "axios";
+import axios, { AxiosError } from "axios";
+import SockJS from "sockjs-client";
+import WebsocketPacket from "models/WebsocketPacket";
+import WebsocketType from "models/WebsocketType";
+import { Client } from "@stomp/stompjs";
+import { getDomain } from "helpers/getDomain";
+import { useWebSocket } from "helpers/WebSocketContext";
 
-const MainPage: React.FC = () => {
+interface Props {
+  onTokenChange: (token: string | null) => void;
+}
+
+const MainPage: React.FC<Props> = ({ onTokenChange }) => {
   const navigate = useNavigate();
 
+  const socket = useWebSocket();
   const [users, setUsers] = useState<User[] | null>(null);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [token, setToken] = useState<string | null>(
+    localStorage.getItem("token")
+  );
+
+  const userId = localStorage.getItem("userId");
+
+  const [websocketPacket, setWebsocketPacket] =
+    useState<WebsocketPacket | null>(null);
+
+  const websocketUrl = `${getDomain()}/topic/${token}`;
+
+  useEffect(() => {
+    if (token) {
+      onTokenChange(token);
+    } else {
+      console.log("No token found in local storage");
+    }
+  }, []);
+
+  function convertToWebsocketTypeEnum(
+    typeString: string
+  ): WebsocketType | undefined {
+    switch (typeString) {
+      case "GAMESTATEUPDATE":
+        return WebsocketType.GAMESTATEUPDATE;
+      case "CATEGORYUPDATE":
+        return WebsocketType.CATEGORYUPDATE;
+      case "TIMEUPDATE":
+        return WebsocketType.TIMEUPDATE;
+      case "PLAYERUPDATE":
+        return WebsocketType.PLAYERUPDATE;
+      default:
+        console.error(`Invalid WebsocketType string received: ${typeString}`);
+        return undefined;
+    }
+  }
 
   const makeOffline = async (): Promise<void> => {
     try {
@@ -47,14 +94,12 @@ const MainPage: React.FC = () => {
 
   const createGame = async (): Promise<void> => {
     try {
-      const response = await api.post("/games", {
-        username: currentUser?.username,
-      });
+      if (userId) {
+        const response = await api.post("/games", { userId: userId });
+        const gameId = response.data.gameId;
 
-      const gameId = response.data.gameId;
-
-      // Redirect the user to the game page
-      navigate(`/game/lobby/${gameId}`);
+        navigate(`/game/lobby/${gameId}`);
+      }
     } catch (error) {
       console.error(error);
       localStorage.removeItem("token");

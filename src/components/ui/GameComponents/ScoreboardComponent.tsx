@@ -44,15 +44,12 @@ const ScoreboardComponent: React.FC<Props> = (props) => {
 
   const createGame = async (): Promise<void> => {
     try {
-      const response = await api.post("/games", {
-        username: currentUser?.username,
-      });
-
-      const gameId = response.data.gameId;
-
-      // Redirect the user to the game page
-      navigate(`/game/lobby/${gameId}`);
-      window.location.reload();
+      const userId = localStorage.getItem("userId");
+      if (userId) {
+        const response = await api.post("/games", { userId: userId });
+        const gameId = response.data.gameId;
+        navigate(`/game/lobby/${gameId}`);
+      }
     } catch (error) {
       console.error(error);
       localStorage.removeItem("token");

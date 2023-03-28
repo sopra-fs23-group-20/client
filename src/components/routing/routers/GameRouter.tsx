@@ -8,14 +8,18 @@ import GameLobby from "components/views/GameLobby";
 
 interface GameRouterProps {
   base: string;
+  onTokenChange: (token: string | null) => void;
 }
 
-const GameRouter: FC<GameRouterProps> = ({ base }) => {
+const GameRouter: FC<GameRouterProps> = ({ base, onTokenChange }) => {
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
       <Routes>
         <Route index element={<Navigate to={`${base}/dashboard`} />} />
-        <Route path="dashboard" element={<MainPage />} />
+        <Route
+          path="dashboard"
+          element={<MainPage onTokenChange={onTokenChange} />}
+        />
         <Route path="profile/:userID" element={<Profile />} />
         <Route path="countries" element={<CountriesOverview />} />
         <Route path="lobby/:gameID" element={<GameLobby />} />

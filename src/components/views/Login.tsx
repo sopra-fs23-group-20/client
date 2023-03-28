@@ -37,7 +37,9 @@ const Login: React.FC = () => {
       const response = await api.post("/users/login", requestBody);
 
       const user = new User(response.data);
-
+      if (user.id) {
+        localStorage.setItem("userId", user.id.toString());
+      }
       if (response.headers.authorization) {
         localStorage.setItem("token", response.headers.authorization);
       } else {
