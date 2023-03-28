@@ -2,12 +2,21 @@ import React, { useState, useEffect } from "react";
 import { api, handleError } from "helpers/api";
 import User from "models/User";
 import { useNavigate } from "react-router-dom";
-import { Button, Container, TextField, Typography } from "@mui/material";
+import {
+  Button,
+  Container,
+  TextField,
+  Typography,
+  Box,
+  Avatar,
+  Input,
+} from "@mui/material";
 import { AxiosError } from "axios";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
+import Autocomplete from "@mui/material/Autocomplete";
 
 const Profile: React.FC = () => {
   const id = window.location.pathname.split("/").pop();
@@ -18,7 +27,11 @@ const Profile: React.FC = () => {
   const [username, setUsername] = useState<string | null>(null);
   const [password, setPassword] = useState<string | null>(null);
   const [birthday, setBirthday] = useState<Date | null>(null);
+  const [profilePicture, setProfilePicture] = useState<string | null>(null);
+  const [nationality, setNationality] = useState<string | null>(null);
+  const [allCountries, setAllCountries] = useState<Array<string>>([]);
 
+  // Save user changes
   const saveChanges = async () => {
     try {
       console.log("Updating User");
@@ -26,6 +39,7 @@ const Profile: React.FC = () => {
         username: username,
         password: password,
         birthday: birthday,
+        nationality: nationality,
         status: "ONLINE",
       };
       console.log(" The Request Body is: ", requestBody);
@@ -38,20 +52,59 @@ const Profile: React.FC = () => {
       copyCurrentUser.username = username!;
       copyCurrentUser.password = password!;
       copyCurrentUser.birthday = birthday!;
+      copyCurrentUser.nationality = nationality!;
+      copyCurrentUser.profilePicture = profilePicture!;
       setCurrentUser(copyCurrentUser);
     } catch (error: AxiosError | any) {
       alert(error.response.data.message);
       currentUser ? setUsername(currentUser.username) : setUsername(null);
       currentUser ? setPassword(currentUser.password) : setPassword(null);
       currentUser ? setBirthday(currentUser.birthday) : setBirthday(null);
+      currentUser
+        ? setNationality(currentUser.nationality)
+        : setNationality(null);
+      currentUser
+        ? setProfilePicture(currentUser.profilePicture)
+        : setProfilePicture(null);
       setEditMode(false);
     }
   };
 
+  const randomColor = () => {
+    const colors = [
+      "#FFCDD2",
+      "#F8BBD0",
+      "#E1BEE7",
+      "#D1C4E9",
+      "#C5CAE9",
+      "#BBDEFB",
+      "#B3E5FC",
+      "#B2EBF2",
+      "#B2DFDB",
+      "#C8E6C9",
+      "#DCEDC8",
+      "#F0F4C3",
+    ];
+    return colors[Math.floor(Math.random() * colors.length)];
+  };
+
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const imageDataUrl = reader.result as string;
+      localStorage.setItem("profilePicture", imageDataUrl);
+      setProfilePicture(imageDataUrl);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  // Fetch user data on component mount
   useEffect(() => {
     async function fetchUser() {
       try {
-        //make an API get request with /users/:id
         const response = await api.get(`/users/${id}`, {
           headers: { Authorization: localStorage.getItem("token")! },
         });
@@ -62,8 +115,10 @@ const Profile: React.FC = () => {
         response.data.birthday
           ? setBirthday(new Date(response.data.birthday))
           : setBirthday(null);
+        response.data.nationality
+          ? setNationality(response.data.nationality)
+          : setNationality(null);
       } catch (error: AxiosError | any) {
-        //look for error code 404 and go back to main page
         if (error.response.status === 404) {
           alert(error.response.data.message);
           navigate("/game");
@@ -80,11 +135,61 @@ const Profile: React.FC = () => {
     fetchUser();
   }, []);
 
-  let content = <div></div>;
+  useEffect(() => {
+    async function fetchCountries() {
+      try {
+        const response = await api.get("/countries");
+        setAllCountries(response.data.map((country: any) => country.name));
+      } catch (error) {
+        console.error("Error fetching countries:", error);
+      }
+    }
+    fetchCountries();
+  }, []);
 
-  if (editMode && currentUser) {
-    content = (
+  // Render profile edit form
+  const renderEditForm = () => {
+    if (!currentUser) return null;
+    return (
       <div>
+        <Box
+          sx={{ display: "flex", justifyContent: "center", marginBottom: 2 }}
+        >
+          <Avatar
+            sx={{
+              width: 100,
+              height: 100,
+              backgroundColor: profilePicture ? "transparent" : randomColor(),
+            }}
+            src={profilePicture || ""}
+            alt={currentUser.username ?? ""}
+          >
+            {profilePicture
+              ? ""
+              : currentUser.username?.[0]?.toUpperCase() ?? ""}
+          </Avatar>
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <input
+            accept="image/*"
+            id="contained-button-file"
+            type="file"
+            onChange={handleImageUpload}
+            style={{ display: "none" }}
+          />
+          <label htmlFor="contained-button-file">
+            <Button variant="outlined" component="span">
+              Upload Profile Picture
+            </Button>
+          </label>
+        </Box>
         <Typography variant="h3">
           Username:
           <TextField
@@ -131,6 +236,16 @@ const Profile: React.FC = () => {
             />
           </LocalizationProvider>
         </Typography>
+        <Typography variant="h4" sx={{ marginTop: 3 }}>
+          Nationality:
+          <Autocomplete
+            sx={{ marginLeft: 2 }}
+            value={nationality}
+            onChange={(_, newValue) => setNationality(newValue)}
+            options={allCountries}
+            renderInput={(params) => <TextField {...params} />}
+          />
+        </Typography>
 
         {String(localStorage.getItem("id")) === String(currentUser.id) ? (
           <div>
@@ -140,6 +255,7 @@ const Profile: React.FC = () => {
                 setUsername(currentUser.username);
                 setPassword(currentUser.password);
                 setBirthday(new Date(currentUser.birthday!));
+                setNationality(currentUser.nationality);
                 setEditMode(false);
               }}
             >
@@ -159,11 +275,30 @@ const Profile: React.FC = () => {
         )}
       </div>
     );
-  }
+  };
 
-  if (currentUser && !editMode) {
-    content = (
+  // Render profile view
+  const renderProfileView = () => {
+    if (!currentUser) return null;
+    return (
       <div>
+        <Box
+          sx={{ display: "flex", justifyContent: "center", marginBottom: 2 }}
+        >
+          <Avatar
+            sx={{
+              width: 100,
+              height: 100,
+              backgroundColor: profilePicture ? "transparent" : randomColor(),
+            }}
+            src={profilePicture || ""}
+            alt={currentUser.username ?? ""}
+          >
+            {profilePicture
+              ? ""
+              : currentUser.username?.[0]?.toUpperCase() ?? ""}
+          </Avatar>
+        </Box>
         <Typography variant="h3">
           Username:{" "}
           <span style={{ color: "MediumAquaMarine" }}>
@@ -195,6 +330,11 @@ const Profile: React.FC = () => {
         ) : (
           <div></div>
         )}
+        {currentUser.nationality && (
+          <Typography variant="h4" sx={{ marginTop: 3 }}>
+            Nationality: {currentUser.nationality}
+          </Typography>
+        )}
         {String(localStorage.getItem("id")) === String(currentUser.id) ? (
           <Button
             variant="outlined"
@@ -215,8 +355,20 @@ const Profile: React.FC = () => {
         </Button>
       </div>
     );
-  }
-  return <Container> {content}</Container>;
+  };
+
+  // Main content rendering
+  const content = currentUser ? (
+    editMode ? (
+      renderEditForm()
+    ) : (
+      renderProfileView()
+    )
+  ) : (
+    <div></div>
+  );
+
+  return <Container>{content}</Container>;
 };
 
 export default Profile;
