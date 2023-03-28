@@ -38,6 +38,10 @@ const Register: React.FC = () => {
 
       const user = new User(response.data);
 
+      if (user.id) {
+        localStorage.setItem("userId", user.id.toString());
+      }
+
       if (response.headers.authorization) {
         localStorage.setItem("token", response.headers.authorization);
       } else {

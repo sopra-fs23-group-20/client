@@ -4,9 +4,13 @@ import GameRouter from "components/routing/routers/GameRouter";
 import { LoginGuard } from "components/routing/routeProtectors/LoginGuard";
 import Login from "components/views/Login";
 import Register from "components/views/Register";
-import React from "react";
+import React, { FC } from "react";
 
-const AppRouter = () => {
+interface AppRouterProps {
+  onTokenChange: (token: string | null) => void;
+}
+
+const AppRouter: FC<AppRouterProps> = ({ onTokenChange }) => {
   return (
     <BrowserRouter>
       <Routes>
@@ -14,7 +18,7 @@ const AppRouter = () => {
           path="/game/*"
           element={
             <GameGuard>
-              <GameRouter base="/game" />
+              <GameRouter base="/game" onTokenChange={onTokenChange} />
             </GameGuard>
           }
         />

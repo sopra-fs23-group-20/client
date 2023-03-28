@@ -1,6 +1,6 @@
 import Header from "./components/views/Header";
 import AppRouter from "./components/routing/routers/AppRouter";
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   CssBaseline,
@@ -10,8 +10,11 @@ import {
 } from "@mui/material";
 import darkTheme from "styles/darkTheme";
 import lightTheme from "styles/lightTheme";
+import { WebSocketProvider } from "helpers/WebSocketContext";
 
 const App = () => {
+  const [token, setToken] = useState<string | null>(null);
+
   return (
     <>
       <CssBaseline />
@@ -25,7 +28,9 @@ const App = () => {
           margin: 0,
         }}
       >
-        <AppRouter />
+        <WebSocketProvider token={token}>
+          <AppRouter onTokenChange={setToken} />
+        </WebSocketProvider>
       </Box>
     </>
   );

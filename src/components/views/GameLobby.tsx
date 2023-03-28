@@ -17,24 +17,21 @@ import GuessingComponent from "components/ui/GameComponents/GuessingComponent";
 import ScoreboardComponent from "components/ui/GameComponents/ScoreboardComponent";
 import SetupComponent from "components/ui/GameComponents/SetupComponent";
 import EndedComponent from "components/ui/GameComponents/EndedComponent";
+import { useWebSocket } from "helpers/WebSocketContext";
+import NotJoinedComponent from "components/ui/GameComponents/NotJoinedComponent";
 
 const GameLobby: React.FC = () => {
+  const socket = useWebSocket();
+
   const navigate = useNavigate();
 
-  const [gameState, setGameState] = useState<GameState | null>(GameState.SETUP);
+  const [gameState, setGameState] = useState<GameState | null>(null);
   const [timeRemaining, setTimeRemaining] = useState<number>(0);
 
   const isMounted = useRef(false);
 
   const [currentCountryHint, setCurrentCountryHint] = useState<Country>(
     new Country(null, null, null, null, null, null)
-  );
-
-  const gameStateMemo = useMemo(() => gameState, [gameState]);
-  const timeRemainingMemo = useMemo(() => timeRemaining, [timeRemaining]);
-  const currentCountryHintMemo = useMemo(
-    () => currentCountryHint,
-    [currentCountryHint]
   );
 
   const [countryToGuess, setCountryToGuess] = useState<String | null>(null);
@@ -93,80 +90,73 @@ const GameLobby: React.FC = () => {
           console.error(error);
         }
       }
+      async function fetchGame(): Promise<void> {
+        try {
+          const response = await api.get(`/games/${gameId}`, {
+            headers: {
+              Authorization: localStorage.getItem("token")!,
+            },
+          });
+          console.log("The response is: ", response);
+          setGameState(convertToGameStateEnum(response.data.currentState));
+        } catch (error: AxiosError | any) {
+          alert(error.response.data.message);
+          console.error(error);
+        }
+      }
       fetchData();
+      fetchGame();
       isMounted.current = true;
     }
   }, []);
 
   useEffect(() => {
-    const socket = new SockJS(websocketUrl);
-    const stompClient = new Client({
-      webSocketFactory: () => socket,
-      debug: (str) => console.log(str),
-    });
+    if (socket) {
+      socket.addEventListener("message", handleMessage);
 
-    stompClient.onConnect = (frame) => {
-      stompClient.subscribe(`/topic/game/${gameId}`, (message) => {
-        const messageBody = JSON.parse(message.body);
-        console.log("Received a Message through websocket", messageBody);
-        const websocketPacket = new WebsocketPacket(
-          convertToWebsocketTypeEnum(messageBody.type),
-          messageBody.payload
-        );
-        console.log("The saved Packet is: ", websocketPacket);
-        switch (websocketPacket.type) {
-          case WebsocketType.GAMESTATEUPDATE:
-            if (websocketPacket.payload === "SCOREBOARD") {
-              getCountry();
-            }
-            setGameState(convertToGameStateEnum(websocketPacket.payload));
-            break;
-          case WebsocketType.CATEGORYUPDATE:
-            if (websocketPacket.payload.hasOwnProperty("location")) {
-              setCurrentCountryHint(
-                new Country(
-                  null,
-                  websocketPacket.payload.population,
-                  websocketPacket.payload.capital,
-                  websocketPacket.payload.flag,
-                  websocketPacket.payload.location,
-                  websocketPacket.payload.outline
-                )
-              );
-            }
-            break;
-          case WebsocketType.TIMEUPDATE:
-            console.log("Setting remaining time to: ", websocketPacket.payload);
-            setTimeRemaining(websocketPacket.payload);
-            break;
-          case WebsocketType.PLAYERUPDATE:
-          //
+      return () => {
+        socket.removeEventListener("message", handleMessage);
+      };
+    }
+  }, [socket]);
+
+  const handleMessage = (event: MessageEvent) => {
+    const websocketPackage = JSON.parse(event.data);
+    const type = websocketPackage.type;
+    const payload = websocketPackage.payload;
+    console.log("Received a Message through websocket", websocketPackage);
+    const typeTransformed = convertToWebsocketTypeEnum(type);
+    const websocketPacket = new WebsocketPacket(typeTransformed, payload);
+    console.log("The saved Packet is: ", websocketPacket);
+    switch (websocketPacket.type) {
+      case WebsocketType.GAMESTATEUPDATE:
+        if (websocketPacket.payload === "SCOREBOARD") {
+          getCountry();
         }
-      });
-      if (stompClient && stompClient.connected) {
-        stompClient.publish({
-          destination: `/game/${gameId}/join`,
-          body: "",
-        });
-      }
-    };
-
-    stompClient.onStompError = (frame) => {
-      console.error(`Stomp error: ${frame}`);
-    };
-
-    stompClient.activate();
-
-    return () => {
-      if (stompClient && stompClient.connected) {
-        stompClient.publish({
-          destination: `/game/${gameId}/leave`,
-          body: "",
-        });
-      }
-      stompClient.deactivate();
-    };
-  }, [websocketUrl, gameId]);
+        setGameState(convertToGameStateEnum(websocketPacket.payload));
+        break;
+      case WebsocketType.CATEGORYUPDATE:
+        if (websocketPacket.payload.hasOwnProperty("location")) {
+          setCurrentCountryHint(
+            new Country(
+              null,
+              websocketPacket.payload.population,
+              websocketPacket.payload.capital,
+              websocketPacket.payload.flag,
+              websocketPacket.payload.location,
+              websocketPacket.payload.outline
+            )
+          );
+        }
+        break;
+      case WebsocketType.TIMEUPDATE:
+        console.log("Setting remaining time to: ", websocketPacket.payload);
+        setTimeRemaining(websocketPacket.payload);
+        break;
+      case WebsocketType.PLAYERUPDATE:
+      //
+    }
+  };
 
   useEffect(() => {
     if (!isMounted.current) {
@@ -203,28 +193,9 @@ const GameLobby: React.FC = () => {
     }
   }
 
-  const createGame = async (): Promise<void> => {
-    try {
-      const response = await api.post("/games", {
-        username: currentUser?.username,
-      });
-
-      const gameId = response.data.gameId;
-
-      // Redirect the user to the game page
-      navigate(`/game/lobby/${gameId}`);
-      window.location.reload();
-    } catch (error) {
-      console.error(error);
-      localStorage.removeItem("token");
-      localStorage.removeItem("id");
-      navigate("/login");
-    }
-  };
-
   let content = <Typography variant="h2">Loading...</Typography>;
 
-  switch (gameStateMemo) {
+  switch (gameState) {
     case GameState.SETUP:
       content = <SetupComponent {...{ gameId: gameId }} />;
       break;
@@ -250,6 +221,14 @@ const GameLobby: React.FC = () => {
       break;
     case GameState.ENDED:
       content = <EndedComponent />;
+      break;
+    case null:
+      content = (
+        <NotJoinedComponent
+          gameId={gameId}
+          setGameState={setGameState}
+        ></NotJoinedComponent>
+      );
       break;
   }
 
