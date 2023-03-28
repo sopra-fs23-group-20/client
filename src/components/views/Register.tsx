@@ -7,12 +7,15 @@ import {
   TextField,
   Typography,
   InputAdornment,
-  IconButton,
+  IconButton, Tooltip,
 } from "@mui/material";
 import { AxiosError } from "axios";
 import { Container } from "@mui/system";
 import Box from "@mui/material/Box";
 import { FiEye, FiEyeOff } from "react-icons/fi";
+import Logo from "./images/GTCText.png";
+import InfoIcon from '@mui/icons-material/Info';
+
 
 interface FormFieldProps {
   label: string;
@@ -88,10 +91,20 @@ const Register: React.FC = () => {
         justifyContent: "center",
       }}
     >
+      <img src={Logo} alt="Logo"/>
+      <Box component="span" sx={{ p: 2, border: 1 }}>
+
       <Typography variant="h1">Register a new account</Typography>
+
       <Typography variant="h3" sx={{ marginTop: 5 }}>
         Username
+        <Tooltip title="The username must be unique" placement="top">
+          <IconButton>
+            <InfoIcon />
+          </IconButton>
+        </Tooltip>
       </Typography>
+
       <TextField
         value={username}
         size="small"
@@ -99,9 +112,16 @@ const Register: React.FC = () => {
         sx={{ marginTop: 1 }}
         onChange={(e) => setUsername(e.target.value)}
       />
+
       <Typography sx={{ marginTop: 3 }} variant="h3">
         Password
+        <Tooltip title="always use a secure password" placement="top">
+          <IconButton>
+            <InfoIcon />
+          </IconButton>
+        </Tooltip>
       </Typography>
+
       <TextField
         size="small"
         placeholder="password"
@@ -131,6 +151,7 @@ const Register: React.FC = () => {
       >
         Register
       </Button>
+      </Box>
       <Box sx={{ display: "flex", alignItems: "center" }}>
         <Typography variant="h5">Already a User? </Typography>
 

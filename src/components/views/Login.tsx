@@ -13,6 +13,8 @@ import { AxiosError } from "axios";
 import { Container } from "@mui/system";
 import Box from "@mui/material/Box";
 import { FiEye, FiEyeOff } from "react-icons/fi";
+import Logo from "./images/GTCText.png";
+import InfoIcon from '@mui/icons-material/Info';
 
 interface FormFieldProps {
   label: string;
@@ -86,6 +88,8 @@ const Login: React.FC = () => {
         justifyContent: "center",
       }}
     >
+      <img src={Logo} alt="Logo"/>
+      <Box component="span" sx={{ p: 2, border: 1 }}>
       <Typography variant="h1">Login to your account</Typography>
       <Typography variant="h3" sx={{ marginTop: 5 }}>
         Username
@@ -129,6 +133,7 @@ const Login: React.FC = () => {
       >
         Login
       </Button>
+      </Box>
       <Box sx={{ display: "flex", alignItems: "center" }}>
         <Typography variant="h5">Not yet a User? </Typography>
 
