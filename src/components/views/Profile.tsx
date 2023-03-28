@@ -11,6 +11,9 @@ import {
   Avatar,
   Input,
 } from "@mui/material";
+import IconButton from "@mui/material/IconButton";
+import DeleteIcon from "@mui/icons-material/Delete";
+
 import { AxiosError } from "axios";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -100,6 +103,11 @@ const Profile: React.FC = () => {
       setProfilePicture(imageDataUrl);
     };
     reader.readAsDataURL(file);
+  };
+
+  const removeImage = () => {
+    setProfilePicture(null);
+    localStorage.removeItem("profilePicture");
   };
 
   // Fetch user data on component mount
@@ -193,6 +201,20 @@ const Profile: React.FC = () => {
               Upload Profile Picture
             </Button>
           </label>
+          {profilePicture && (
+            <IconButton
+              color="error"
+              onClick={removeImage}
+              sx={{
+                marginLeft: 30,
+                color: "red",
+                marginRight: 2,
+                marginBottom: 1,
+              }}
+            >
+              <DeleteIcon />
+            </IconButton>
+          )}
         </Box>
         <Typography variant="h3">
           Username:
