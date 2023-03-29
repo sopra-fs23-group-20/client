@@ -11,6 +11,7 @@ import {
 import darkTheme from "styles/darkTheme";
 import lightTheme from "styles/lightTheme";
 import { WebSocketProvider } from "helpers/WebSocketContext";
+import { SocketIOProvider } from "helpers/SocketIOContext";
 
 const App = () => {
   const [token, setToken] = useState<string | null>(null);
@@ -28,9 +29,9 @@ const App = () => {
           margin: 0,
         }}
       >
-        <WebSocketProvider token={token}>
+        <SocketIOProvider token={token}>
           <AppRouter onTokenChange={setToken} />
-        </WebSocketProvider>
+        </SocketIOProvider>
       </Box>
     </>
   );

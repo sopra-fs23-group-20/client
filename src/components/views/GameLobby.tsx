@@ -17,11 +17,11 @@ import GuessingComponent from "components/ui/GameComponents/GuessingComponent";
 import ScoreboardComponent from "components/ui/GameComponents/ScoreboardComponent";
 import SetupComponent from "components/ui/GameComponents/SetupComponent";
 import EndedComponent from "components/ui/GameComponents/EndedComponent";
-import { useWebSocket } from "helpers/WebSocketContext";
+import { useSocketIO } from "helpers/SocketIOContext";
 import NotJoinedComponent from "components/ui/GameComponents/NotJoinedComponent";
 
 const GameLobby: React.FC = () => {
-  const socket = useWebSocket();
+  const { socket, isConnected } = useSocketIO();
 
   const navigate = useNavigate();
 
@@ -40,6 +40,18 @@ const GameLobby: React.FC = () => {
 
   const gameId = window.location.pathname.split("/").pop();
   const websocketUrl = `${getDomain()}/game/${gameId}`;
+
+  useEffect(() => {
+    if (socket && isConnected) {
+      socket.on("message", handleMessage);
+
+      return () => {
+        socket.off("message", handleMessage);
+      };
+    } else {
+      console.log("Socket is null");
+    }
+  }, [socket]);
 
   function convertToWebsocketTypeEnum(
     typeString: string
@@ -109,16 +121,6 @@ const GameLobby: React.FC = () => {
       isMounted.current = true;
     }
   }, []);
-
-  useEffect(() => {
-    if (socket) {
-      socket.addEventListener("message", handleMessage);
-
-      return () => {
-        socket.removeEventListener("message", handleMessage);
-      };
-    }
-  }, [socket]);
 
   const handleMessage = (event: MessageEvent) => {
     const websocketPackage = JSON.parse(event.data);

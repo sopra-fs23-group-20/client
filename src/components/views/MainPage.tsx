@@ -19,7 +19,7 @@ import WebsocketPacket from "models/WebsocketPacket";
 import WebsocketType from "models/WebsocketType";
 import { Client } from "@stomp/stompjs";
 import { getDomain } from "helpers/getDomain";
-import { useWebSocket } from "helpers/WebSocketContext";
+import { useSocketIO } from "helpers/SocketIOContext";
 
 interface Props {
   onTokenChange: (token: string | null) => void;
@@ -28,7 +28,6 @@ interface Props {
 const MainPage: React.FC<Props> = ({ onTokenChange }) => {
   const navigate = useNavigate();
 
-  const socket = useWebSocket();
   const [users, setUsers] = useState<User[] | null>(null);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(
