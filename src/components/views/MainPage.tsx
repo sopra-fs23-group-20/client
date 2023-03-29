@@ -7,15 +7,31 @@ import {
   ListItem,
   Container,
   Box,
-  Grid,
+  Grid, Card,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import User from "models/User";
 import React from "react";
 import { AxiosError } from "axios";
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import CardContent from '@mui/material/CardContent';
+import CardMedia from '@mui/material/CardMedia';
+import { CardActionArea } from '@mui/material';
+import Badge from '@mui/material/Badge';
+
+
 
 const MainPage: React.FC = () => {
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
   const navigate = useNavigate();
 
   const [users, setUsers] = useState<User[] | null>(null);
@@ -127,6 +143,9 @@ const MainPage: React.FC = () => {
   const goToSettings = async (): Promise<void> => {
     navigate(`/game/profile/${currentUser?.id}`);
   };
+  const goToGameLobby = async (): Promise<void> => {
+    navigate(`/game/gamelobby/`);
+  };
 
   let content = <></>;
 
@@ -168,11 +187,79 @@ const MainPage: React.FC = () => {
   }
 
   return (
+      <div>
+        <Button
+            id="demo-positioned-button"
+            aria-controls={open ? 'demo-positioned-menu' : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? 'true' : undefined}
+            onClick={handleClick}
+        >
+          Menu
+        </Button>
+        <Menu
+            id="demo-positioned-menu"
+            aria-labelledby="demo-positioned-button"
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'left',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'left',
+            }}
+        >
+          <MenuItem onClick={() => goToSettings()}>Profile</MenuItem>
+          <MenuItem onClick={() => logout()}>Logout</MenuItem>
+        </Menu>
     <Container>
-      <Typography variant="h1">Users Overview</Typography>
+
+      <Typography variant="h1">Dashboard</Typography>
       {usercontent}
       <Typography variant="h4">Click on users to see their details</Typography>
       {content}
+      <Box
+          sx={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            '& > :not(style)': {
+              m: 1,
+              width: 128,
+              height: 128,
+            },
+          }}
+      >
+        <Card elevation={0}>
+          <CardActionArea>
+            <CardContent>
+              <Typography gutterBottom variant="h5" component="div" onClick={() => createGame()}>
+                Create a new Game!
+              </Typography>
+            </CardContent>
+          </CardActionArea>
+        </Card>
+        <Card>
+          <CardActionArea>
+            <CardContent>
+              <Typography gutterBottom variant="h5" component="div" onClick={() => goToGameLobby()}>
+                Join a Lobby!
+              </Typography>
+            </CardContent>
+          </CardActionArea>
+        </Card>
+        <Card elevation={3}>
+          <CardActionArea>
+            <CardContent>
+              <Typography gutterBottom variant="h5" component="div" onClick={() => navigate("/game/countries")}>
+                Learn!
+              </Typography>
+            </CardContent>
+          </CardActionArea>
+        </Card>
+      </Box>
       <Grid container spacing={1}>
         <Grid item xs={5}>
           <Button
@@ -204,6 +291,7 @@ const MainPage: React.FC = () => {
         </Grid>
       </Grid>
     </Container>
+      </div>
   );
 };
 
