@@ -32,6 +32,7 @@ const Profile: React.FC = () => {
   const [birthday, setBirthday] = useState<Date | null>(null);
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
   const [nationality, setNationality] = useState<string | null>(null);
+  const [gamesWon, setGamesWon] = useState<number | null>(null);
   const [allCountries, setAllCountries] = useState<Array<string>>([]);
 
   // Save user changes
@@ -58,6 +59,7 @@ const Profile: React.FC = () => {
       copyCurrentUser.birthday = birthday!;
       copyCurrentUser.nationality = nationality!;
       copyCurrentUser.profilePicture = profilePicture!;
+      copyCurrentUser.gamesWon = gamesWon!;
       setCurrentUser(copyCurrentUser);
     } catch (error: AxiosError | any) {
       alert(error.response.data.message);
@@ -71,6 +73,7 @@ const Profile: React.FC = () => {
         ? setProfilePicture(currentUser.profilePicture)
         : setProfilePicture(null);
       setEditMode(false);
+      currentUser ? setGamesWon(currentUser.gamesWon) : setGamesWon(null);
     }
   };
 
@@ -130,6 +133,7 @@ const Profile: React.FC = () => {
         response.data.profilePicture
           ? setProfilePicture(response.data.profilePicture)
           : setProfilePicture(null);
+        setGamesWon(response.data.gamesWon);
       } catch (error: AxiosError | any) {
         if (error.response.status === 404) {
           alert(error.response.data.message);
@@ -326,7 +330,7 @@ const Profile: React.FC = () => {
               : currentUser.username?.[0]?.toUpperCase() ?? ""}
           </Avatar>
         </Box>
-        <Typography variant="h3">
+        <Typography variant="h4">
           Username:{" "}
           <span style={{ color: "MediumAquaMarine" }}>
             {currentUser.username}
@@ -362,6 +366,11 @@ const Profile: React.FC = () => {
             Nationality: {currentUser.nationality}
           </Typography>
         )}
+        <Typography variant="h4">
+          Games Won:{" "}
+          <span>{currentUser.gamesWon ? currentUser.gamesWon : 0}</span>
+        </Typography>
+
         {String(localStorage.getItem("id")) === String(currentUser.id) ? (
           <Button
             variant="outlined"
