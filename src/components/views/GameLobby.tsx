@@ -1,21 +1,19 @@
-import { useEffect, useState } from "react";
-import { api } from "helpers/api";
-import { Button, Container, Typography } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import React, {useEffect, useRef, useState} from "react";
+import {api} from "helpers/api";
+import {Container, Typography} from "@mui/material";
+import {useNavigate} from "react-router-dom";
 import User from "models/User";
-import { AxiosError } from "axios";
-import { useRef } from "react";
+import {AxiosError} from "axios";
 import GameState from "models/GameState";
 import Country from "models/Country";
-import { getDomain } from "helpers/getDomain";
+import {getDomain} from "helpers/getDomain";
 import WebsocketType from "models/WebsocketType";
 import WebsocketPacket from "models/WebsocketPacket";
-import React, { useMemo } from "react";
 import GuessingComponent from "components/ui/GameComponents/GuessingComponent";
 import ScoreboardComponent from "components/ui/GameComponents/ScoreboardComponent";
 import SetupComponent from "components/ui/GameComponents/SetupComponent";
 import EndedComponent from "components/ui/GameComponents/EndedComponent";
-import { useWebSocket } from "helpers/WebSocketContext";
+import {useWebSocket} from "helpers/WebSocketContext";
 import NotJoinedComponent from "components/ui/GameComponents/NotJoinedComponent";
 
 const GameLobby: React.FC = () => {
@@ -25,6 +23,7 @@ const GameLobby: React.FC = () => {
 
   const [gameState, setGameState] = useState<GameState | null>(null);
   const [timeRemaining, setTimeRemaining] = useState<number>(0);
+  const [currentRoundPoints, setCurrentRoundPoints] = useState<number>(100);
 
   const isMounted = useRef(false);
 
@@ -51,6 +50,8 @@ const GameLobby: React.FC = () => {
         return WebsocketType.TIMEUPDATE;
       case "PLAYERUPDATE":
         return WebsocketType.PLAYERUPDATE;
+      case "POINTSUPDATE":
+        return WebsocketType.POINTSUPDATE;
       default:
         console.error(`Invalid WebsocketType string received: ${typeString}`);
         return undefined;
@@ -153,6 +154,9 @@ const GameLobby: React.FC = () => {
         break;
       case WebsocketType.PLAYERUPDATE:
       //
+        break;
+      case WebsocketType.POINTSUPDATE:
+        setCurrentRoundPoints(payload);
     }
   };
 
@@ -206,6 +210,7 @@ const GameLobby: React.FC = () => {
             allCountries: allCountries,
             gameId: gameId,
             currentUser: currentUser,
+            currentRoundPoints: currentRoundPoints,
           }}
         />
       );
