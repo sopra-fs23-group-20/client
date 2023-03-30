@@ -233,29 +233,27 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
   return (
     <div>
       <Button
-        id="demo-positioned-button"
-        aria-controls={open ? "demo-positioned-menu" : undefined}
-        aria-haspopup="true"
-        aria-expanded={open ? "true" : undefined}
-        onClick={handleClick}
+          id="basic-button"
+          aria-controls={open ? 'basic-menu' : undefined}
+          aria-haspopup="true"
+          aria-expanded={open ? 'true' : undefined}
+          onClick={handleClick}
       >
-        Menu
+        Dashboard
       </Button>
       <Menu
-        id="demo-positioned-menu"
-        aria-labelledby="demo-positioned-button"
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        anchorOrigin={{
-          vertical: "top",
-          horizontal: "left",
-        }}
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "left",
-        }}
-      ></Menu>
+          id="basic-menu"
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleClose}
+          MenuListProps={{
+            'aria-labelledby': 'basic-button',
+          }}
+      >
+        <MenuItem onClick={() => navigate("/game/")}>Dashboard</MenuItem>
+        <MenuItem onClick={goToSettings}>My account</MenuItem>
+        <MenuItem onClick={() => logout()}>Logout</MenuItem>
+      </Menu>
       <Container>
         <Typography variant="h1">Dashboard</Typography>
         {usercontent}
