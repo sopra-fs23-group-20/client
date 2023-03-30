@@ -7,15 +7,15 @@ import {
   TextField,
   Typography,
   InputAdornment,
-  IconButton, Tooltip,
+  IconButton,
+  Tooltip,
 } from "@mui/material";
 import { AxiosError } from "axios";
 import { Container } from "@mui/system";
 import Box from "@mui/material/Box";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import Logo from "./images/GTCText.png";
-import InfoIcon from '@mui/icons-material/Info';
-
+import InfoIcon from "@mui/icons-material/Info";
 
 interface FormFieldProps {
   label: string;
@@ -91,69 +91,68 @@ const Register: React.FC = () => {
         justifyContent: "center",
       }}
     >
-      <img src={Logo} alt="Logo"/>
+      <img src={Logo} alt="Logo" />
       <Box component="span" sx={{ p: 2, border: 1 }}>
+        <Typography variant="h1">Register a new account</Typography>
 
-      <Typography variant="h1">Register a new account</Typography>
+        <Typography variant="h3" sx={{ marginTop: 5 }}>
+          Username
+          <Tooltip title="The username must be unique" placement="top">
+            <IconButton>
+              <InfoIcon />
+            </IconButton>
+          </Tooltip>
+        </Typography>
 
-      <Typography variant="h3" sx={{ marginTop: 5 }}>
-        Username
-        <Tooltip title="The username must be unique" placement="top">
-          <IconButton>
-            <InfoIcon />
-          </IconButton>
-        </Tooltip>
-      </Typography>
+        <TextField
+          value={username}
+          size="small"
+          placeholder="username"
+          sx={{ marginTop: 1 }}
+          onChange={(e) => setUsername(e.target.value)}
+        />
 
-      <TextField
-        value={username}
-        size="small"
-        placeholder="username"
-        sx={{ marginTop: 1 }}
-        onChange={(e) => setUsername(e.target.value)}
-      />
+        <Typography sx={{ marginTop: 3 }} variant="h3">
+          Password
+          <Tooltip title="always use a secure password" placement="top">
+            <IconButton>
+              <InfoIcon />
+            </IconButton>
+          </Tooltip>
+        </Typography>
 
-      <Typography sx={{ marginTop: 3 }} variant="h3">
-        Password
-        <Tooltip title="always use a secure password" placement="top">
-          <IconButton>
-            <InfoIcon />
-          </IconButton>
-        </Tooltip>
-      </Typography>
-
-      <TextField
-        size="small"
-        placeholder="password"
-        type={showPassword ? "text" : "password"}
-        value={password}
-        sx={{ marginTop: 1 }}
-        onChange={(e) => setPassword(e.target.value)}
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <IconButton
-                edge="end"
-                aria-label="toggle password visibility"
-                onClick={handlePasswordToggle}
-              >
-                {showPassword ? <FiEyeOff /> : <FiEye />}
-              </IconButton>
-            </InputAdornment>
-          ),
-        }}
-      />
-      <Button
-        sx={{ margin: 3 }}
-        variant="outlined"
-        disabled={!username || !password}
-        onClick={() => doLogin()}
-      >
-        Register
-      </Button>
+        <TextField
+          size="small"
+          placeholder="password"
+          type={showPassword ? "text" : "password"}
+          value={password}
+          sx={{ marginTop: 1 }}
+          onChange={(e) => setPassword(e.target.value)}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  edge="end"
+                  aria-label="toggle password visibility"
+                  onClick={handlePasswordToggle}
+                >
+                  {showPassword ? <FiEyeOff /> : <FiEye />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+        />
+        <Button
+          sx={{ margin: 3 }}
+          variant="outlined"
+          disabled={!username || !password}
+          onClick={() => doLogin()}
+        >
+          Register
+        </Button>
       </Box>
       <Box sx={{ display: "flex", alignItems: "center" }}>
-        <Typography variant="h5">Already a User? </Typography>
+        <Typography variant="h5">Already registered? </Typography>
 
         <Button
           sx={{ marginLeft: 2 }}

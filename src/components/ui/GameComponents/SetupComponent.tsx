@@ -5,7 +5,6 @@ import {
   Container,
   Typography,
   Box,
-  Grid,
   FormControlLabel,
   FormGroup,
   Checkbox,

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { api, handleError } from "helpers/api";
+import { api } from "helpers/api";
 import {
   Button,
   List,
@@ -255,10 +255,7 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
           vertical: "top",
           horizontal: "left",
         }}
-      >
-        <MenuItem onClick={() => goToSettings()}>Profile</MenuItem>
-        <MenuItem onClick={() => logout()}>Logout</MenuItem>
-      </Menu>
+      ></Menu>
       <Container>
         <Typography variant="h1">Dashboard</Typography>
         {usercontent}
@@ -346,7 +343,7 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
           </Grid>
           <Grid item xs={5}>
             <Button variant="outlined" onClick={() => goToSettings()}>
-              Settings
+              Profile Settings
             </Button>
           </Grid>
         </Grid>

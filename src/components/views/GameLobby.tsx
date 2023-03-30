@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
-import { api, handleError } from "helpers/api";
-import { Button, Container, Typography, Box, Grid } from "@mui/material";
+import { api } from "helpers/api";
+import { Button, Container, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import User from "models/User";
 import { AxiosError } from "axios";
-import { Client } from "@stomp/stompjs";
 import { useRef } from "react";
-import SockJS from "sockjs-client";
 import GameState from "models/GameState";
 import Country from "models/Country";
 import { getDomain } from "helpers/getDomain";
