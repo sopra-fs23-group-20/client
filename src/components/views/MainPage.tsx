@@ -21,16 +21,16 @@ import WebsocketType from "models/WebsocketType";
 import { Client } from "@stomp/stompjs";
 import { getDomain } from "helpers/getDomain";
 import { useWebSocket } from "helpers/WebSocketContext";
-
-interface Props {
-  onTokenChange: (token: string | null) => void;
-}
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import { CardActionArea } from "@mui/material";
 import Badge from "@mui/material/Badge";
+
+interface Props {
+  onTokenChange: (token: string | null) => void;
+}
 
 const MainPage: React.FC<Props> = ({ onTokenChange }) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
