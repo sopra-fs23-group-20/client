@@ -5,7 +5,7 @@ import React, { FC } from "react";
 import Profile from "components/views/Profile";
 import CountriesOverview from "components/views/CountriesOverview";
 import GameLobby from "components/views/GameLobby";
-import GameLobbyOverview from "../../views/GameLobbyOverview";
+import GameLobbyOverview from "components/views/GameLobbyOverview";
 
 interface GameRouterProps {
   base: string;
