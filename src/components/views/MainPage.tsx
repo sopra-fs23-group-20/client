@@ -188,7 +188,7 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
     navigate(`/game/profile/${currentUser?.id}`);
   };
   const goToGameLobby = async (): Promise<void> => {
-    navigate(`/game/gamelobby/`);
+    navigate(`/game/lobbies/`);
   };
 
   let content = <></>;
