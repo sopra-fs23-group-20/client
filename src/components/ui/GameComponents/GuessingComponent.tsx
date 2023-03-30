@@ -15,6 +15,7 @@ interface Props {
   allCountries: Array<string>;
   gameId: string | undefined;
   currentUser: User | null;
+  currentRoundPoints: number | null;
 }
 
 const GuessingComponent: React.FC<Props> = (props) => {
@@ -23,6 +24,9 @@ const GuessingComponent: React.FC<Props> = (props) => {
   const timeRemaining = props.timeRemaining;
   const gameId = props.gameId;
   const currentUser = props.currentUser;
+  const currentRoundPoints = props.currentRoundPoints;
+
+
   const [valueEntered, setValueEntered] = useState<string | null>(null);
 
   async function submitGuess(): Promise<void> {
@@ -67,6 +71,17 @@ const GuessingComponent: React.FC<Props> = (props) => {
         ) : (
           <div></div>
         )}
+
+
+        {currentRoundPoints ? (
+            <Typography variant="h4" sx={{ marginLeft: 5 }}>
+              Current Round Points: {currentRoundPoints.toString()}{" "}
+            </Typography>
+        ) : (
+            <div></div>
+        )}
+
+
       </Box>
 
       <Button
