@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import { api, handleError } from "helpers/api";
 import User from "models/User";
 import { useNavigate } from "react-router-dom";
+import SendIcon from '@mui/icons-material/Send';
+import Chip from '@mui/material/Chip';
+import Stack from '@mui/material/Stack';
 import {
     Button,
     Container,
@@ -54,7 +57,7 @@ const GameLobbyOverview: React.FC = () => {
     const [gamesWon, setGamesWon] = useState<number | null>(null);
     const [allCountries, setAllCountries] = useState<Array<string>>([]);
     //if new attribute is need from allLobbies: define it like gameId
-    const [allLobbies, setAllLobbies] = useState<Array<{gameId: any}>>([]);
+    const [allLobbies, setAllLobbies] = useState<Array<{gameId: any, currentState: any,lobbyCreator: any}>>([]);
 
 
     // Save user changes
@@ -187,6 +190,9 @@ const GameLobbyOverview: React.FC = () => {
     useEffect(() => {
         console.log(allLobbies);
     }, [allLobbies]);
+    function refreshPage() {
+        window.location.reload();
+    }
     useEffect(() => {
         async function fetchLobbies() {
             try {
@@ -219,14 +225,17 @@ const GameLobbyOverview: React.FC = () => {
         if (!currentUser) return null;
         return (
             <div>
-                <Typography>Hello</Typography>
+                <Typography variant="h1">Game Lobbies</Typography>
+                <Chip  label="Refresh!" onClick={refreshPage} />
+
                 <TableContainer component={Paper}>
                     <Table sx={{ minWidth: 650 }} aria-label="simple table">
                         <TableHead>
                             <TableRow>
                                 <TableCell>GameId</TableCell>
-                                <TableCell align="right">Creator</TableCell>
-                                <TableCell align="right">Join</TableCell>
+                                <TableCell align="right">Status</TableCell>
+                                <TableCell align="right">Created by</TableCell>
+                                <TableCell align="right">Join the Game</TableCell>
 
                             </TableRow>
                         </TableHead>
@@ -239,13 +248,20 @@ const GameLobbyOverview: React.FC = () => {
                                     <TableCell component="th" scope="row">
                                         {lobby?.gameId}
                                     </TableCell>
-                                    <TableCell align="right">{lobby?.gameId}</TableCell>
-                                    <TableCell align="right">{lobby?.gameId}</TableCell>
+                                    <TableCell align="right">{lobby?.currentState}</TableCell>
+                                    <TableCell align="right">{lobby?.lobbyCreator.username}</TableCell>
+                                    <TableCell align="right"><Button variant="contained" color="success" endIcon={<SendIcon />} onClick={() => navigate(`/game/lobby/${lobby?.gameId}`)}>
+                                        Join
+                                    </Button></TableCell>
+
                                 </TableRow>
                             ))}
                         </TableBody>
                     </Table>
                 </TableContainer>
+                <Button variant="outlined" onClick={() => navigate(`/game/`)}>
+                    Back to Main
+                </Button>
             </div>
         );
     };
