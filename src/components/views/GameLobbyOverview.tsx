@@ -20,6 +20,31 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 import Autocomplete from "@mui/material/Autocomplete";
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+function createData(
+    name: string,
+    calories: number,
+    fat: number,
+    carbs: number,
+    protein: number,
+) {
+    return { name, calories, fat, carbs, protein };
+}
+
+const rows = [
+    createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
+    createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
+    createData('Eclair', 262, 16.0, 24, 6.0),
+    createData('Cupcake', 305, 3.7, 67, 4.3),
+    createData('Gingerbread', 356, 16.0, 49, 3.9),
+];
+
 
 const GameLobbyOverview: React.FC = () => {
     const id = window.location.pathname.split("/").pop();
@@ -34,6 +59,8 @@ const GameLobbyOverview: React.FC = () => {
     const [nationality, setNationality] = useState<string | null>(null);
     const [gamesWon, setGamesWon] = useState<number | null>(null);
     const [allCountries, setAllCountries] = useState<Array<string>>([]);
+    const [allLobbies, setAllLobbies] = useState<Array<string>>([]);
+
 
     // Save user changes
     const saveChanges = async () => {
@@ -162,148 +189,29 @@ const GameLobbyOverview: React.FC = () => {
         }
         fetchCountries();
     }, []);
+    useEffect(() => {
+        async function fetchLobbies() {
+            try {
+                console.log("started fetching all games")
+                const response = await api.get("/games");
+                const lobbies = response;
+                setAllLobbies(response.data);
+                console.log("response:");
+                console.log(response);
+                console.log("allLobbies:");
+                console.log(allLobbies);
+                //console.log(allLobbies.data);
+            } catch (error) {
+                console.error("Error fetching countries:", error);
+            }
+        }
+        fetchLobbies();
+    }, []);
 
     // Render profile edit form
     const renderEditForm = () => {
         if (!currentUser) return null;
-        return (
-            <div>
-                <Box
-                    sx={{ display: "flex", justifyContent: "center", marginBottom: 2 }}
-                >
-                    <Avatar
-                        sx={{
-                            width: 100,
-                            height: 100,
-                            backgroundColor: profilePicture ? "transparent" : randomColor(),
-                        }}
-                        src={profilePicture || ""}
-                        alt={currentUser.username ?? ""}
-                    >
-                        {profilePicture
-                            ? ""
-                            : currentUser.username?.[0]?.toUpperCase() ?? ""}
-                    </Avatar>
-                </Box>
-                <Box
-                    sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        flexDirection: "column",
-                        alignItems: "center",
-                    }}
-                >
-                    <input
-                        accept="image/*"
-                        id="contained-button-file"
-                        type="file"
-                        onChange={handleImageUpload}
-                        style={{ display: "none" }}
-                    />
-                    <label htmlFor="contained-button-file">
-                        <Button variant="outlined" component="span">
-                            Upload Profile Picture
-                        </Button>
-                    </label>
-                    {profilePicture && (
-                        <IconButton
-                            color="error"
-                            onClick={removeImage}
-                            sx={{
-                                marginLeft: 30,
-                                color: "red",
-                                marginRight: 2,
-                                marginBottom: 1,
-                            }}
-                        >
-                            <DeleteIcon />
-                        </IconButton>
-                    )}
-                </Box>
-                <Typography variant="h3">
-                    Username:
-                    <TextField
-                        value={username!}
-                        onChange={(e) => setUsername(e.target.value)}
-                        size="small"
-                        sx={{ marginLeft: 2 }}
-                    />
-                </Typography>
-                <Typography variant="h3">
-                    Password:
-                    <TextField
-                        value={password!}
-                        onChange={(e) => setPassword(e.target.value)}
-                        size="small"
-                        sx={{ marginLeft: 2.8 }}
-                    />
-                </Typography>
-                <Typography variant="h4" sx={{ marginTop: 2 }}>
-                    Status: {currentUser.status}{" "}
-                </Typography>
-
-                <Typography variant="h4" sx={{ marginTop: 2 }}>
-                    Creation Date:{" "}
-                    {currentUser.creation_date
-                        ? new Date(currentUser.creation_date).toLocaleDateString("de-DE", {
-                            day: "2-digit",
-                            month: "2-digit",
-                            year: "numeric",
-                        })
-                        : "No Creation Date"}
-                </Typography>
-
-                <Typography variant="h4" sx={{ marginTop: 3 }}>
-                    Birthday:
-                    <LocalizationProvider dateAdapter={AdapterDayjs} locale="en">
-                        <DatePicker
-                            label="Select date"
-                            sx={{ marginLeft: 2 }}
-                            value={dayjs(birthday)}
-                            onAccept={(newValue) => {
-                                newValue ? setBirthday(newValue.toDate()) : setBirthday(null);
-                            }}
-                        />
-                    </LocalizationProvider>
-                </Typography>
-                <Typography variant="h4" sx={{ marginTop: 3 }}>
-                    Nationality:
-                    <Autocomplete
-                        sx={{ marginLeft: 2 }}
-                        value={nationality}
-                        onChange={(_, newValue) => setNationality(newValue)}
-                        options={allCountries}
-                        renderInput={(params) => <TextField {...params} />}
-                    />
-                </Typography>
-
-                {String(localStorage.getItem("id")) === String(currentUser.id) ? (
-                    <div>
-                        <Button
-                            variant="outlined"
-                            onClick={() => {
-                                setUsername(currentUser.username);
-                                setPassword(currentUser.password);
-                                setBirthday(new Date(currentUser.birthday!));
-                                setNationality(currentUser.nationality);
-                                setProfilePicture(currentUser.profilePicture);
-                                setEditMode(false);
-                            }}
-                        >
-                            Discard
-                        </Button>
-                        <Button
-                            variant="outlined"
-                            sx={{ margin: 2 }}
-                            disabled={!username}
-                            onClick={() => saveChanges()}
-                        >
-                            Save
-                        </Button>
-                    </div>
-                ) : (
-                    <div></div>
-                )}
+        return (<div>
             </div>
         );
     };
@@ -313,82 +221,37 @@ const GameLobbyOverview: React.FC = () => {
         if (!currentUser) return null;
         return (
             <div>
-                <Box
-                    sx={{ display: "flex", justifyContent: "center", marginBottom: 2 }}
-                >
-                    <Avatar
-                        sx={{
-                            width: 100,
-                            height: 100,
-                            backgroundColor: profilePicture ? "transparent" : randomColor(),
-                        }}
-                        src={profilePicture || ""}
-                        alt={currentUser.username ?? ""}
-                    >
-                        {profilePicture
-                            ? ""
-                            : currentUser.username?.[0]?.toUpperCase() ?? ""}
-                    </Avatar>
-                </Box>
-                <Typography variant="h4">
-                    Username:{" "}
-                    <span style={{ color: "MediumAquaMarine" }}>
-            {currentUser.username}
-          </span>
-                </Typography>
-                <Typography sx={{ marginTop: 2 }} variant="h4">
-                    Status: {currentUser.status}
-                </Typography>
-                <Typography variant="h4" sx={{ marginTop: 2 }}>
-                    Creation Date:{" "}
-                    {new Date(currentUser.creation_date!).toLocaleDateString("de-DE", {
-                        day: "2-digit",
-                        month: "2-digit",
-                        year: "numeric",
-                    })}
-                </Typography>
-                {currentUser.birthday ? (
-                    <Typography variant="h4" sx={{ marginTop: 2 }}>
-                        Birthday:{" "}
-                        {currentUser.birthday
-                            ? new Date(currentUser.birthday).toLocaleDateString("de-DE", {
-                                day: "2-digit",
-                                month: "2-digit",
-                                year: "numeric",
-                            })
-                            : "No Birthday"}
-                    </Typography>
-                ) : (
-                    <div></div>
-                )}
-                {currentUser.nationality && (
-                    <Typography variant="h4" sx={{ marginTop: 3 }}>
-                        Nationality: {currentUser.nationality}
-                    </Typography>
-                )}
-                <Typography variant="h4">
-                    Games Won:{" "}
-                    <span>{currentUser.gamesWon ? currentUser.gamesWon : 0}</span>
-                </Typography>
-
-                {String(localStorage.getItem("id")) === String(currentUser.id) ? (
-                    <Button
-                        variant="outlined"
-                        onClick={() => setEditMode(true)}
-                        sx={{ marginTop: 2 }}
-                    >
-                        Edit your Profile
-                    </Button>
-                ) : (
-                    <></>
-                )}
-                <Button
-                    onClick={() => navigate("/game")}
-                    sx={{ marginTop: 2, marginLeft: 2 }}
-                    variant="outlined"
-                >
-                    Back to Users Overview
-                </Button>
+                <Typography>Hello</Typography>
+                <div><pre>{JSON.stringify(allLobbies, null, 2) }</pre></div>;
+                <TableContainer component={Paper}>
+                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Dessert (100g serving)</TableCell>
+                                <TableCell align="right">Calories</TableCell>
+                                <TableCell align="right">Fat&nbsp;(g)</TableCell>
+                                <TableCell align="right">Carbs&nbsp;(g)</TableCell>
+                                <TableCell align="right">Protein&nbsp;(g)</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {rows.map((row) => (
+                                <TableRow
+                                    key={row.name}
+                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                >
+                                    <TableCell component="th" scope="row">
+                                        {row.name}
+                                    </TableCell>
+                                    <TableCell align="right">{row.calories}</TableCell>
+                                    <TableCell align="right">{row.fat}</TableCell>
+                                    <TableCell align="right">{row.carbs}</TableCell>
+                                    <TableCell align="right">{row.protein}</TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
             </div>
         );
     };
