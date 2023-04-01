@@ -9,9 +9,9 @@ const root = ReactDOM.createRoot(
 );
 
 root.render(
-  <React.StrictMode>
+
     <ThemeProvider theme={chatGPTtheme}>
       <App />
     </ThemeProvider>
-  </React.StrictMode>
+
 );
