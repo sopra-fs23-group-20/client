@@ -9,6 +9,11 @@ import { isProduction } from "helpers/isProduction";
 export const getDomain = () => {
   const prodUrl = "https://sopra-fs23-group-20-server.oa.r.appspot.com";
   const devUrl = "http://localhost:8080";
+  const customUrl = process.env.REACT_APP_API_URL || null;
+
+  if (customUrl) {
+    return customUrl;
+  }
 
   return isProduction() ? prodUrl : devUrl;
 };

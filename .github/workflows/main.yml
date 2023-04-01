@@ -37,6 +37,18 @@ jobs:
       - run: npm install
       - run: CI=false npm run build
 
+      - name: Install sshpass
+        run: sudo apt-get install -y sshpass
+
+      - name: Deploy to Raspberry Pi
+        env:
+          RASPBERRY_PI_HOST: ${{ secrets.RASPBERRY_PI_HOST }}
+          RASPBERRY_PI_USERNAME: ${{ secrets.RASPBERRY_PI_USERNAME }}
+          RASPBERRY_PI_PASSWORD: ${{ secrets.RASPBERRY_PI_PASSWORD }}
+          RASPBERRY_PI_PORT: ${{ secrets.RASPBERRY_PI_PORT }}
+        run: |
+          sshpass -p $RASPBERRY_PI_PASSWORD ssh -p $RASPBERRY_PI_PORT -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $RASPBERRY_PI_USERNAME@$RASPBERRY_PI_HOST "sudo /home/pi/clientBuildRun.sh"
+
       - name: Deploy to App Engine
         id: deploy
         uses: google-github-actions/deploy-appengine@v0.2.0
