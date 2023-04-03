@@ -12,8 +12,10 @@ import {
     Typography,
     Box,
     Avatar,
-    Input,
+    Input, Tooltip,
 } from "@mui/material";
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 
@@ -30,6 +32,9 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import Fab from '@mui/material/Fab';
+import InfoIcon from "@mui/icons-material/Info";
+
 function createData(
     name: string,
     calories: number,
@@ -39,7 +44,13 @@ function createData(
 ) {
     return { name, calories, fat, carbs, protein };
 }
-
+//for snackbar
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
+    props,
+    ref,
+) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 
 
@@ -48,6 +59,8 @@ const GameLobbyOverview: React.FC = () => {
     const navigate = useNavigate();
     const [currentUser, setCurrentUser] = useState<User | null>(null);
     const [editMode, setEditMode] = useState<boolean>(false);
+    const [GameId, setGameId] = useState<string | null>(null);
+
 
     const [username, setUsername] = useState<string | null>(null);
     const [password, setPassword] = useState<string | null>(null);
@@ -58,6 +71,21 @@ const GameLobbyOverview: React.FC = () => {
     const [allCountries, setAllCountries] = useState<Array<string>>([]);
     //if new attribute is need from allLobbies: define it like gameId
     const [allLobbies, setAllLobbies] = useState<Array<{gameId: any, currentState: any,lobbyCreator: any}>>([]);
+
+    //for snackbar
+    const [open, setOpen] = React.useState(false);
+
+    const handleClick = () => {
+        setOpen(true);
+    };
+
+    const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setOpen(false);
+    };
 
 
     // Save user changes
@@ -226,9 +254,41 @@ const GameLobbyOverview: React.FC = () => {
         return (
             <div>
                 <Typography variant="h1">Game Lobbies</Typography>
-                <Chip  label="Refresh!" onClick={refreshPage} />
+                <Typography variant="h5">You can either use a code provided by a friend to join a specific lobby or you can choose a lobby from our list </Typography>
+
+                <Typography variant="h2">Join using a code
+                <Tooltip title="You need a three digit code to join a specific game" placement="top">
+                    <IconButton>
+                        <InfoIcon />
+                    </IconButton>
+                </Tooltip>
+                </Typography>
+                <TextField
+                    id="filled-number"
+                    label="GameId"
+                    type="number"
+                    InputLabelProps={{
+                        shrink: true,
+                    }}
+                    variant="filled"
+                    onChange={(e) => setGameId(e.target.value)}
+
+                />
+                <Button variant="contained" onClick={() => (handleClick(), navigate(`/game/lobby/${GameId}`))}>
+                    Join game!
+                </Button>
+                <Stack spacing={2} sx={{ width: '100%' }}>
+                    <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+                        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+                            Joined Lobby!
+                        </Alert>
+                    </Snackbar>
+                </Stack>
+
+
 
                 <TableContainer component={Paper}>
+                    <Typography variant="h2">Game Lobbies</Typography>
                     <Table sx={{ minWidth: 650 }} aria-label="simple table">
                         <TableHead>
                             <TableRow>
@@ -258,6 +318,13 @@ const GameLobbyOverview: React.FC = () => {
                             ))}
                         </TableBody>
                     </Table>
+                    <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+                        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+                            This is a success message!
+                        </Alert>
+                    </Snackbar>
+                    <Chip  label="Refresh!" onClick={refreshPage} />
+
                 </TableContainer>
                 <Button variant="outlined" onClick={() => navigate(`/game/`)}>
                     Back to Main
