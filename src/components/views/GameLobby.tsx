@@ -103,8 +103,27 @@ const GameLobby: React.FC = () => {
           console.error(error);
         }
       }
+      async function fetchUser(): Promise<void> {
+        try {
+          let id = localStorage.getItem("id");
+
+          const response = await api.get(`/users/${id}`, {
+            headers: {
+              Authorization: localStorage.getItem("token")!,
+            },
+          });
+
+          setCurrentUser(response.data);
+        } catch (error) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("id");
+          navigate("/register");
+          console.error(error);
+        }
+      }
       fetchData();
       fetchGame();
+      fetchUser();
       isMounted.current = true;
     }
   }, []);
@@ -159,31 +178,6 @@ const GameLobby: React.FC = () => {
         setCurrentRoundPoints(payload);
     }
   };
-
-  useEffect(() => {
-    if (!isMounted.current) {
-      async function fetchUser(): Promise<void> {
-        try {
-          let id = localStorage.getItem("id");
-
-          const response = await api.get(`/users/${id}`, {
-            headers: {
-              Authorization: localStorage.getItem("token")!,
-            },
-          });
-
-          setCurrentUser(response.data);
-        } catch (error) {
-          localStorage.removeItem("token");
-          localStorage.removeItem("id");
-          navigate("/register");
-          console.error(error);
-        }
-      }
-      fetchUser();
-      isMounted.current = true;
-    }
-  }, []);
 
   async function getCountry(): Promise<void> {
     try {
