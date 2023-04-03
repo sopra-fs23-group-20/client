@@ -33,11 +33,11 @@ const GuessingComponent: React.FC<Props> = (props) => {
     try {
       console.log("Submitting guess", valueEntered);
       const request = await api.post(`/games/${gameId}/guesses`, {
-        username: currentUser?.username,
+        userId: currentUser?.id,
         guess: valueEntered,
       });
       const requestBody = request.data;
-      alert("Your guess was correct!");
+      alert(requestBody);
     } catch (error: AxiosError | any) {
       alert(error.response.data.message);
     }
