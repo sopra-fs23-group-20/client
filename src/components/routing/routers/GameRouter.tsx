@@ -6,6 +6,8 @@ import Profile from "components/views/Profile";
 import CountriesOverview from "components/views/CountriesOverview";
 import GameLobby from "components/views/GameLobby";
 import GameLobbyOverview from "components/views/GameLobbyOverview";
+import SetupComponent from "components/ui/GameComponents/SetupComponent";
+import GameCreationComponent from "components/ui/GameComponents/GameCreationComponent";
 
 interface GameRouterProps {
   base: string;
@@ -23,9 +25,12 @@ const GameRouter: FC<GameRouterProps> = ({ base, onTokenChange }) => {
         />
         <Route path="profile/:userID" element={<Profile />} />
         <Route path="countries" element={<CountriesOverview />} />
+        <Route
+          path="lobbyCreation/:gameID"
+          element={<GameCreationComponent gameId={undefined} />}
+        />
         <Route path="lobby/:gameID" element={<GameLobby />} />
         <Route path="lobbies" element={<GameLobbyOverview />} />
-
       </Routes>
     </div>
   );
