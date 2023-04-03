@@ -35,7 +35,7 @@
     "dev": "react-scripts start",
     "start": "serve -s build",
     "build": "react-scripts build",
-    "build:custom": "REACT_APP_API_URL=https://sopra-fs23-group-20-server.loca.lt react-scripts build",
+    "build:custom": "REACT_APP_API_URL=https://sopra-fs23-group20-server.pktriot.net react-scripts build",
     "eject": "react-scripts eject",
     "test": "react-scripts test --env=jsdom"
   },
