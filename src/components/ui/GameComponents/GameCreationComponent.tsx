@@ -47,28 +47,33 @@ const GameCreationComponent: React.FC<Props> = (props) => {
     location: false,
     capital: false,
   });
-  const userId = localStorage.getItem("userId");
 
   async function startGame(): Promise<void> {
+    const userIdString = localStorage.getItem("userId");
+
     try {
-      if (userId) {
-        const response = await api.post("/games", { userId: userId });
+      if (userIdString) {
+        console.log("EnteredIF");
         const requestBody = {
-          roundSeconds,
-          randomizedHints,
+          lobbyCreatorUserId: userIdString,
+          roundSeconds: roundSeconds,
+          randomizedHints: randomizedHints,
           countries: Object.keys(countries).filter(
             (country) => countries[country as keyof typeof countries]
           ),
-          numberOfRounds,
-          openLobby,
+          numberOfRounds: numberOfRounds,
+          openLobby: openLobby,
           hints: Object.keys(selectedHints).filter(
             (hint) => selectedHints[hint as keyof typeof selectedHints]
           ),
         };
-
-        await api.post(`/games/`, requestBody);
+        console.log("Request body: ", requestBody);
+        const response = await api.post("/games", {
+          requestBody,
+        });
       }
     } catch (error: AxiosError | any) {
+      console.log(error);
       alert(
         `Something went wrong while updating game settings: \n${handleError(
           error
