@@ -15,17 +15,15 @@ import SetupComponent from "components/ui/GameComponents/SetupComponent";
 import EndedComponent from "components/ui/GameComponents/EndedComponent";
 import {useWebSocket} from "helpers/WebSocketContext";
 import NotJoinedComponent from "components/ui/GameComponents/NotJoinedComponent";
+import GameUser from "../../models/GameUser";
 
 const GameLobby: React.FC = () => {
   const socket = useWebSocket();
-
   const navigate = useNavigate();
 
   const [gameState, setGameState] = useState<GameState | null>(null);
   const [timeRemaining, setTimeRemaining] = useState<number>(0);
   const [currentRoundPoints, setCurrentRoundPoints] = useState<number>(100);
-
-  const isMounted = useRef(false);
 
   const [currentCountryHint, setCurrentCountryHint] = useState<Country>(
     new Country(null, null, null, null, null, null)
@@ -34,6 +32,8 @@ const GameLobby: React.FC = () => {
   const [countryToGuess, setCountryToGuess] = useState<String | null>(null);
   const [allCountries, setAllCountries] = useState<Array<string>>([]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [currentGameUser, setCurrentGameUser] = useState<
+      GameUser| null>(null);
 
   const gameId = window.location.pathname.split("/").pop();
   const websocketUrl = `${getDomain()}/game/${gameId}`;
@@ -75,7 +75,6 @@ const GameLobby: React.FC = () => {
   }
 
   useEffect(() => {
-    if (!isMounted.current) {
       async function fetchData(): Promise<void> {
         try {
           const response = await api.get("/games/" + gameId + "/countries");
@@ -98,6 +97,13 @@ const GameLobby: React.FC = () => {
           });
           console.log("The response is: ", response);
           setGameState(convertToGameStateEnum(response.data.currentState));
+          let id = localStorage.getItem("id");
+          const {participants} = response.data;
+          const currentGameUser = participants.find((x:any) => {
+            return x.userId.toString() === id;
+          })
+          currentGameUser.currentState = convertToGameStateEnum(currentGameUser.currentState)
+          setCurrentGameUser(currentGameUser);
         } catch (error: AxiosError | any) {
           alert(error.response.data.message);
           console.error(error);
@@ -124,9 +130,7 @@ const GameLobby: React.FC = () => {
       fetchData();
       fetchGame();
       fetchUser();
-      isMounted.current = true;
-    }
-  }, []);
+  }, [gameId]);
 
   useEffect(() => {
     if (socket) {
@@ -137,6 +141,17 @@ const GameLobby: React.FC = () => {
       };
     }
   }, [socket]);
+
+  useEffect(() => {
+    const userGameStateTemp = currentGameUser?.currentState;
+    if(currentUser !== null && gameState !== null && (userGameStateTemp !== null && userGameStateTemp !== undefined && gameState > userGameStateTemp)){
+      const newUser: GameUser | null = structuredClone(currentGameUser)
+      if(newUser !== null){
+        newUser.currentState = gameState
+      }
+      setCurrentGameUser(newUser)
+    }
+  }, [gameState])
 
   const handleMessage = (event: MessageEvent) => {
     const websocketPackage = JSON.parse(event.data);
@@ -151,7 +166,9 @@ const GameLobby: React.FC = () => {
         if (websocketPacket.payload === "SCOREBOARD") {
           getCountry();
         }
-        setGameState(convertToGameStateEnum(websocketPacket.payload));
+        const gameStateTemp: GameState | null  = convertToGameStateEnum(websocketPacket.payload);
+        setGameState(gameStateTemp);
+
         break;
       case WebsocketType.CATEGORYUPDATE:
         if (websocketPacket.payload.hasOwnProperty("location")) {
@@ -191,7 +208,10 @@ const GameLobby: React.FC = () => {
 
   let content = <Typography variant="h2">Loading...</Typography>;
 
-  switch (gameState) {
+  const userGameState = currentGameUser?.currentState !== undefined ? currentGameUser.currentState : undefined;
+  const stateToCheck: GameState | any = userGameState !== gameState ? userGameState : gameState
+
+  switch (stateToCheck) {
     case GameState.SETUP:
       content = <SetupComponent {...{ gameId: gameId }} />;
       break;
