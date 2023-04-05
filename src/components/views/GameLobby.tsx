@@ -22,7 +22,6 @@ const GameLobby: React.FC = () => {
   const socket = useWebSocket();
   const navigate = useNavigate();
 
-  const [gameState, setGameState] = useState<GameState | null>(null);
   const [timeRemaining, setTimeRemaining] = useState<number>(0);
   const [currentRoundPoints, setCurrentRoundPoints] = useState<number>(100);
   const [game, setGame] = useState<Game | null>(null);
@@ -34,7 +33,6 @@ const GameLobby: React.FC = () => {
   const [countryToGuess, setCountryToGuess] = useState<String | null>(null);
   const [allCountries, setAllCountries] = useState<Array<string>>([]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [currentGameUser, setCurrentGameUser] = useState<GameUser | null>(null);
 
   const gameId = window.location.pathname.split("/").pop();
   const websocketUrl = `${getDomain()}/game/${gameId}`;
@@ -161,19 +159,26 @@ const GameLobby: React.FC = () => {
     }
   }, [socket, game, currentUser]);
 
-  const handleSetGameState = (newGameState: GameState|null, gameState: Game|null = game, currentUserState: User|null = currentUser) => {
-    if (newGameState === null || gameState === null || currentUserState == null){
+  const handleSetGameState = (newGameState: GameState|null, gameObject: Game|null = game, currentUserObject: User|null=currentUser, onlyPlayer=false) => {
+    if (newGameState === null || gameObject === null || currentUserObject == null){
       return
     }
-    setGameState(newGameState);
-    const participants = gameState.participants;
-    const participantsArray = participants !== null ? Array.from(participants) : []
-    const currentGameUser = participantsArray.find((x: GameUser) => {
-      return x !== null && x.userId !== null && currentUserState?.id !==null && x.userId.toString() === currentUserState?.id.toString()})
-    if(currentGameUser !== undefined) {
-      currentGameUser.currentState = newGameState
-      setCurrentGameUser(currentGameUser)
+    const newGame: Game = structuredClone(gameObject)
+    if(!onlyPlayer){
+      newGame.currentState = newGameState
     }
+    const participants = newGame.participants;
+    const participantsArray = participants !== null ? Array.from(participants) : []
+    newGame.participants = new Set(participantsArray.map((x: GameUser) => {
+      const isCurrentUser = x !== null && x.userId !== null && currentUserObject?.id !== null && x.userId.toString() === currentUserObject?.id.toString()
+      if (isCurrentUser) {
+        const adaptedUser = structuredClone(x)
+        adaptedUser.currentState = newGameState
+        return adaptedUser
+      }
+      return x
+    }))
+    setGame(newGame)
   }
 
   const handleMessage = (event: MessageEvent) => {
@@ -213,11 +218,9 @@ const GameLobby: React.FC = () => {
         setTimeRemaining(websocketPacket.payload);
         break;
       case WebsocketType.PLAYERUPDATE:
-        const newUser: GameUser | null = structuredClone(currentGameUser);
-        if (newUser !== null) {
-          newUser.currentState = websocketPacket.payload;
+        if(game !== null){
+          handleSetGameState(websocketPacket.payload, game,currentUser)
         }
-        setCurrentGameUser(newUser);
         break;
       case WebsocketType.POINTSUPDATE:
         setCurrentRoundPoints(payload);
@@ -236,58 +239,62 @@ const GameLobby: React.FC = () => {
 
   let content = <Typography variant="h2">Loading...</Typography>;
 
-  const userGameState =
-    currentGameUser?.currentState !== undefined
-      ? currentGameUser.currentState
-      : undefined;
-  const stateToCheck: GameState | any =
-    userGameState !== gameState ? userGameState : gameState;
+  if (game !== null && game.participants !== null && currentUser !== null) {
+    const gameState = game.currentState;
+    const currentGameUser = Array.from(game.participants).find((x: GameUser) => x.userId !== null && currentUser.id !== null && x.userId.toString() === currentUser.id.toString())
+    const userGameState =
+        currentGameUser?.currentState !== undefined
+            ? currentGameUser.currentState
+            : undefined;
+    const stateToCheck: GameState | any =
+        userGameState !== game?.currentState ? userGameState : gameState;
 
 
-  switch (stateToCheck) {
-    case GameState.SETUP:
-      content = (
-        <SetupComponent
-          {...{
-            allCountries: allCountries,
-            game: game,
-          }}
-        />
-      );
-      break;
-    case GameState.GUESSING:
-      content = (
-        <GuessingComponent
-          {...{
-            currentCountryHint: currentCountryHint,
-            timeRemaining: timeRemaining,
-            allCountries: allCountries,
-            gameId: gameId,
-            currentUser: currentUser,
-            currentRoundPoints: currentRoundPoints,
-          }}
-        />
-      );
-      break;
-    case GameState.SCOREBOARD:
-      content = (
-        <ScoreboardComponent
-          {...{ currentUser: currentUser, gameId: gameId }}
-        />
-      );
-      break;
-    case GameState.ENDED:
-      content = <EndedComponent />;
-      break;
-    case null:
-      console.log("case 0");
-      content = (
-        <NotJoinedComponent
-          gameId={gameId}
-          setGameState={handleSetGameState}
-        ></NotJoinedComponent>
-      );
-      break;
+    switch (stateToCheck) {
+      case GameState.SETUP:
+        content = (
+            <SetupComponent
+                {...{
+                  allCountries: allCountries,
+                  game: game,
+                }}
+            />
+        );
+        break;
+      case GameState.GUESSING:
+        content = (
+            <GuessingComponent
+                {...{
+                  currentCountryHint: currentCountryHint,
+                  timeRemaining: timeRemaining,
+                  allCountries: allCountries,
+                  gameId: gameId,
+                  currentUser: currentUser,
+                  currentRoundPoints: currentRoundPoints,
+                }}
+            />
+        );
+        break;
+      case GameState.SCOREBOARD:
+        content = (
+            <ScoreboardComponent
+                {...{currentUser: currentUser, gameId: gameId}}
+            />
+        );
+        break;
+      case GameState.ENDED:
+        content = <EndedComponent/>;
+        break;
+      case null:
+        console.log("case 0");
+        content = (
+            <NotJoinedComponent
+                gameId={gameId}
+                setGameState={handleSetGameState}
+            ></NotJoinedComponent>
+        );
+        break;
+    }
   }
 
   return (
