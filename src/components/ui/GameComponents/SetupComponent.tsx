@@ -35,14 +35,11 @@ const GuessingComponent: React.FC<Props> = (props) => {
     try {
       const request = await api.put(
         `/games/${game ? game.gameId : null}/start`,
-        {
-          userId: userId,
-        }
+        userId
       );
       const requestBody = request.data;
-      alert(requestBody);
     } catch (error: AxiosError | any) {
-      alert(error.response.data.message);
+      console.log(error);
     }
   }
 

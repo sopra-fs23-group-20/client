@@ -97,6 +97,10 @@ const GameLobby: React.FC = () => {
           },
         });
         console.log("The response is: ", response);
+        console.log(
+          "The game State to set: ",
+          convertToGameStateEnum(response.data.currentState)
+        );
         setGameState(convertToGameStateEnum(response.data.currentState));
         let id = localStorage.getItem("id");
         setGame({ ...response.data });
@@ -132,9 +136,22 @@ const GameLobby: React.FC = () => {
         console.error(error);
       }
     }
-    fetchData();
+
+    async function joinLobby(): Promise<void> {
+      try {
+        let id = localStorage.getItem("userId");
+        console.log("Joining lobby");
+        const response = await api.post(`/games/${gameId}/join`, id);
+        console.log("Joined Lobby");
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
     fetchGame();
+    fetchData();
     fetchUser();
+    joinLobby();
   }, [gameId]);
 
   useEffect(() => {
@@ -228,7 +245,7 @@ const GameLobby: React.FC = () => {
   const stateToCheck: GameState | any =
     userGameState !== gameState ? userGameState : gameState;
 
-  switch (stateToCheck) {
+  switch (gameState) {
     case GameState.SETUP:
       content = (
         <SetupComponent
@@ -264,6 +281,7 @@ const GameLobby: React.FC = () => {
       content = <EndedComponent />;
       break;
     case null:
+      console.log("case 0");
       content = (
         <NotJoinedComponent
           gameId={gameId}
