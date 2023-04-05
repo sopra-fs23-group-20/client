@@ -155,22 +155,23 @@ const GameLobby: React.FC = () => {
   useEffect(() => {
     if (socket) {
       socket.addEventListener("message", handleMessage);
-
       return () => {
         socket.removeEventListener("message", handleMessage);
       };
     }
-  }, [socket]);
+  }, [socket, game, currentUser]);
 
   const handleSetGameState = (newGameState: GameState|null, gameState: Game|null = game, currentUserState: User|null = currentUser) => {
-    const participants = gameState !== null ? gameState.participants : [];
-    if (newGameState !== null){
-      setGameState(newGameState);
+    if (newGameState === null || gameState === null || currentUserState == null){
+      return
     }
+    setGameState(newGameState);
+    const participants = gameState.participants;
     const participantsArray = participants !== null ? Array.from(participants) : []
     const currentGameUser = participantsArray.find((x: GameUser) => {
       return x !== null && x.userId !== null && currentUserState?.id !==null && x.userId.toString() === currentUserState?.id.toString()})
     if(currentGameUser !== undefined) {
+      currentGameUser.currentState = newGameState
       setCurrentGameUser(currentGameUser)
     }
   }
@@ -242,7 +243,8 @@ const GameLobby: React.FC = () => {
   const stateToCheck: GameState | any =
     userGameState !== gameState ? userGameState : gameState;
 
-  switch (gameState) {
+
+  switch (stateToCheck) {
     case GameState.SETUP:
       content = (
         <SetupComponent
