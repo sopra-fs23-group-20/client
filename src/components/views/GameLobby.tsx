@@ -76,20 +76,21 @@ const GameLobby: React.FC = () => {
   }
 
   useEffect(() => {
-    async function fetchData(): Promise<void> {
+    async function fetchData(): Promise<Array<string>> {
       try {
         const response = await api.get("/games/" + gameId + "/countries");
         console.log("The response is: ", response);
-        setAllCountries(response.data);
+        return response.data
       } catch (error: AxiosError | any) {
         alert(error.response.data.message);
         localStorage.removeItem("token");
         localStorage.removeItem("id");
         navigate("/register");
         console.error(error);
+        return new Array<string>()
       }
     }
-    async function fetchGame(): Promise<void> {
+    async function fetchGame(): Promise<Game|null> {
       try {
         const response = await api.get(`/games/${gameId}`, {
           headers: {
@@ -97,28 +98,16 @@ const GameLobby: React.FC = () => {
           },
         });
         console.log("The response is: ", response);
-        console.log(
-          "The game State to set: ",
-          convertToGameStateEnum(response.data.currentState)
-        );
-        setGameState(convertToGameStateEnum(response.data.currentState));
-        let id = localStorage.getItem("id");
-        setGame({ ...response.data });
-        const { participants } = response.data;
-        const currentGameUser = participants.find((x: any) => {
-          return x.userId.toString() === id;
-        });
-        currentGameUser.currentState = convertToGameStateEnum(
-          currentGameUser.currentState
-        );
-        setCurrentGameUser(currentGameUser);
+        const currentState = convertToGameStateEnum(response.data.currentState)
+        return {...response.data, currentState}
       } catch (error: AxiosError | any) {
         alert(error.response.data.message);
         console.error(error);
+        return null
       }
     }
 
-    async function fetchUser(): Promise<void> {
+    async function fetchUser(): Promise<User|null> {
       try {
         let id = localStorage.getItem("id");
 
@@ -127,13 +116,13 @@ const GameLobby: React.FC = () => {
             Authorization: localStorage.getItem("token")!,
           },
         });
-
-        setCurrentUser(response.data);
+        return response.data
       } catch (error) {
         localStorage.removeItem("token");
         localStorage.removeItem("id");
         navigate("/register");
         console.error(error);
+        return null
       }
     }
 
@@ -148,10 +137,19 @@ const GameLobby: React.FC = () => {
       }
     }
 
-    fetchGame();
-    fetchData();
-    fetchUser();
-    joinLobby();
+    async function setStates(): Promise<void> {
+      const countries = await fetchData();
+      setAllCountries(countries);
+      const game = await fetchGame();
+      setGame(game);
+      const user = await fetchUser();
+      setCurrentUser(user);
+      if(game !== null){
+        handleSetGameState(game.currentState, game, user)
+      }
+      await joinLobby()
+    }
+    setStates()
   }, [gameId]);
 
   useEffect(() => {
@@ -164,22 +162,18 @@ const GameLobby: React.FC = () => {
     }
   }, [socket]);
 
-  useEffect(() => {
-    const userGameStateTemp = currentGameUser?.currentState;
-    if (
-      currentUser !== null &&
-      gameState !== null &&
-      userGameStateTemp !== null &&
-      userGameStateTemp !== undefined &&
-      gameState > userGameStateTemp
-    ) {
-      const newUser: GameUser | null = structuredClone(currentGameUser);
-      if (newUser !== null) {
-        newUser.currentState = gameState;
-      }
-      setCurrentGameUser(newUser);
+  const handleSetGameState = (newGameState: GameState|null, gameState: Game|null = game, currentUserState: User|null = currentUser) => {
+    const participants = gameState !== null ? gameState.participants : [];
+    if (newGameState !== null){
+      setGameState(newGameState);
     }
-  }, [gameState]);
+    const participantsArray = participants !== null ? Array.from(participants) : []
+    const currentGameUser = participantsArray.find((x: GameUser) => {
+      return x !== null && x.userId !== null && currentUserState?.id !==null && x.userId.toString() === currentUserState?.id.toString()})
+    if(currentGameUser !== undefined) {
+      setCurrentGameUser(currentGameUser)
+    }
+  }
 
   const handleMessage = (event: MessageEvent) => {
     const websocketPackage = JSON.parse(event.data);
@@ -197,8 +191,7 @@ const GameLobby: React.FC = () => {
         const gameStateTemp: GameState | null = convertToGameStateEnum(
           websocketPacket.payload
         );
-        setGameState(gameStateTemp);
-
+        handleSetGameState(gameStateTemp);
         break;
       case WebsocketType.CATEGORYUPDATE:
         if (websocketPacket.payload.hasOwnProperty("location")) {
@@ -219,7 +212,11 @@ const GameLobby: React.FC = () => {
         setTimeRemaining(websocketPacket.payload);
         break;
       case WebsocketType.PLAYERUPDATE:
-        //
+        const newUser: GameUser | null = structuredClone(currentGameUser);
+        if (newUser !== null) {
+          newUser.currentState = websocketPacket.payload;
+        }
+        setCurrentGameUser(newUser);
         break;
       case WebsocketType.POINTSUPDATE:
         setCurrentRoundPoints(payload);
@@ -285,7 +282,7 @@ const GameLobby: React.FC = () => {
       content = (
         <NotJoinedComponent
           gameId={gameId}
-          setGameState={setGameState}
+          setGameState={handleSetGameState}
         ></NotJoinedComponent>
       );
       break;
