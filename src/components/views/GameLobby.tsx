@@ -1,21 +1,22 @@
-import React, {useEffect, useRef, useState} from "react";
-import {api} from "helpers/api";
-import {Container, Typography} from "@mui/material";
-import {useNavigate} from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
+import { api } from "helpers/api";
+import { Container, Typography } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import User from "models/User";
-import {AxiosError} from "axios";
+import { AxiosError } from "axios";
 import GameState from "models/GameState";
 import Country from "models/Country";
-import {getDomain} from "helpers/getDomain";
+import { getDomain } from "helpers/getDomain";
 import WebsocketType from "models/WebsocketType";
 import WebsocketPacket from "models/WebsocketPacket";
 import GuessingComponent from "components/ui/GameComponents/GuessingComponent";
 import ScoreboardComponent from "components/ui/GameComponents/ScoreboardComponent";
 import SetupComponent from "components/ui/GameComponents/SetupComponent";
 import EndedComponent from "components/ui/GameComponents/EndedComponent";
-import {useWebSocket} from "helpers/WebSocketContext";
+import { useWebSocket } from "helpers/WebSocketContext";
 import NotJoinedComponent from "components/ui/GameComponents/NotJoinedComponent";
 import GameUser from "../../models/GameUser";
+import Game from "models/Game";
 
 const GameLobby: React.FC = () => {
   const socket = useWebSocket();
@@ -24,6 +25,7 @@ const GameLobby: React.FC = () => {
   const [gameState, setGameState] = useState<GameState | null>(null);
   const [timeRemaining, setTimeRemaining] = useState<number>(0);
   const [currentRoundPoints, setCurrentRoundPoints] = useState<number>(100);
+  const [game, setGame] = useState<Game | null>(null);
 
   const [currentCountryHint, setCurrentCountryHint] = useState<Country>(
     new Country(null, null, null, null, null, null)
@@ -32,8 +34,7 @@ const GameLobby: React.FC = () => {
   const [countryToGuess, setCountryToGuess] = useState<String | null>(null);
   const [allCountries, setAllCountries] = useState<Array<string>>([]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [currentGameUser, setCurrentGameUser] = useState<
-      GameUser| null>(null);
+  const [currentGameUser, setCurrentGameUser] = useState<GameUser | null>(null);
 
   const gameId = window.location.pathname.split("/").pop();
   const websocketUrl = `${getDomain()}/game/${gameId}`;
@@ -75,61 +76,65 @@ const GameLobby: React.FC = () => {
   }
 
   useEffect(() => {
-      async function fetchData(): Promise<void> {
-        try {
-          const response = await api.get("/games/" + gameId + "/countries");
-          console.log("The response is: ", response);
-          setAllCountries(response.data);
-        } catch (error: AxiosError | any) {
-          alert(error.response.data.message);
-          localStorage.removeItem("token");
-          localStorage.removeItem("id");
-          navigate("/register");
-          console.error(error);
-        }
+    async function fetchData(): Promise<void> {
+      try {
+        const response = await api.get("/games/" + gameId + "/countries");
+        console.log("The response is: ", response);
+        setAllCountries(response.data);
+      } catch (error: AxiosError | any) {
+        alert(error.response.data.message);
+        localStorage.removeItem("token");
+        localStorage.removeItem("id");
+        navigate("/register");
+        console.error(error);
       }
-      async function fetchGame(): Promise<void> {
-        try {
-          const response = await api.get(`/games/${gameId}`, {
-            headers: {
-              Authorization: localStorage.getItem("token")!,
-            },
-          });
-          console.log("The response is: ", response);
-          setGameState(convertToGameStateEnum(response.data.currentState));
-          let id = localStorage.getItem("id");
-          const {participants} = response.data;
-          const currentGameUser = participants.find((x:any) => {
-            return x.userId.toString() === id;
-          })
-          currentGameUser.currentState = convertToGameStateEnum(currentGameUser.currentState)
-          setCurrentGameUser(currentGameUser);
-        } catch (error: AxiosError | any) {
-          alert(error.response.data.message);
-          console.error(error);
-        }
+    }
+    async function fetchGame(): Promise<void> {
+      try {
+        const response = await api.get(`/games/${gameId}`, {
+          headers: {
+            Authorization: localStorage.getItem("token")!,
+          },
+        });
+        console.log("The response is: ", response);
+        setGameState(convertToGameStateEnum(response.data.currentState));
+        let id = localStorage.getItem("id");
+        setGame({ ...response.data });
+        const { participants } = response.data;
+        const currentGameUser = participants.find((x: any) => {
+          return x.userId.toString() === id;
+        });
+        currentGameUser.currentState = convertToGameStateEnum(
+          currentGameUser.currentState
+        );
+        setCurrentGameUser(currentGameUser);
+      } catch (error: AxiosError | any) {
+        alert(error.response.data.message);
+        console.error(error);
       }
-      async function fetchUser(): Promise<void> {
-        try {
-          let id = localStorage.getItem("id");
+    }
 
-          const response = await api.get(`/users/${id}`, {
-            headers: {
-              Authorization: localStorage.getItem("token")!,
-            },
-          });
+    async function fetchUser(): Promise<void> {
+      try {
+        let id = localStorage.getItem("id");
 
-          setCurrentUser(response.data);
-        } catch (error) {
-          localStorage.removeItem("token");
-          localStorage.removeItem("id");
-          navigate("/register");
-          console.error(error);
-        }
+        const response = await api.get(`/users/${id}`, {
+          headers: {
+            Authorization: localStorage.getItem("token")!,
+          },
+        });
+
+        setCurrentUser(response.data);
+      } catch (error) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("id");
+        navigate("/register");
+        console.error(error);
       }
-      fetchData();
-      fetchGame();
-      fetchUser();
+    }
+    fetchData();
+    fetchGame();
+    fetchUser();
   }, [gameId]);
 
   useEffect(() => {
@@ -144,14 +149,20 @@ const GameLobby: React.FC = () => {
 
   useEffect(() => {
     const userGameStateTemp = currentGameUser?.currentState;
-    if(currentUser !== null && gameState !== null && (userGameStateTemp !== null && userGameStateTemp !== undefined && gameState > userGameStateTemp)){
-      const newUser: GameUser | null = structuredClone(currentGameUser)
-      if(newUser !== null){
-        newUser.currentState = gameState
+    if (
+      currentUser !== null &&
+      gameState !== null &&
+      userGameStateTemp !== null &&
+      userGameStateTemp !== undefined &&
+      gameState > userGameStateTemp
+    ) {
+      const newUser: GameUser | null = structuredClone(currentGameUser);
+      if (newUser !== null) {
+        newUser.currentState = gameState;
       }
-      setCurrentGameUser(newUser)
+      setCurrentGameUser(newUser);
     }
-  }, [gameState])
+  }, [gameState]);
 
   const handleMessage = (event: MessageEvent) => {
     const websocketPackage = JSON.parse(event.data);
@@ -166,7 +177,9 @@ const GameLobby: React.FC = () => {
         if (websocketPacket.payload === "SCOREBOARD") {
           getCountry();
         }
-        const gameStateTemp: GameState | null  = convertToGameStateEnum(websocketPacket.payload);
+        const gameStateTemp: GameState | null = convertToGameStateEnum(
+          websocketPacket.payload
+        );
         setGameState(gameStateTemp);
 
         break;
@@ -189,7 +202,7 @@ const GameLobby: React.FC = () => {
         setTimeRemaining(websocketPacket.payload);
         break;
       case WebsocketType.PLAYERUPDATE:
-      //
+        //
         break;
       case WebsocketType.POINTSUPDATE:
         setCurrentRoundPoints(payload);
@@ -208,12 +221,23 @@ const GameLobby: React.FC = () => {
 
   let content = <Typography variant="h2">Loading...</Typography>;
 
-  const userGameState = currentGameUser?.currentState !== undefined ? currentGameUser.currentState : undefined;
-  const stateToCheck: GameState | any = userGameState !== gameState ? userGameState : gameState
+  const userGameState =
+    currentGameUser?.currentState !== undefined
+      ? currentGameUser.currentState
+      : undefined;
+  const stateToCheck: GameState | any =
+    userGameState !== gameState ? userGameState : gameState;
 
   switch (stateToCheck) {
     case GameState.SETUP:
-      content = <SetupComponent {...{ gameId: gameId }} />;
+      content = (
+        <SetupComponent
+          {...{
+            allCountries: allCountries,
+            game: game,
+          }}
+        />
+      );
       break;
     case GameState.GUESSING:
       content = (
