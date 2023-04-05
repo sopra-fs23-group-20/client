@@ -107,22 +107,6 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
     }
   };
 
-  const createGame = async (): Promise<void> => {
-    try {
-      if (userId) {
-        const response = await api.post("/games", { userId: userId });
-        const gameId = response.data.gameId;
-
-        navigate(`/game/lobby/${gameId}`);
-      }
-    } catch (error) {
-      console.error(error);
-      localStorage.removeItem("token");
-      localStorage.removeItem("id");
-      navigate("/login");
-    }
-  };
-
   const logout = (): void => {
     makeOffline();
   };
@@ -232,35 +216,8 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
 
   return (
     <div>
-      <Button
-          id="basic-button"
-          aria-controls={open ? 'basic-menu' : undefined}
-          aria-haspopup="true"
-          aria-expanded={open ? 'true' : undefined}
-          onClick={handleClick}
-      >
-        Dashboard
-      </Button>
-      <Menu
-          id="basic-menu"
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleClose}
-          MenuListProps={{
-            'aria-labelledby': 'basic-button',
-          }}
-      >
-        <MenuItem onClick={() => navigate("/game/")}>Dashboard</MenuItem>
-        <MenuItem onClick={goToSettings}>My account</MenuItem>
-        <MenuItem onClick={() => logout()}>Logout</MenuItem>
-      </Menu>
       <Container>
         <Typography variant="h1">Dashboard</Typography>
-        {usercontent}
-        <Typography variant="h4">
-          Click on users to see their details
-        </Typography>
-        {content}
         <Box
           sx={{
             display: "flex",
@@ -279,7 +236,11 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
                   gutterBottom
                   variant="h5"
                   component="div"
-                  onClick={() => createGame()}
+                  onClick={() =>
+                    navigate(
+                      `/game/lobbyCreation/${localStorage.getItem("userId")}`
+                    )
+                  }
                 >
                   Create a new Game!
                 </Typography>
@@ -325,25 +286,15 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
               Checkout all Countries
             </Button>
           </Grid>
-          <Grid item xs={5}>
-            <Button
-              sx={{ marginTop: 4 }}
-              variant="outlined"
-              onClick={() => createGame()}
-            >
-              Start a new Game
-            </Button>
-          </Grid>
+          <Grid item xs={5}></Grid>
           <Grid item xs={5}>
             <Button variant="outlined" onClick={() => logout()}>
               Logout
             </Button>
           </Grid>
-          <Grid item xs={5}>
-            <Button variant="outlined" onClick={() => goToSettings()}>
-              Profile Settings
-            </Button>
-          </Grid>
+          <Button variant="outlined" onClick={() => goToSettings()}>
+            Profile Settings
+          </Button>
         </Grid>
       </Container>
     </div>
