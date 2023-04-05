@@ -21,6 +21,7 @@ import {
   DialogActions,
   FormControl,
 } from "@mui/material";
+import { Navigate, useNavigate } from "react-router-dom";
 
 interface Props {
   gameId: string | undefined;
@@ -48,12 +49,13 @@ const GameCreationComponent: React.FC<Props> = (props) => {
     capital: false,
   });
 
+  const navigate = useNavigate();
+
   async function startGame(): Promise<void> {
     const userIdString = localStorage.getItem("userId");
 
     try {
       if (userIdString) {
-        console.log("EnteredIF");
         const requestBody = {
           lobbyCreatorUserId: userIdString,
           roundSeconds: roundSeconds,
@@ -67,10 +69,10 @@ const GameCreationComponent: React.FC<Props> = (props) => {
             (hint) => selectedHints[hint as keyof typeof selectedHints]
           ),
         };
-        console.log("Request body: ", requestBody);
-        const response = await api.post("/games", {
-          requestBody,
-        });
+
+        const response = await api.post("/games", requestBody);
+        console.log("Game Post Response: ", response.data);
+        navigate(`/game/lobby/${response.data.gameId}`);
       }
     } catch (error: AxiosError | any) {
       console.log(error);
@@ -316,7 +318,7 @@ const GameCreationComponent: React.FC<Props> = (props) => {
         </DialogContent>
         <DialogActions>
           <Button variant="outlined" onClick={() => startGame()}>
-            Save
+            Save Settings
           </Button>
         </DialogActions>
       </FormControl>
