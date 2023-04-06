@@ -124,14 +124,16 @@ const GuessingComponent: React.FC<Props> = (props) => {
         ) : (
           <div></div>
         )}
-        {game?.remainingRounds && game?.numberOfRounds ? (
-          <Typography variant="h4" sx={{ marginLeft: 5 }}>
-            Currently on Round: {game.numberOfRounds - game.remainingRounds}/
-            {game.numberOfRounds}
-          </Typography>
-        ) : (
-          <div></div>
-        )}
+
+        <Typography variant="h4" sx={{ marginLeft: 5 }}>
+          Currently on Round:{" "}
+          {game?.numberOfRounds != null && game?.remainingRounds != null
+            ? game.numberOfRounds -
+              game.remainingRounds +
+              "/" +
+              game.numberOfRounds
+            : "undefined"}
+        </Typography>
       </Box>
 
       <Button
