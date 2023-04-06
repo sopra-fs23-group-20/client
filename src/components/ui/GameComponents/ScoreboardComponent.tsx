@@ -33,16 +33,6 @@ const ScoreboardComponent: React.FC<Props> = (props) => {
   const navigate = useNavigate();
   const [currentCountry, setCurrentCountry] = useState<string | null>(null);
 
-  const getCurrentCountry = async () => {
-    try {
-      const response = await api.get(`/games/${gameId}/country`);
-      const country = response.data;
-      setCurrentCountry(country);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   const createGame = async (): Promise<void> => {
     try {
       const userId = localStorage.getItem("userId");
@@ -59,6 +49,19 @@ const ScoreboardComponent: React.FC<Props> = (props) => {
     }
   };
 
+  useEffect(() => {
+    const getCurrentCountry = async () => {
+      try {
+        const response = await api.get(`/games/${gameId}/country`);
+        const country = response.data;
+        setCurrentCountry(country);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getCurrentCountry();
+  }, [gameId]);
+
   return (
     <Container>
       <div>
@@ -72,6 +75,16 @@ const ScoreboardComponent: React.FC<Props> = (props) => {
         <Typography variant="h4" sx={{ marginTop: 2 }}>
           Time on Scoreboard Remaining until Next Round/Final Scoreboard:{" "}
           {gameGetDTO ? gameGetDTO.remainingTime : "undefined"}
+        </Typography>
+        <Typography variant="h4" sx={{ marginTop: 5 }}>
+          Currently on Round:{" "}
+          {gameGetDTO?.numberOfRounds != null &&
+          gameGetDTO?.remainingRounds != null
+            ? gameGetDTO.numberOfRounds -
+              gameGetDTO.remainingRounds +
+              "/" +
+              gameGetDTO.numberOfRounds
+            : "undefined"}
         </Typography>
       </div>
     </Container>
