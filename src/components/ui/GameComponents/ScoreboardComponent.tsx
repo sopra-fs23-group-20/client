@@ -7,10 +7,10 @@ import { AxiosError } from "axios";
 import { Client } from "@stomp/stompjs";
 import { useRef } from "react";
 import SockJS from "sockjs-client";
-import GameState from "models/GameState";
+import GameState from "models/constant/GameState";
 import Country from "models/Country";
 import { getDomain } from "helpers/getDomain";
-import WebsocketType from "models/WebsocketType";
+import WebsocketType from "models/constant/WebsocketType";
 import WebsocketPacket from "models/WebsocketPacket";
 import MapContainer from "components/ui/MapContainer";
 import Autocomplete from "@mui/material/Autocomplete";
@@ -18,15 +18,18 @@ import CountryOutline from "components/ui/CountryOutline";
 import { TextField } from "@mui/material";
 import React, { useMemo } from "react";
 import HintComponent from "../HintComponent";
+import GameGetDTO from "models/GameGetDTO";
 
 interface Props {
   currentUser: User | null;
   gameId: string | undefined;
+  gameGetDTO: GameGetDTO | null;
 }
 
 const ScoreboardComponent: React.FC<Props> = (props) => {
   const currentUser = props.currentUser;
   const gameId = props.gameId;
+  const gameGetDTO = props.gameGetDTO;
   const navigate = useNavigate();
   const [currentCountry, setCurrentCountry] = useState<string | null>(null);
   useEffect(() => {
@@ -68,22 +71,10 @@ const ScoreboardComponent: React.FC<Props> = (props) => {
         <Typography variant="h4" sx={{ marginTop: 2 }}>
           The country to guess was: {currentCountry}
         </Typography>
-        <Button
-          sx={{ marginTop: 2 }}
-          variant="outlined"
-          onClick={(e) => createGame()}
-        >
-          New Game
-        </Button>
-        <Button
-          sx={{ marginLeft: 3, marginTop: 2 }}
-          variant="outlined"
-          onClick={() => {
-            navigate("/game");
-          }}
-        >
-          Back to Main Page
-        </Button>
+        <Typography variant="h4" sx={{ marginTop: 2 }}>
+          Time on Scoreboard Remaining until Next Round/Final Scoreboard:{" "}
+          {gameGetDTO ? gameGetDTO.remainingTime : "undefined"}
+        </Typography>
       </div>
     </Container>
   );

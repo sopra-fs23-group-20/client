@@ -7,23 +7,26 @@ import { AxiosError } from "axios";
 import { Client } from "@stomp/stompjs";
 import { useRef } from "react";
 import SockJS from "sockjs-client";
-import GameState from "models/GameState";
+import GameState from "models/constant/GameState";
 import Country from "models/Country";
 import { getDomain } from "helpers/getDomain";
-import WebsocketType from "models/WebsocketType";
+import WebsocketType from "models/constant/WebsocketType";
 import WebsocketPacket from "models/WebsocketPacket";
 import MapContainer from "components/ui/MapContainer";
 import Autocomplete from "@mui/material/Autocomplete";
 import CountryOutline from "components/ui/CountryOutline";
 import { TextField } from "@mui/material";
 import React, { useMemo } from "react";
+import Category from "models/Category";
 
 interface Props {
-  currentCountryHint: Country;
+  currentCaregory: Category | null | undefined;
 }
 
 const HintComponent: React.FC<Props> = (props) => {
-  const currentCountryHint = props.currentCountryHint;
+  if (!props.currentCaregory) return <div></div>;
+
+  const currentCaregory = props.currentCaregory;
 
   const formatNumber = (number: number): string => {
     const formattedNumber = new Intl.NumberFormat("en-US").format(number);
@@ -31,29 +34,41 @@ const HintComponent: React.FC<Props> = (props) => {
   };
   return (
     <>
-      {currentCountryHint.population ? (
+      {currentCaregory.population ? (
         <Typography variant="h3">
           Population:{" "}
-          {formatNumber(currentCountryHint.population.valueOf()).toString()}{" "}
+          {formatNumber(currentCaregory.population.valueOf()).toString()}{" "}
         </Typography>
       ) : (
         <div></div>
       )}
-      {currentCountryHint.outline ? (
-        <CountryOutline country={currentCountryHint.outline.toString()} />
+      {currentCaregory.outline ? (
+        <CountryOutline country={currentCaregory.outline.toString()} />
       ) : (
         <div></div>
       )}
-      {currentCountryHint.location ? (
-        <MapContainer {...currentCountryHint}> </MapContainer>
+      {currentCaregory.location ? (
+        // Pass the properties of currentCaregory to the new Country instance
+        <MapContainer
+          {...new Country(
+            null,
+            currentCaregory.population,
+            currentCaregory.capital,
+            currentCaregory.flag,
+            currentCaregory.location,
+            currentCaregory.outline
+          )}
+        >
+          {" "}
+        </MapContainer>
       ) : (
         <div></div>
       )}
 
-      {currentCountryHint.flag ? (
+      {currentCaregory.flag ? (
         <div>
           <img
-            src={currentCountryHint.flag.toString()}
+            src={currentCaregory.flag.toString()}
             style={{
               maxWidth: "100%",
               marginBottom: "10px",
@@ -64,10 +79,10 @@ const HintComponent: React.FC<Props> = (props) => {
         <div></div>
       )}
 
-      {currentCountryHint.capital ? (
+      {currentCaregory.capital ? (
         <Typography variant="h3">
           {" "}
-          Capital: {currentCountryHint.capital.toString()}{" "}
+          Capital: {currentCaregory.capital.toString()}{" "}
         </Typography>
       ) : (
         <div></div>

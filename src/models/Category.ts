@@ -1,14 +1,15 @@
-import CategoryTypes from "./CategoryTypes"
+import CategoryEnum from "./constant/CategoryEnum"
+import Location from "./Location";
 
 class Category{
-    type: CategoryTypes;
-    capital: String | null;
-    flag: String | null;
-    location: Array<Number> | null;
-    population: Number | null;
-    outline: String | null;
+    type: CategoryEnum;
+    capital: string | null;
+    flag: string | null;
+    location: Location| null;
+    population: number | null;
+    outline: string | null;
 
-    constructor(type: CategoryTypes, capital: String | null = null, flag: String | null = null, location: Array<Number> | null = null, population: Number | null = null, outline: String | null = null){
+    constructor(type: CategoryEnum, capital: string | null = null, flag: string | null = null, location: Location | null = null, population: number | null = null, outline: string | null = null){
         this.type = type;
         this.capital = capital;
         this.flag = flag;

@@ -1,4 +1,4 @@
-enum CategoryTypes{
+enum CategoryEnum{
     LOCATION,
     CAPITAL,
     FLAG,
@@ -6,4 +6,4 @@ enum CategoryTypes{
     OUTLINE
 }
 
-export default CategoryTypes;
+export default CategoryEnum;

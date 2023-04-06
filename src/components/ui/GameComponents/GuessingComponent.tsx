@@ -8,32 +8,26 @@ import Autocomplete from "@mui/material/Autocomplete";
 import { TextField } from "@mui/material";
 import React, { useMemo } from "react";
 import HintComponent from "../HintComponent";
+import GameGetDTO from "models/GameGetDTO";
 
 interface Props {
-  currentCountryHint: Country;
-  timeRemaining: number;
+  gameGetDTO: GameGetDTO | null;
   allCountries: Array<string>;
-  gameId: string | undefined;
-  currentUser: User | null;
-  currentRoundPoints: number | null;
+  currentUserId: string | null;
 }
 
 const GuessingComponent: React.FC<Props> = (props) => {
   const allCountries = props.allCountries;
-  const currentCountryHint = props.currentCountryHint;
-  const timeRemaining = props.timeRemaining;
-  const gameId = props.gameId;
-  const currentUser = props.currentUser;
-  const currentRoundPoints = props.currentRoundPoints;
-
+  const game = props.gameGetDTO;
+  const currentUserId = props.currentUserId;
 
   const [valueEntered, setValueEntered] = useState<string | null>(null);
 
   async function submitGuess(): Promise<void> {
     try {
       console.log("Submitting guess", valueEntered);
-      const request = await api.post(`/games/${gameId}/guesses`, {
-        userId: currentUser?.id,
+      const request = await api.post(`/games/${game?.gameId}/guesses`, {
+        userId: currentUserId,
         guess: valueEntered,
       });
       const requestBody = request.data;
@@ -64,24 +58,29 @@ const GuessingComponent: React.FC<Props> = (props) => {
           )}
         />
 
-        {timeRemaining ? (
+        {game?.remainingTime ? (
           <Typography variant="h4" sx={{ marginLeft: 5 }}>
-            Time Remaining: {timeRemaining.toString()}{" "}
+            Time Remaining: {game.remainingTime.toString()}{" "}
           </Typography>
         ) : (
           <div></div>
         )}
 
-
-        {currentRoundPoints ? (
-            <Typography variant="h4" sx={{ marginLeft: 5 }}>
-              Current Round Points: {currentRoundPoints.toString()}{" "}
-            </Typography>
+        {game?.remainingRoundPoints ? (
+          <Typography variant="h4" sx={{ marginLeft: 5 }}>
+            Current Round Points: {game.remainingRoundPoints.toString()}{" "}
+          </Typography>
         ) : (
-            <div></div>
+          <div></div>
         )}
-
-
+        {game?.remainingRounds && game?.numberOfRounds ? (
+          <Typography variant="h4" sx={{ marginLeft: 5 }}>
+            Currently on Round: {game.numberOfRounds - game.remainingRounds}/
+            {game.numberOfRounds}
+          </Typography>
+        ) : (
+          <div></div>
+        )}
       </Box>
 
       <Button
@@ -93,7 +92,7 @@ const GuessingComponent: React.FC<Props> = (props) => {
       </Button>
 
       <Box sx={{ height: 500, width: 500, marginTop: 10 }}>
-        <HintComponent currentCountryHint={currentCountryHint} />
+        <HintComponent currentCaregory={game?.categoryStack?.currentCategory} />
       </Box>
     </Container>
   );

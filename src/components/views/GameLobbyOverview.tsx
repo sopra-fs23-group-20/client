@@ -35,7 +35,7 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Fab from "@mui/material/Fab";
 import InfoIcon from "@mui/icons-material/Info";
-import Game from "models/Game";
+import GameGetDTO from "models/GameGetDTO";
 
 function createData(
   name: string,
@@ -69,7 +69,7 @@ const GameLobbyOverview: React.FC = () => {
   const [gamesWon, setGamesWon] = useState<number | null>(null);
   const [allCountries, setAllCountries] = useState<Array<string>>([]);
   //if new attribute is need from allLobbies: define it like gameId
-  const [allLobbies, setAllLobbies] = useState<[Game] | null>(null);
+  const [allLobbies, setAllLobbies] = useState<[GameGetDTO] | null>(null);
 
   //for snackbar
   const [open, setOpen] = React.useState(false);
