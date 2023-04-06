@@ -22,55 +22,90 @@ import {
   FormControl,
 } from "@mui/material";
 import { Navigate, useNavigate } from "react-router-dom";
+import CategoryEnum from "models/constant/CategoryEnum";
+import RegionEnum from "models/constant/RegionEnum";
+import GamePostDTO from "models/GamePostDTO";
 
 interface Props {
   gameId: string | undefined;
 }
 
-const GameCreationComponent: React.FC<Props> = (props) => {
+const GameCreation: React.FC<Props> = (props) => {
   const gameId = props.gameId;
+  const navigate = useNavigate();
+
   const [roundSeconds, setRoundSeconds] = useState(30);
   const [randomizedHints, setRandomizedHints] = useState(false);
   const [countries, setCountries] = useState({
-    africa: false,
-    asia: false,
-    europe: false,
-    america: false,
-    oceania: false,
-    all: false,
+    africa: true,
+    asia: true,
+    europe: true,
+    america: true,
+    oceania: true,
   });
-  const [numberOfRounds, setNumberOfRounds] = useState(1);
-  const [openLobby, setOpenLobby] = useState(false);
+  const [numberOfRounds, setNumberOfRounds] = useState(3);
+  const [openLobby, setOpenLobby] = useState(true);
   const [selectedHints, setSelectedHints] = useState({
-    population: false,
-    outline: false,
-    flag: false,
-    location: false,
-    capital: false,
+    population: true,
+    outline: true,
+    flag: true,
+    location: true,
+    capital: true,
   });
 
-  const navigate = useNavigate();
+  function transformHintsToCategorieEnumList(data: {
+    population?: boolean;
+    outline?: boolean;
+    flag?: boolean;
+    location?: boolean;
+    capital?: boolean;
+  }): CategoryEnum[] {
+    let categoriesSelected: CategoryEnum[] = [];
+    if (data.population) categoriesSelected.push(CategoryEnum.POPULATION);
+    if (data.outline) categoriesSelected.push(CategoryEnum.OUTLINE);
+    if (data.flag) categoriesSelected.push(CategoryEnum.FLAG);
+    if (data.location) categoriesSelected.push(CategoryEnum.LOCATION);
+    if (data.capital) categoriesSelected.push(CategoryEnum.CAPITAL);
+    return categoriesSelected;
+  }
+
+  function transformCountriesToRegionsSelectedList(data: {
+    africa?: boolean;
+    asia?: boolean;
+    europe?: boolean;
+    america?: boolean;
+    oceania?: boolean;
+  }): RegionEnum[] {
+    let regionsSelected: RegionEnum[] = [];
+    if (data.africa) regionsSelected.push(RegionEnum.AFRICA);
+    if (data.asia) regionsSelected.push(RegionEnum.ASIA);
+    if (data.europe) regionsSelected.push(RegionEnum.EUROPE);
+    if (data.america) regionsSelected.push(RegionEnum.AMERICA);
+    if (data.oceania) regionsSelected.push(RegionEnum.OCEANIA);
+    return regionsSelected;
+  }
 
   async function startGame(): Promise<void> {
     const userIdString = localStorage.getItem("userId");
 
     try {
       if (userIdString) {
-        const requestBody = {
-          lobbyCreatorUserId: userIdString,
-          roundSeconds: roundSeconds,
-          randomizedHints: randomizedHints,
-          countries: Object.keys(countries).filter(
-            (country) => countries[country as keyof typeof countries]
-          ),
-          numberOfRounds: numberOfRounds,
-          openLobby: openLobby,
-          hints: Object.keys(selectedHints).filter(
-            (hint) => selectedHints[hint as keyof typeof selectedHints]
-          ),
-        };
+        const categoriesSelected =
+          transformHintsToCategorieEnumList(selectedHints);
 
-        const response = await api.post("/games", requestBody);
+        const regionsSelected =
+          transformCountriesToRegionsSelectedList(countries);
+        const gamePostDTO = new GamePostDTO(
+          userIdString,
+          roundSeconds,
+          numberOfRounds,
+          categoriesSelected,
+          regionsSelected,
+          randomizedHints,
+          openLobby
+        );
+        console.log("Game Post DTO: ", gamePostDTO);
+        const response = await api.post("/games", gamePostDTO);
         console.log("Game Post Response: ", response.data);
         navigate(`/game/lobby/${response.data.gameId}`);
       }
@@ -326,4 +361,4 @@ const GameCreationComponent: React.FC<Props> = (props) => {
   );
 };
 
-export default GameCreationComponent;
+export default GameCreation;

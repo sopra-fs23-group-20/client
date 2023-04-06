@@ -1,8 +1,9 @@
 import { GoogleMap, useLoadScript, MarkerF } from "@react-google-maps/api";
 import * as React from "react";
 import Country from "models/Country";
+import Category from "models/Category";
 
-const MapContainer: React.FC<Country> = (country: Country) => {
+const MapContainer: React.FC<Country> = (category: Country) => {
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY || "",
   });
@@ -71,10 +72,10 @@ const MapContainer: React.FC<Country> = (country: Country) => {
     lng: 0,
   };
 
-  if (country.location) {
+  if (category.location) {
     center = {
-      lat: country.location.latitude.valueOf(),
-      lng: country.location.longitude.valueOf(),
+      lat: category.location.latitude.valueOf(),
+      lng: category.location.longitude.valueOf(),
     };
   }
   if (loadError) return <div>Error loading maps</div>;

@@ -20,15 +20,15 @@ import Autocomplete from "@mui/material/Autocomplete";
 import { TextField } from "@mui/material";
 import React, { useMemo } from "react";
 import HintComponent from "../HintComponent";
-import Game from "models/Game";
+import GameGetDTO from "models/GameGetDTO";
 
 interface Props {
-  game: Game | null;
-  allCountries: Array<string>;
+  gameGetDTO: GameGetDTO | null;
 }
 
 const GuessingComponent: React.FC<Props> = (props) => {
-  const game = props.game;
+  console.log("GuessingComponent props: ", props);
+  const game = props.gameGetDTO;
   const userId = localStorage.getItem("userId");
 
   async function startGame(): Promise<void> {
@@ -100,21 +100,25 @@ const GuessingComponent: React.FC<Props> = (props) => {
 
           <FormControl component="fieldset" sx={{ marginTop: "1rem" }}>
             <Typography variant="subtitle1">Selected Hints:</Typography>
-            {game?.categoryStack?.selectedCategories.map((category, index) => (
-              <Box key={index} sx={{ marginBottom: "1rem" }}>
-                <FormControl sx={{ minWidth: "200px" }}>
-                  <TextField
-                    id={`selected-category-${index}`}
-                    label={`Selected Category ${index + 1}`}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    value={category}
-                    disabled={true}
-                  />
-                </FormControl>
-              </Box>
-            ))}
+            {game?.categoryStack?.selectedCategories ? (
+              game?.categoryStack.selectedCategories.map((category, index) => (
+                <Box key={index} sx={{ marginBottom: "1rem" }}>
+                  <FormControl sx={{ minWidth: "200px" }}>
+                    <TextField
+                      id={`selected-category-${index}`}
+                      label={`Selected Category ${index + 1}`}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      value={category}
+                      disabled={true}
+                    />
+                  </FormControl>
+                </Box>
+              ))
+            ) : (
+              <div></div>
+            )}
           </FormControl>
         </DialogContent>
       </FormControl>
