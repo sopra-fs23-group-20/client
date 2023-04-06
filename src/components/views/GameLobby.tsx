@@ -142,6 +142,7 @@ const GameLobby: React.FC = () => {
     fetchUser();
     joinLobby();
   }, [gameId]);
+
   /*
   useEffect(() => {
     if (socket && game !== null && currentUser !== null) {

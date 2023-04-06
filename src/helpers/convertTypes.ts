@@ -1,5 +1,5 @@
-import GameState from "../models/GameState";
-import WebsocketType from "../models/WebsocketType";
+import GameState from "models/constant/GameState";
+import WebsocketType from "models/constant/WebsocketType";
 
 export function convertToGameStateEnum(type: string): GameState | null {
     switch (type) {

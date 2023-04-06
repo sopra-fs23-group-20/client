@@ -25,6 +25,8 @@ const GuessingComponent: React.FC<Props> = (props) => {
   );
   const [currentRoundPoints, setCurrentRoundPoints] = useState<number>(100);
   const [timeRemaining, setTimeRemaining] = useState<number>(0);
+
+  /*
   const socket = useWebSocket();
 
   useEffect(() => {
@@ -70,6 +72,7 @@ const GuessingComponent: React.FC<Props> = (props) => {
         break;
     }
   };
+  */
 
   async function submitGuess(): Promise<void> {
     try {
