@@ -1,29 +1,27 @@
-import React, {useEffect, useState} from "react";
-import {api} from "helpers/api";
-import {Box, Button, Container, TextField, Typography} from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { api } from "helpers/api";
+import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import User from "models/User";
-import {AxiosError} from "axios";
+import { AxiosError } from "axios";
 import Country from "models/Country";
 import Autocomplete from "@mui/material/Autocomplete";
 import HintComponent from "../HintComponent";
-import {convertToWebsocketTypeEnum} from "../../../helpers/convertTypes";
-import WebsocketPacket from "../../../models/WebsocketPacket";
-import WebsocketType from "../../../models/WebsocketType";
-import Game from "../../../models/Game";
-import {useNavigate} from "react-router-dom";
-import {useWebSocket} from "../../../helpers/WebSocketContext";
+import GameGetDTO from "models/GameGetDTO";
 
 interface Props {
+  gameGetDTO: GameGetDTO | null;
   allCountries: Array<string>;
-  gameId: string | undefined;
-  currentUser: User | null;
+  currentUserId: string | null;
 }
 
 const GuessingComponent: React.FC<Props> = (props) => {
-  const {gameId, allCountries, currentUser} = props
+  const allCountries = props.allCountries;
+  const game = props.gameGetDTO;
+  const currentUserId = props.currentUserId;
+
   const [valueEntered, setValueEntered] = useState<string | null>(null);
   const [currentCountryHint, setCurrentCountryHint] = useState<Country>(
-      new Country(null, null, null, null, null, null)
+    new Country(null, null, null, null, null, null)
   );
   const [currentRoundPoints, setCurrentRoundPoints] = useState<number>(100);
   const [timeRemaining, setTimeRemaining] = useState<number>(0);
@@ -33,7 +31,7 @@ const GuessingComponent: React.FC<Props> = (props) => {
     if (socket !== null) {
       socket.addEventListener("message", handleMessage);
       return () => {
-        socket.removeEventListener("message", handleMessage);;
+        socket.removeEventListener("message", handleMessage);
       };
     }
   }, [socket]);
@@ -50,14 +48,14 @@ const GuessingComponent: React.FC<Props> = (props) => {
       case WebsocketType.CATEGORYUPDATE:
         if (websocketPacket.payload.hasOwnProperty("location")) {
           setCurrentCountryHint(
-              new Country(
-                  null,
-                  websocketPacket.payload.population,
-                  websocketPacket.payload.capital,
-                  websocketPacket.payload.flag,
-                  websocketPacket.payload.location,
-                  websocketPacket.payload.outline
-              )
+            new Country(
+              null,
+              websocketPacket.payload.population,
+              websocketPacket.payload.capital,
+              websocketPacket.payload.flag,
+              websocketPacket.payload.location,
+              websocketPacket.payload.outline
+            )
           );
         }
         break;
@@ -76,8 +74,8 @@ const GuessingComponent: React.FC<Props> = (props) => {
   async function submitGuess(): Promise<void> {
     try {
       console.log("Submitting guess", valueEntered);
-      const request = await api.post(`/games/${gameId}/guesses`, {
-        userId: currentUser?.id,
+      const request = await api.post(`/games/${game?.gameId}/guesses`, {
+        userId: currentUserId,
         guess: valueEntered,
       });
       const requestBody = request.data;
@@ -108,24 +106,29 @@ const GuessingComponent: React.FC<Props> = (props) => {
           )}
         />
 
-        {timeRemaining ? (
+        {game?.remainingTime ? (
           <Typography variant="h4" sx={{ marginLeft: 5 }}>
-            Time Remaining: {timeRemaining.toString()}{" "}
+            Time Remaining: {game.remainingTime.toString()}{" "}
           </Typography>
         ) : (
           <div></div>
         )}
 
-
-        {currentRoundPoints ? (
-            <Typography variant="h4" sx={{ marginLeft: 5 }}>
-              Current Round Points: {currentRoundPoints.toString()}{" "}
-            </Typography>
+        {game?.remainingRoundPoints ? (
+          <Typography variant="h4" sx={{ marginLeft: 5 }}>
+            Current Round Points: {game.remainingRoundPoints.toString()}{" "}
+          </Typography>
         ) : (
-            <div></div>
+          <div></div>
         )}
-
-
+        {game?.remainingRounds && game?.numberOfRounds ? (
+          <Typography variant="h4" sx={{ marginLeft: 5 }}>
+            Currently on Round: {game.numberOfRounds - game.remainingRounds}/
+            {game.numberOfRounds}
+          </Typography>
+        ) : (
+          <div></div>
+        )}
       </Box>
 
       <Button
@@ -137,7 +140,7 @@ const GuessingComponent: React.FC<Props> = (props) => {
       </Button>
 
       <Box sx={{ height: 500, width: 500, marginTop: 10 }}>
-        <HintComponent currentCountryHint={currentCountryHint} />
+        <HintComponent currentCaregory={game?.categoryStack?.currentCategory} />
       </Box>
     </Container>
   );

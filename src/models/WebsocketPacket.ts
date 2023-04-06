@@ -1,4 +1,4 @@
-import WebsocketType from './WebsocketType';
+import WebsocketType from './constant/WebsocketType';
 
 
 class WebsocketPacket{

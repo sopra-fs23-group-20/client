@@ -7,10 +7,10 @@ import { AxiosError } from "axios";
 import { Client } from "@stomp/stompjs";
 import { useRef } from "react";
 import SockJS from "sockjs-client";
-import GameState from "models/GameState";
+import GameState from "models/constant/GameState";
 import Country from "models/Country";
 import { getDomain } from "helpers/getDomain";
-import WebsocketType from "models/WebsocketType";
+import WebsocketType from "models/constant/WebsocketType";
 import WebsocketPacket from "models/WebsocketPacket";
 import MapContainer from "components/ui/MapContainer";
 import Autocomplete from "@mui/material/Autocomplete";
@@ -18,21 +18,19 @@ import CountryOutline from "components/ui/CountryOutline";
 import { TextField } from "@mui/material";
 import React, { useMemo } from "react";
 import HintComponent from "../HintComponent";
-import {convertToGameStateEnum, convertToWebsocketTypeEnum} from '../../../helpers/convertTypes'
-import Game from "../../../models/Game";
-import {useWebSocket} from "../../../helpers/WebSocketContext";
-import Grid from "@mui/material/Unstable_Grid2";
-import GameUser from "../../../models/GameUser";
+import GameGetDTO from "models/GameGetDTO";
 
 interface Props {
   currentUser: User | null;
   gameId: string | undefined;
+  gameGetDTO: GameGetDTO | null;
 }
 
 const ScoreboardComponent: React.FC<Props> = (props) => {
   const socket = useWebSocket();
   const currentUser = props.currentUser;
   const gameId = props.gameId;
+  const gameGetDTO = props.gameGetDTO;
   const navigate = useNavigate();
   const [currentCountry, setCurrentCountry] = useState<string | null>(null);
   const [game, setGame] = useState<Game | null>(null);
@@ -46,8 +44,8 @@ const ScoreboardComponent: React.FC<Props> = (props) => {
           },
         });
         console.log("The response is: ", response);
-        const currentState = convertToGameStateEnum(response.data.currentState)
-        setGame( {...response.data, currentState});
+        const currentState = convertToGameStateEnum(response.data.currentState);
+        setGame({ ...response.data, currentState });
       } catch (error: AxiosError | any) {
         alert(error.response.data.message);
         console.error(error);
@@ -68,9 +66,8 @@ const ScoreboardComponent: React.FC<Props> = (props) => {
       await fetchGame();
       await getCurrentCountry();
     }
-    setStates()
+    setStates();
   }, [gameId]);
-
 
   useEffect(() => {
     if (socket) {
@@ -91,7 +88,7 @@ const ScoreboardComponent: React.FC<Props> = (props) => {
     console.log("The saved Packet is: ", websocketPacket);
     switch (websocketPacket.type) {
       case WebsocketType.SCOREBOARDUPDATE:
-        setGame(payload)
+        setGame(payload);
     }
   };
 
@@ -111,80 +108,44 @@ const ScoreboardComponent: React.FC<Props> = (props) => {
     }
   };
 
-  if(game === null || game.participants === null || currentUser === null || currentUser.id === null || game.remainingTime === null){
-    return null
+  if (
+    game === null ||
+    game.participants === null ||
+    currentUser === null ||
+    currentUser.id === null ||
+    game.remainingTime === null
+  ) {
+    return null;
   }
 
-  const participants = Array.from(game.participants)
+  const participants = Array.from(game.participants);
   // @ts-ignore
-  const sortedParticipants = participants.sort((a,b) => (a.gamePoints > b.gamePoints) ? 1 : ((b.gamePoints > a.gamePoints) ? -1 : 0))
-  const currentGameUser : GameUser|undefined = sortedParticipants.find(x => {
-    if(x.userId === null || currentUser.id === null){
-      return false
+  const sortedParticipants = participants.sort((a, b) =>
+    a.gamePoints > b.gamePoints ? 1 : b.gamePoints > a.gamePoints ? -1 : 0
+  );
+  const currentGameUser: GameUser | undefined = sortedParticipants.find((x) => {
+    if (x.userId === null || currentUser.id === null) {
+      return false;
     }
-    return x.userId.toString() === currentUser.id.toString()
-  })
+    return x.userId.toString() === currentUser.id.toString();
+  });
 
   return (
-      <Grid
-          container
-          direction="row"
-          justifyContent="flex-start"
-          alignItems="center"
-      >
-        <Grid xs={12}>
-          {sortedParticipants.map((x, index) => {
-            return (
-                <Grid
-                    container
-                    direction="row"
-                    justifyContent="flex-start"
-                    alignItems="center"
-                    key={`${index}_scoreboard`}
-                >
-                <Grid xs={12}>
-                  <Typography variant={"h2"}>
-                    {x.username}: {x.gamePoints} (current state: {x.currentState})
-                  </Typography>
-                </Grid>
-                </Grid>
-            )
-          })}
-        </Grid>
-
-        <Grid xs={12}>
-          <Typography variant="h4" sx={{ marginTop: 2 }}>
-            The country to guess was: {currentCountry}
-          </Typography>
-        </Grid>
-        <Grid xs={12}>
-          {game.remainingTime > 0 && (
-              <Typography variant="h4" sx={{ marginTop: 2 }}>
-                Remaining seconds until previous round is over: {game.remainingTime}
-              </Typography>
-          )}
-        </Grid>
-        <Grid xs={12}>
-          <Button
-              sx={{ marginTop: 2 }}
-              variant="outlined"
-              onClick={(e) => createGame()}
-              disabled={game.remainingTime > 0}
-          >
-            New Game
-          </Button>
-          <Button
-              sx={{ marginLeft: 3, marginTop: 2 }}
-              variant="outlined"
-              onClick={() => {
-                navigate("/game");
-              }}
-              disabled={game.remainingTime > 0}
-          >
-            Back to Main Page
-          </Button>
-        </Grid>
-      </Grid>
+    <Container>
+      <div>
+        <Typography variant="h2">
+          {" "}
+          Now the Scoreboard should be shown
+        </Typography>
+        <Typography variant="h4" sx={{ marginTop: 2 }}>
+          The country to guess was: {currentCountry}
+        </Typography>
+        <Typography variant="h4" sx={{ marginTop: 2 }}>
+          Time on Scoreboard Remaining until Next Round/Final Scoreboard:{" "}
+          {gameGetDTO ? gameGetDTO.remainingTime : "undefined"}
+        </Typography>
+      </div>
+    </Container>
   );
 };
 export default ScoreboardComponent;
