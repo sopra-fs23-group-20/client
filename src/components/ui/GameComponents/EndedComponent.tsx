@@ -11,6 +11,10 @@ import HintComponent from "../HintComponent";
 
 interface Props {}
 const EndedComponent: React.FC<Props> = (props) => {
-  return <div></div>;
+  return (
+    <div>
+      <Typography variant="h2">Game has Ended</Typography>
+    </div>
+  );
 };
 export default EndedComponent;

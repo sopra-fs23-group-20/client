@@ -17,7 +17,7 @@ import React from "react";
 import axios, { AxiosError } from "axios";
 import SockJS from "sockjs-client";
 import WebsocketPacket from "models/WebsocketPacket";
-import WebsocketType from "models/WebsocketType";
+import WebsocketType from "models/constant/WebsocketType";
 import { Client } from "@stomp/stompjs";
 import { getDomain } from "helpers/getDomain";
 import { useWebSocket } from "helpers/WebSocketContext";
@@ -236,11 +236,7 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
                   gutterBottom
                   variant="h5"
                   component="div"
-                  onClick={() =>
-                    navigate(
-                      `/game/lobbyCreation/${localStorage.getItem("userId")}`
-                    )
-                  }
+                  onClick={() => navigate("/game/lobbyCreation")}
                 >
                   Create a new Game!
                 </Typography>

@@ -1,4 +1,4 @@
-import GameState from "./GameState";
+import GameState from "./constant/GameState";
 
 interface UserData {
     userId: number | null;
