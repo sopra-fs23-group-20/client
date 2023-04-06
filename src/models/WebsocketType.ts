@@ -3,7 +3,8 @@ enum WebsocketType {
     CATEGORYUPDATE,
     TIMEUPDATE,
     PLAYERUPDATE,
-    POINTSUPDATE
+    POINTSUPDATE,
+    SCOREBOARDUPDATE
 }
 
 export default WebsocketType;

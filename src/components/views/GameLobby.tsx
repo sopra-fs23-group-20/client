@@ -17,19 +17,13 @@ import { useWebSocket } from "helpers/WebSocketContext";
 import NotJoinedComponent from "components/ui/GameComponents/NotJoinedComponent";
 import GameUser from "../../models/GameUser";
 import Game from "models/Game";
+import {convertToGameStateEnum, convertToWebsocketTypeEnum} from '../../helpers/convertTypes'
 
 const GameLobby: React.FC = () => {
   const socket = useWebSocket();
   const navigate = useNavigate();
 
-  const [timeRemaining, setTimeRemaining] = useState<number>(0);
-  const [currentRoundPoints, setCurrentRoundPoints] = useState<number>(100);
   const [game, setGame] = useState<Game | null>(null);
-
-  const [currentCountryHint, setCurrentCountryHint] = useState<Country>(
-    new Country(null, null, null, null, null, null)
-  );
-
   const [countryToGuess, setCountryToGuess] = useState<String | null>(null);
   const [allCountries, setAllCountries] = useState<Array<string>>([]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -37,39 +31,19 @@ const GameLobby: React.FC = () => {
   const gameId = window.location.pathname.split("/").pop();
   const websocketUrl = `${getDomain()}/game/${gameId}`;
 
-  function convertToWebsocketTypeEnum(
-    typeString: string
-  ): WebsocketType | undefined {
-    switch (typeString) {
-      case "GAMESTATEUPDATE":
-        return WebsocketType.GAMESTATEUPDATE;
-      case "CATEGORYUPDATE":
-        return WebsocketType.CATEGORYUPDATE;
-      case "TIMEUPDATE":
-        return WebsocketType.TIMEUPDATE;
-      case "PLAYERUPDATE":
-        return WebsocketType.PLAYERUPDATE;
-      case "POINTSUPDATE":
-        return WebsocketType.POINTSUPDATE;
-      default:
-        console.error(`Invalid WebsocketType string received: ${typeString}`);
-        return undefined;
-    }
-  }
-
-  function convertToGameStateEnum(type: string): GameState | null {
-    switch (type) {
-      case "SETUP":
-        return GameState.SETUP;
-      case "GUESSING":
-        return GameState.GUESSING;
-      case "SCOREBOARD":
-        return GameState.SCOREBOARD;
-      case "Ended":
-        return GameState.ENDED;
-      default:
-        console.error(`Invalid GameState string received: ${type}`);
-        return null;
+  async function fetchGame(): Promise<void> {
+    try {
+      const response = await api.get(`/games/${gameId}`, {
+        headers: {
+          Authorization: localStorage.getItem("token")!,
+        },
+      });
+      console.log("The response is: ", response);
+      const currentState = convertToGameStateEnum(response.data.currentState)
+      setGame( {...response.data, currentState});
+    } catch (error: AxiosError | any) {
+      alert(error.response.data.message);
+      console.error(error);
     }
   }
 
@@ -84,21 +58,6 @@ const GameLobby: React.FC = () => {
         localStorage.removeItem("token");
         localStorage.removeItem("id");
         navigate("/register");
-        console.error(error);
-      }
-    }
-    async function fetchGame(): Promise<void> {
-      try {
-        const response = await api.get(`/games/${gameId}`, {
-          headers: {
-            Authorization: localStorage.getItem("token")!,
-          },
-        });
-        console.log("The response is: ", response);
-        const currentState = convertToGameStateEnum(response.data.currentState)
-        setGame( {...response.data, currentState});
-      } catch (error: AxiosError | any) {
-        alert(error.response.data.message);
         console.error(error);
       }
     }
@@ -145,10 +104,10 @@ const GameLobby: React.FC = () => {
     if(game !== null && currentUser !== null){
       handleSetGameState(game.currentState)
     }
-  }, [game, currentUser])
+  }, [currentUser])
 
   useEffect(() => {
-    if (socket) {
+    if (socket && game !== null && currentUser !== null) {
       socket.addEventListener("message", handleMessage);
       return () => {
         socket.removeEventListener("message", handleMessage);
@@ -196,32 +155,13 @@ const GameLobby: React.FC = () => {
         );
         handleSetGameState(gameStateTemp);
         break;
-      case WebsocketType.CATEGORYUPDATE:
-        if (websocketPacket.payload.hasOwnProperty("location")) {
-          setCurrentCountryHint(
-            new Country(
-              null,
-              websocketPacket.payload.population,
-              websocketPacket.payload.capital,
-              websocketPacket.payload.flag,
-              websocketPacket.payload.location,
-              websocketPacket.payload.outline
-            )
-          );
-        }
-        break;
-      case WebsocketType.TIMEUPDATE:
-        console.log("Setting remaining time to: ", websocketPacket.payload);
-        setTimeRemaining(websocketPacket.payload);
-        break;
+
       case WebsocketType.PLAYERUPDATE:
         if(game !== null){
           const gameState = convertToGameStateEnum(websocketPacket.payload)
           handleSetGameState(gameState, game,currentUser)
         }
         break;
-      case WebsocketType.POINTSUPDATE:
-        setCurrentRoundPoints(payload);
     }
   };
 
@@ -263,12 +203,9 @@ const GameLobby: React.FC = () => {
         content = (
             <GuessingComponent
                 {...{
-                  currentCountryHint: currentCountryHint,
-                  timeRemaining: timeRemaining,
                   allCountries: allCountries,
                   gameId: gameId,
                   currentUser: currentUser,
-                  currentRoundPoints: currentRoundPoints,
                 }}
             />
         );
