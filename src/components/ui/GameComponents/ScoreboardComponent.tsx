@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { api, handleError } from "helpers/api";
-import { Button, Container, Typography, Box, Grid } from "@mui/material";
+import { Button, Container, Typography, Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import User from "models/User";
 import { AxiosError } from "axios";
@@ -18,6 +18,11 @@ import CountryOutline from "components/ui/CountryOutline";
 import { TextField } from "@mui/material";
 import React, { useMemo } from "react";
 import HintComponent from "../HintComponent";
+import {convertToGameStateEnum, convertToWebsocketTypeEnum} from '../../../helpers/convertTypes'
+import Game from "../../../models/Game";
+import {useWebSocket} from "../../../helpers/WebSocketContext";
+import Grid from "@mui/material/Unstable_Grid2";
+import GameUser from "../../../models/GameUser";
 
 interface Props {
   currentUser: User | null;
@@ -25,11 +30,30 @@ interface Props {
 }
 
 const ScoreboardComponent: React.FC<Props> = (props) => {
+  const socket = useWebSocket();
   const currentUser = props.currentUser;
   const gameId = props.gameId;
   const navigate = useNavigate();
   const [currentCountry, setCurrentCountry] = useState<string | null>(null);
+  const [game, setGame] = useState<Game | null>(null);
+
   useEffect(() => {
+    async function fetchGame(): Promise<void> {
+      try {
+        const response = await api.get(`/games/${gameId}`, {
+          headers: {
+            Authorization: localStorage.getItem("token")!,
+          },
+        });
+        console.log("The response is: ", response);
+        const currentState = convertToGameStateEnum(response.data.currentState)
+        setGame( {...response.data, currentState});
+      } catch (error: AxiosError | any) {
+        alert(error.response.data.message);
+        console.error(error);
+      }
+    }
+
     const getCurrentCountry = async () => {
       try {
         const response = await api.get(`/games/${gameId}/country`);
@@ -39,8 +63,37 @@ const ScoreboardComponent: React.FC<Props> = (props) => {
         console.error(error);
       }
     };
-    getCurrentCountry();
+
+    async function setStates(): Promise<void> {
+      await fetchGame();
+      await getCurrentCountry();
+    }
+    setStates()
   }, [gameId]);
+
+
+  useEffect(() => {
+    if (socket) {
+      socket.addEventListener("message", handleMessage);
+      return () => {
+        socket.removeEventListener("message", handleMessage);
+      };
+    }
+  }, [socket, currentUser]);
+
+  const handleMessage = (event: MessageEvent) => {
+    const websocketPackage = JSON.parse(event.data);
+    const type = websocketPackage.type;
+    const payload = websocketPackage.payload;
+    console.log("Received a Message through websocket", websocketPackage);
+    const typeTransformed = convertToWebsocketTypeEnum(type);
+    const websocketPacket = new WebsocketPacket(typeTransformed, payload);
+    console.log("The saved Packet is: ", websocketPacket);
+    switch (websocketPacket.type) {
+      case WebsocketType.SCOREBOARDUPDATE:
+        setGame(payload)
+    }
+  };
 
   const createGame = async (): Promise<void> => {
     try {
@@ -58,34 +111,80 @@ const ScoreboardComponent: React.FC<Props> = (props) => {
     }
   };
 
+  if(game === null || game.participants === null || currentUser === null || currentUser.id === null || game.remainingTime === null){
+    return null
+  }
+
+  const participants = Array.from(game.participants)
+  // @ts-ignore
+  const sortedParticipants = participants.sort((a,b) => (a.gamePoints > b.gamePoints) ? 1 : ((b.gamePoints > a.gamePoints) ? -1 : 0))
+  const currentGameUser : GameUser|undefined = sortedParticipants.find(x => {
+    if(x.userId === null || currentUser.id === null){
+      return false
+    }
+    return x.userId.toString() === currentUser.id.toString()
+  })
+
   return (
-    <Container>
-      <div>
-        <Typography variant="h2">
-          {" "}
-          Now the Scoreboard should be shown
-        </Typography>
-        <Typography variant="h4" sx={{ marginTop: 2 }}>
-          The country to guess was: {currentCountry}
-        </Typography>
-        <Button
-          sx={{ marginTop: 2 }}
-          variant="outlined"
-          onClick={(e) => createGame()}
-        >
-          New Game
-        </Button>
-        <Button
-          sx={{ marginLeft: 3, marginTop: 2 }}
-          variant="outlined"
-          onClick={() => {
-            navigate("/game");
-          }}
-        >
-          Back to Main Page
-        </Button>
-      </div>
-    </Container>
+      <Grid
+          container
+          direction="row"
+          justifyContent="flex-start"
+          alignItems="center"
+      >
+        <Grid xs={12}>
+          {sortedParticipants.map((x, index) => {
+            return (
+                <Grid
+                    container
+                    direction="row"
+                    justifyContent="flex-start"
+                    alignItems="center"
+                    key={`${index}_scoreboard`}
+                >
+                <Grid xs={12}>
+                  <Typography variant={"h2"}>
+                    {x.username}: {x.gamePoints} (current state: {x.currentState})
+                  </Typography>
+                </Grid>
+                </Grid>
+            )
+          })}
+        </Grid>
+
+        <Grid xs={12}>
+          <Typography variant="h4" sx={{ marginTop: 2 }}>
+            The country to guess was: {currentCountry}
+          </Typography>
+        </Grid>
+        <Grid xs={12}>
+          {game.remainingTime > 0 && (
+              <Typography variant="h4" sx={{ marginTop: 2 }}>
+                Remaining seconds until previous round is over: {game.remainingTime}
+              </Typography>
+          )}
+        </Grid>
+        <Grid xs={12}>
+          <Button
+              sx={{ marginTop: 2 }}
+              variant="outlined"
+              onClick={(e) => createGame()}
+              disabled={game.remainingTime > 0}
+          >
+            New Game
+          </Button>
+          <Button
+              sx={{ marginLeft: 3, marginTop: 2 }}
+              variant="outlined"
+              onClick={() => {
+                navigate("/game");
+              }}
+              disabled={game.remainingTime > 0}
+          >
+            Back to Main Page
+          </Button>
+        </Grid>
+      </Grid>
   );
 };
 export default ScoreboardComponent;
