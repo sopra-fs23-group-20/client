@@ -8,7 +8,7 @@ import {
   FormControlLabel,
   FormGroup,
   Checkbox,
-  Grid,
+  Grid, IconButton, Tooltip,
 } from "@mui/material";
 import { AxiosError } from "axios";
 import { SelectChangeEvent } from "@mui/material/Select";
@@ -25,6 +25,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import CategoryEnum from "models/constant/CategoryEnum";
 import RegionEnum from "models/constant/RegionEnum";
 import GamePostDTO from "models/GamePostDTO";
+import InfoIcon from "@mui/icons-material/Info";
 
 interface Props {
   gameId: string | undefined;
@@ -280,6 +281,8 @@ const GameCreation: React.FC<Props> = (props) => {
                   label="Oceania"
                 />
               </FormGroup>
+              <div>
+
 
               <FormControlLabel
                 control={
@@ -291,6 +294,12 @@ const GameCreation: React.FC<Props> = (props) => {
                 }
                 label="Open Lobby"
               />
+                <Tooltip title="Open lobbies can be found by everyone in the lobby browser" placement="top">
+                  <IconButton>
+                    <InfoIcon />
+                  </IconButton>
+                </Tooltip>
+              </div>
             </Grid>
             <Grid item xs={5}>
               <FormControl component="fieldset" sx={{ marginTop: "1rem" }}>
