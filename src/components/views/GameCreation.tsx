@@ -14,6 +14,7 @@ import { AxiosError } from "axios";
 import { SelectChangeEvent } from "@mui/material/Select";
 import * as React from "react";
 import { Switch } from "@mui/material";
+import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 
 import {
   TextField,
@@ -162,6 +163,9 @@ const GameCreation: React.FC<Props> = (props) => {
   };
 
   return (
+      <div>
+
+
     <Container
       sx={{
         display: "flex",
@@ -171,6 +175,11 @@ const GameCreation: React.FC<Props> = (props) => {
       }}
     >
       <Typography variant="h2">Choose Game Settings</Typography>
+      <DialogActions>
+        <Button variant="outlined" size="small" color="error" startIcon={<KeyboardArrowLeftIcon />} onClick={() => navigate("/game/")}>
+          Back to Dashboard
+        </Button>
+      </DialogActions>
       <Box
         sx={{
           display: "flex",
@@ -367,6 +376,7 @@ const GameCreation: React.FC<Props> = (props) => {
         </DialogActions>
       </FormControl>
     </Container>
+      </div>
   );
 };
 

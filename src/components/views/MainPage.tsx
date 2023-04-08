@@ -216,6 +216,29 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
 
   return (
     <div>
+      <Button
+          id="basic-button"
+          aria-controls={open ? 'basic-menu' : undefined}
+          aria-haspopup="true"
+          aria-expanded={open ? 'true' : undefined}
+          onClick={handleClick}
+      >
+        Dashboard
+      </Button>
+      <Menu
+          id="basic-menu"
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleClose}
+          MenuListProps={{
+            'aria-labelledby': 'basic-button',
+          }}
+      >
+        <MenuItem onClick={() => navigate("/game/")}>Dashboard</MenuItem>
+        <MenuItem onClick={goToSettings}>My Account</MenuItem>
+        <MenuItem onClick={() => navigate("/game/countries")}>All Countries</MenuItem>
+        <MenuItem onClick={() => logout()}>Logout</MenuItem>
+      </Menu>
       <Container>
         <Typography variant="h1">Dashboard</Typography>
         <Box
@@ -272,26 +295,6 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
             </CardActionArea>
           </Card>
         </Box>
-        <Grid container spacing={1}>
-          <Grid item xs={5}>
-            <Button
-              variant="outlined"
-              onClick={() => navigate("/game/countries")}
-              sx={{ marginTop: 4 }}
-            >
-              Checkout all Countries
-            </Button>
-          </Grid>
-          <Grid item xs={5}></Grid>
-          <Grid item xs={5}>
-            <Button variant="outlined" onClick={() => logout()}>
-              Logout
-            </Button>
-          </Grid>
-          <Button variant="outlined" onClick={() => goToSettings()}>
-            Profile Settings
-          </Button>
-        </Grid>
       </Container>
     </div>
   );
