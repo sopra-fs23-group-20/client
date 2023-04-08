@@ -225,7 +225,7 @@ const Register: React.FC = () => {
             variant="contained"
             onClick={() => navigate("/login")}
           >
-            Register
+            Login
           </Button>
         </Box>
       </Box>
