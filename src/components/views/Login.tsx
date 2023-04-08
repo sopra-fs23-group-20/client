@@ -4,27 +4,43 @@ import User from "models/User";
 import { useNavigate } from "react-router-dom";
 import {
   Button,
-  TextField,
   Typography,
   InputAdornment,
   IconButton,
+  Grid,
+  CircularProgress,
+  TextField,
 } from "@mui/material";
 import { AxiosError } from "axios";
 import { Container } from "@mui/system";
 import Box from "@mui/material/Box";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import Logo from "./images/GTCText.png";
-import InfoIcon from '@mui/icons-material/Info';
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { styled } from "@mui/system";
 
-interface FormFieldProps {
-  label: string;
-  value: string | null;
-  onChange: (value: string) => void;
-}
+const StyledContainer = styled(Container)(() => ({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+  height: "100vh",
+  width: "100vw",
+  backgroundPosition: "center",
+  backgroundRepeat: "no-repeat",
+  backgroundSize: "cover",
+}));
+
+const validationSchema = Yup.object({
+  username: Yup.string().required("Username is required"),
+  password: Yup.string().required("Password is required"),
+});
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
 
+  const [loading, setLoading] = useState(false);
   const [username, setUsername] = useState<string | null>(null);
   const [password, setPassword] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
@@ -32,10 +48,26 @@ const Login: React.FC = () => {
   const handlePasswordToggle = () => {
     setShowPassword(!showPassword);
   };
+  const formik = useFormik({
+    initialValues: {
+      username: "",
+      password: "",
+    },
+    validationSchema: validationSchema,
+    onSubmit: (values) => {
+      setUsername(values.username);
+      setPassword(values.password);
+      doLogin();
+    },
+  });
 
   const doLogin = useCallback(async () => {
+    setLoading(true);
     try {
-      const requestBody = JSON.stringify({ username, password });
+      const requestBody = JSON.stringify({
+        username: formik.values.username,
+        password: formik.values.password,
+      });
       const response = await api.post("/users/login", requestBody);
 
       const user = new User(response.data);
@@ -55,9 +87,10 @@ const Login: React.FC = () => {
 
       navigate(`/game`);
     } catch (error: AxiosError | any) {
+      setLoading(false);
       alert(`Something went wrong during the login: \n${handleError(error)}`);
     }
-  }, [username, password, navigate]);
+  }, [formik.values.username, formik.values.password, navigate]);
 
   useEffect(() => {
     const listener = (event: Event) => {
@@ -80,72 +113,113 @@ const Login: React.FC = () => {
   }, [password, username, doLogin]);
 
   return (
-    <Container
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <img src={Logo} alt="Logo"/>
+    <StyledContainer>
+      <img src={Logo} alt="Logo" />
       <Box component="span" sx={{ p: 2, border: 1 }}>
-      <Typography variant="h1">Login to your account</Typography>
-      <Typography variant="h3" sx={{ marginTop: 5 }}>
-        Username
-      </Typography>
-      <TextField
-        value={username}
-        size="small"
-        placeholder="username"
-        sx={{ marginTop: 1 }}
-        onChange={(e) => setUsername(e.target.value)}
-      />
-      <Typography sx={{ marginTop: 3 }} variant="h3">
-        Password
-      </Typography>
-      <TextField
-        size="small"
-        placeholder="password"
-        type={showPassword ? "text" : "password"}
-        value={password}
-        sx={{ marginTop: 1 }}
-        onChange={(e) => setPassword(e.target.value)}
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <IconButton
-                edge="end"
-                aria-label="toggle password visibility"
-                onClick={handlePasswordToggle}
-              >
-                {showPassword ? <FiEyeOff /> : <FiEye />}
-              </IconButton>
-            </InputAdornment>
-          ),
-        }}
-      />
-      <Button
-        sx={{ margin: 3 }}
-        variant="outlined"
-        disabled={!username || !password}
-        onClick={() => doLogin()}
-      >
-        Login
-      </Button>
-      </Box>
-      <Box sx={{ display: "flex", alignItems: "center" }}>
-        <Typography variant="h5">Not yet a User? </Typography>
-
-        <Button
-          sx={{ marginLeft: 2 }}
-          variant="outlined"
-          onClick={() => navigate(`/register`)}
+        <Typography
+          variant="h1"
+          style={{ fontFamily: "'Roboto Slab', serif", marginBottom: "25px" }}
         >
-          Register
-        </Button>
+          Login to your account
+        </Typography>
+        <form onSubmit={formik.handleSubmit}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Typography
+                variant="h3"
+                style={{ fontFamily: "'Roboto Slab', serif" }}
+              >
+                Username
+              </Typography>
+              <TextField
+                fullWidth
+                id="username"
+                name="username"
+                variant="outlined"
+                value={formik.values.username}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.username && !!formik.errors.username}
+                helperText={formik.touched.username && formik.errors.username}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Typography
+                variant="h3"
+                style={{ fontFamily: "'Roboto Slab', serif" }}
+              >
+                Password
+              </Typography>
+              <TextField
+                fullWidth
+                id="password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                variant="outlined"
+                value={formik.values.password}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.password && !!formik.errors.password}
+                helperText={formik.touched.password && formik.errors.password}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        edge="end"
+                        aria-label="toggle password visibility"
+                        onClick={handlePasswordToggle}
+                      >
+                        {showPassword ? <FiEyeOff /> : <FiEye />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Grid>
+          </Grid>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              marginTop: 2,
+            }}
+          >
+            <Button
+              fullWidth
+              variant="contained"
+              disabled={!(formik.isValid && formik.dirty) || loading}
+              type="submit"
+              sx={{ backgroundColor: "#D5E5F5", color: "#333" }}
+            >
+              {loading ? <CircularProgress size={24} /> : "Login"}
+            </Button>
+          </Box>
+        </form>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            marginTop: 2,
+          }}
+        >
+          <Typography
+            variant="h5"
+            style={{ fontFamily: "'Roboto Slab', serif" }}
+          >
+            Not yet a User?{" "}
+          </Typography>
+          <Button
+            sx={{ marginLeft: 2, backgroundColor: "#D5E5F5", color: "#333" }}
+            variant="contained"
+            onClick={() => navigate("/register")}
+          >
+            Register
+          </Button>
+        </Box>
       </Box>
-    </Container>
+    </StyledContainer>
   );
 };
 
