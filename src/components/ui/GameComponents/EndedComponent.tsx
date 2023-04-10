@@ -1,26 +1,33 @@
-import { useEffect, useState } from "react";
-import { api, handleError } from "helpers/api";
-import { Button, Container, Typography, Box, Grid } from "@mui/material";
-import User from "models/User";
-import { AxiosError } from "axios";
-import Country from "models/Country";
-import Autocomplete from "@mui/material/Autocomplete";
-import { TextField } from "@mui/material";
-import React, { useMemo } from "react";
-import HintComponent from "../HintComponent";
+import { Button, Container, Typography } from "@mui/material";
+import React from "react";
 import { useNavigate } from "react-router-dom";
+import { makeStyles } from "@mui/styles";
 
 interface Props {}
+
 const EndedComponent: React.FC<Props> = (props) => {
   const navigate = useNavigate();
+
   return (
-    <div>
-      <Typography variant="h2">Game has Ended</Typography>
-      <Button variant="contained" onClick={(e) => navigate("/game")}>
-        {" "}
-        Back to Mainpage{" "}
+    <Container>
+      <Typography variant="h2" sx={{ marginBottom: "2rem" }}>
+        Game Over!
+      </Typography>
+      <Typography variant="h4" sx={{ marginBottom: "2rem" }}>
+        Thank you for playing.
+      </Typography>
+      <Typography variant="h4" sx={{ marginBottom: "2rem" }}>
+        The final Scoreboard will be shown here.
+      </Typography>
+      <Button
+        variant="contained"
+        onClick={(e) => navigate("/game")}
+        sx={{ marginTop: "2rem" }}
+      >
+        Back to Mainpage
       </Button>
-    </div>
+    </Container>
   );
 };
+
 export default EndedComponent;
