@@ -42,5 +42,5 @@ const CountryContainer: React.FC<Country> = (country: Country) => {
     </Container>
   );
 };
-//AIzaSyCGpjoidns0V63_IcMTuOzMdeI8pPD7D9Q
+
 export default CountryContainer;
