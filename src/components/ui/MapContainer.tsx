@@ -8,6 +8,8 @@ const MapContainer: React.FC<Country> = (category: Country) => {
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY || "",
   });
 
+  console.log("API KEY " + process.env.REACT_APP_GOOGLE_MAPS_API_KEY);
+
   const mapContainerStyle = {
     width: 500,
     height: 350,
