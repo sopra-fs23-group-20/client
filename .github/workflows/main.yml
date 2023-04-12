@@ -29,12 +29,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
-      - uses: gokiwibot/gcp-yaml-compiler@v1.0
-       with:
-        file: app.yaml
-        env:
-          REACT_APP_GOOGLE_MAPS_API_KEY: ${{ secrets.REACT_APP_GOOGLE_MAPS_API_KEY }}
+      - name: Compile YAML
+        uses: gokiwibot/gcp-yaml-compiler@v1.0
+        with:
+          file: app.yaml
+          env:
+            REACT_APP_GOOGLE_MAPS_API_KEY: ${{ secrets.REACT_APP_GOOGLE_MAPS_API_KEY }}
 
       - name: Use Node.js
         uses: actions/setup-node@v3
@@ -42,8 +42,6 @@ jobs:
           node-version: "18.x"
       - run: npm install
       - run: CI=false npm run build
-
-      
 
       - name: Deploy to App Engine
         id: deploy
