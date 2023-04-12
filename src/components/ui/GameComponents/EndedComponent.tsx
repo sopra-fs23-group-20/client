@@ -1,11 +1,25 @@
 import { Button, Container, Typography } from "@mui/material";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import ScoreboardComponent from "./ScoreboardComponent";
+import User from "../../../models/User";
+import GameGetDTO from "../../../models/GameGetDTO";
 
-interface Props {}
+interface Props {
+    currentUser: User | null;
+    gameId: string | undefined ;
+    gameGetDTO: GameGetDTO | null;
+}
 
 const EndedComponent: React.FC<Props> = (props) => {
   const navigate = useNavigate();
+    const currentUser = props.currentUser;
+    const gameId = props.gameId;
+    const gameGetDTO = props.gameGetDTO;
+
+    if(gameId === null || gameGetDTO === null || currentUser === null){
+        return null
+    }
 
   return (
     <Container>
@@ -15,9 +29,7 @@ const EndedComponent: React.FC<Props> = (props) => {
       <Typography variant="h4" sx={{ marginBottom: "2rem" }}>
         Thank you for playing.
       </Typography>
-      <Typography variant="h4" sx={{ marginBottom: "2rem" }}>
-        The final Scoreboard will be shown here.
-      </Typography>
+        <ScoreboardComponent currentUser={currentUser} gameId={gameId} gameGetDTO={gameGetDTO} isGameEnded={true}/>
       <Button
         variant="contained"
         onClick={(e) => navigate("/game")}
