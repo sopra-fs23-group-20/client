@@ -5,7 +5,7 @@ import Category from "models/Category";
 
 const MapContainer: React.FC<Country> = (category: Country) => {
   const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY || "",
+    googleMapsApiKey: window.REACT_APP_GOOGLE_MAPS_API_KEY || "",
   });
 
   console.log("API KEY " + process.env.REACT_APP_GOOGLE_MAPS_API_KEY);
