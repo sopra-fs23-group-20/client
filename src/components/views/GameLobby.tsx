@@ -233,13 +233,20 @@ const GameLobby: React.FC = () => {
             currentUser: currentUser,
             gameId: gameId,
             gameGetDTO: gameGetDTO,
+            isGameEnded: false,
           }}
         />
       );
       break;
     case GameState.ENDED:
       console.log("case ENDED");
-      content = <EndedComponent />;
+      content = <EndedComponent
+          {...{
+            currentUser: currentUser,
+            gameId: gameId,
+            gameGetDTO: gameGetDTO,
+          }}
+      />;
       break;
     case null:
       console.log("case null");
