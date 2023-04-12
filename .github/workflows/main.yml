@@ -43,13 +43,12 @@ jobs:
           REACT_APP_GOOGLE_MAPS_API_KEY: ${{ secrets.REACT_APP_GOOGLE_MAPS_API_KEY }}
         run: echo "REACT_APP_GOOGLE_MAPS_API_KEY=${REACT_APP_GOOGLE_MAPS_API_KEY}" > .env-for-app-yaml
 
-
       - name: prepare-app-yaml
-      uses: mshick/fast-envsubst@v1
-      with:
-        env-file: .env-for-app-yaml
-        in-file: app.yaml.template
-        out-file: app.yaml
+        uses: mshick/fast-envsubst@v1
+        with:
+          env-file: .env-for-app-yaml
+          in-file: app.yaml.template
+          out-file: app.yaml
 
       - name: Deploy to App Engine
         id: deploy
@@ -58,7 +57,7 @@ jobs:
           deliverables: app.yaml
           version: v1
           credentials: ${{ secrets.GCP_SERVICE_CREDENTIALS }}
-      
+
       - name: Install sshpass
         run: sudo apt-get install -y sshpass
 
