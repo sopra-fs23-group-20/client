@@ -209,7 +209,7 @@ const GuessingComponent: React.FC<Props> = (props) => {
                 </Button>
               </Tooltip>
             </Box>
-            <Typography variant="h2">Joined Players</Typography>
+            <Typography variant="h2">Joined Players: {playerArray.length} </Typography>
             <Typography variant="h4">
               Game Creator{" "}
               <Tooltip title="The game creator has set up the game and defined the settings">
@@ -241,6 +241,15 @@ const GuessingComponent: React.FC<Props> = (props) => {
             <ul>
               {playerArray.map((data, index) => (
                 <Chip
+                    avatar={
+                      <Avatar
+                          alt="Natacha"
+                          src={
+                              "https://api.dicebear.com/6.x/pixel-art/svg?seed=" +
+                              data.username
+                          }
+                      />
+                    }
                   key={data.userId}
                   label={data.username}
                   sx={{ marginLeft: 2 }}
