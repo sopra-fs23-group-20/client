@@ -1,104 +1,168 @@
 h1.Title {
-    font-size: 4rem;
-    text-align: center;
+  font-size: 4rem;
+  text-align: center;
 }
 
 .Trophy {
-    flex: 1;
-    list-style: none;
-    padding: 12px;
-    text-align: center;
-    align-self: flex-end;
-    border: 1px solid #eee;
-    font-size: 110%;
+  flex: 1;
+  list-style: none;
+  padding: 12px;
+  text-align: center;
+  align-self: flex-end;
+  border: 1px solid #eee;
+  font-size: 110%;
+  margin: 0 5px;
+  transition: transform 0.5s ease, box-shadow 0.5s ease;
+  transform-origin: bottom;
 }
 
 .scoreBoardContainer {
-    font-family: 'Orbitron', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+  font-family: "Orbitron", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
 }
 
-
 .name {
-    font-size: 24px;
+  font-size: 24px;
 }
 
 .currentUser {
-    background-color: #21331a;
+  background-color: #21331a;
 }
 
 .Trophy.gold {
-    padding: 48px 12px;
-    order: 1;
+  padding: 48px 12px;
+  order: 1;
+  animation: goldTrophy 1.5s ease infinite;
 }
 
 .Trophy.silver {
-    padding: 24px 12px;
-    order: 0;
+  padding: 24px 12px;
+  order: 0;
+  animation: silverTrophy 1.5s ease infinite;
 }
 
 .Trophy.bronze {
-    order: 3;
-    padding-top: 18px;
+  order: 3;
+  padding-top: 18px;
+  animation: bronzeTrophy 1.5s ease infinite;
+}
+
+.Trophy.gold .icon,
+.Trophy.silver .icon,
+.Trophy.bronze .icon {
+  transition: transform 0.3s ease;
+}
+
+.Trophy.gold .icon:hover {
+  transform: rotate(5deg);
+}
+
+.Trophy.silver .icon:hover {
+  transform: rotate(-5deg);
+}
+
+.Trophy.bronze .icon:hover {
+  transform: rotate(5deg);
 }
 
 .Trophy.gold .icon {
-    color: #fed800;
-    font-size: 60px;
+  color: #fed800;
+  font-size: 60px;
 }
 
 .Trophy.silver .icon {
-    color: #ccc;
-    font-size: 60px;
+  color: #ccc;
+  font-size: 60px;
 }
 
 .Trophy.bronze .icon {
-    color: #cc9900;
-    font-size: 60px;
+  color: #cc9900;
+  font-size: 60px;
+}
+
+.points {
+  font-size: 18px;
+  color: rgb(158, 155, 155);
+  margin-top: 0;
 }
 
 div.Player {
-    display: flex;
-    align-content: space-between;
-    align-items: center;
-    border: 1px solid #ccc;
+  display: flex;
+  align-content: space-between;
+  align-items: center;
+  border: 1px solid #ccc;
 }
 
 div.Player div {
-    flex: 1;
-    padding: 12px 24px;
-    font-size: 150%;
+  flex: 1;
+  padding: 12px 24px;
+  font-size: 150%;
 }
 
 div.Player div.name {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 div.Player div.score {
-    max-width: 50px;
-    transition: color .5s;
-    padding-right: 40px;
+  max-width: 50px;
+  transition: color 0.5s;
+  padding-right: 40px;
 }
 
 .PrizeCabinet ul {
-    padding: 0;
-    margin: 24px auto;
-    width: 500px;
-    display: flex;
-    align-content: space-around;
+  padding: 0;
+  margin: 24px auto;
+  width: 500px;
+  display: flex;
+  align-content: space-around;
 }
 
 div.Board {
-    margin: 30px auto;
-    padding: 0;
-    box-shadow: 1px 1px 5px rgba(0,0,0, 0.2);
+  margin: 30px auto;
+  padding: 0;
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
 }
 
 .tableColumnHeader {
-    font-weight: 1000;
-    font-size: 24px;
+  font-weight: 1000;
+  font-size: 24px;
 }
 
 .tableColumnEntries {
-    font-size: 20px;
+  font-size: 20px;
 }
 
+@keyframes goldTrophy {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes silverTrophy {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes bronzeTrophy {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
