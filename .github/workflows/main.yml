@@ -33,7 +33,9 @@ jobs:
       - name: Replace environment variables in app.yaml
         uses: 73h/gae-app-yaml-replace-env-variables@v0.3
         env:
-          REACT_APP_GOOGLE_MAPS_API_KEY: ${{ secrets.REACT_APP_GOOGLE_MAPS_API_KEY }}
+          MAPS_API_KEY: ${{ secrets.API_KEY }}
+        with:
+          app_yaml_path: "app.yaml"
 
       - name: Use Node.js
         uses: actions/setup-node@v3
