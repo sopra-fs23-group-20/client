@@ -28,17 +28,37 @@ import Tooltip from '@mui/material/Tooltip';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import {string} from "yup";
 import ClickAwayListener from '@mui/material/ClickAwayListener';
+import Chip from '@mui/material/Chip';
+import Stack from '@mui/material/Stack';
+import Avatar from '@mui/material/Avatar';
+import { type } from "os";
+
+
 
 interface Props {
   gameGetDTO: GameGetDTO | null;
 }
 
 const GuessingComponent: React.FC<Props> = (props) => {
-  console.log("GuessingComponent props: ", props);
+  //console.log("GuessingComponent props: ", props);
   const game = props.gameGetDTO;
+  const [allLobbies, setAllLobbies] = useState<[GameGetDTO] | null>(null);
+  //setAllLobbies(response.data);
   const userId = localStorage.getItem("userId");
   const url = window.location.href
   var gameID = game?.gameId;
+  //console.log(" Players: ", game?.participants);
+  const playerSet = game?.participants;
+  //const playerArray = Array.from(playerSet);
+  //console.log(" Player Array: ", playerArray);
+
+  //let playerArray = Array.from( playerSet );
+
+
+
+
+
+
   console.log("url:")
 
   console.log(url)
@@ -85,6 +105,10 @@ const GuessingComponent: React.FC<Props> = (props) => {
     }
 
   }
+  const chipList = [
+    { key: "1", label: "Hello" },
+    { key: "2", label: "Elyas" }
+  ];
 
   return (
     <Container
@@ -157,8 +181,36 @@ const GuessingComponent: React.FC<Props> = (props) => {
               </Tooltip>
 
             </Box>
-            <Typography variant="h2">Game Settings</Typography>
+            <Typography variant="h2">Joined Players</Typography>
+            <Typography variant="h4">Game Creator <Tooltip title="The game creator has set up the game and defined the settings">
+              <IconButton>
+                <InfoIcon />
+              </IconButton>
+            </Tooltip></Typography>
+            <ul>
+              <Stack direction="row" spacing={1}>
+                <Chip
+                    avatar={<Avatar alt="Natacha" src={"https://api.dicebear.com/6.x/pixel-art/svg?seed="+game?.lobbyCreator?.username}/>}
+                    label={game?.lobbyCreator?.username}
+                    variant="outlined"
+                    color="success"
+                />
+              </Stack>
+            </ul>
+            <Typography variant="h4">All Players</Typography>
+            <Typography variant="h5">gvvg</Typography>
 
+            <ul>
+              {chipList.map((data, index) => (
+                  <Chip key={data.key + index} label={data.label} />
+              ))}
+            </ul>
+            <ul>
+              {playerSet.map((data, index) => (
+                  <Chip key={data.key + index} label={data.label} />
+              ))}
+            </ul>
+            <Typography variant="h2">Game Settings</Typography>
             <TextField
               id="round-seconds"
               label="Round Seconds"
