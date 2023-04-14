@@ -12,6 +12,9 @@ import {
   FormControlLabel,
   Checkbox,
   Switch,
+  Stack,
+  Chip,
+  Avatar,
 } from "@mui/material";
 import User from "models/User";
 import { AxiosError } from "axios";
@@ -28,14 +31,7 @@ import Tooltip from "@mui/material/Tooltip";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { string } from "yup";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
-<<<<<<< HEAD
-=======
-import Chip from "@mui/material/Chip";
-import Stack from "@mui/material/Stack";
-import Avatar from "@mui/material/Avatar";
-import { type } from "os";
 import GameUser from "models/GameUser";
->>>>>>> c6ca8471d27adbaaea838a39f8730f7307f3c28e
 
 interface Props {
   gameGetDTO: GameGetDTO | null;
@@ -49,7 +45,6 @@ const GuessingComponent: React.FC<Props> = (props) => {
   const userId = localStorage.getItem("userId");
   const url = window.location.href;
   var gameID = game?.gameId;
-<<<<<<< HEAD
   const [selectedRegions, setSelectedRegions] = useState({
     africa: false,
     asia: false,
@@ -57,9 +52,6 @@ const GuessingComponent: React.FC<Props> = (props) => {
     america: false,
     oceania: false,
   });
-
-=======
-  //console.log(" Players: ", game?.participants);
   const playerSet = game?.participants;
   let playerArray: GameUser[] = [];
   if (playerSet != undefined) {
@@ -76,11 +68,6 @@ const GuessingComponent: React.FC<Props> = (props) => {
     });
   }
 
-  //console.log(" Player Array: ", playerArray);
-
-  //let playerArray = Array.from( playerSet );
-
->>>>>>> c6ca8471d27adbaaea838a39f8730f7307f3c28e
   console.log("url:");
 
   console.log(url);
@@ -231,7 +218,9 @@ const GuessingComponent: React.FC<Props> = (props) => {
                 </Button>
               </Tooltip>
             </Box>
-            <Typography variant="h2">Joined Players: {playerArray.length} </Typography>
+            <Typography variant="h2">
+              Joined Players: {playerArray.length}{" "}
+            </Typography>
             <Typography variant="h4">
               Game Creator{" "}
               <Tooltip title="The game creator has set up the game and defined the settings">
@@ -261,22 +250,37 @@ const GuessingComponent: React.FC<Props> = (props) => {
             <Typography variant="h4">All Players</Typography>
 
             <ul>
-              {playerArray.map((data, index) => (
-                <Chip
+              {playerArray.map(
+                (data: {
+                  username:
+                    | string
+                    | number
+                    | boolean
+                    | React.ReactElement<
+                        any,
+                        string | React.JSXElementConstructor<any>
+                      >
+                    | React.ReactFragment
+                    | null
+                    | undefined;
+                  userId: React.Key | null | undefined;
+                }) => (
+                  <Chip
                     avatar={
                       <Avatar
-                          alt="Natacha"
-                          src={
-                              "https://api.dicebear.com/6.x/pixel-art/svg?seed=" +
-                              data.username
-                          }
+                        alt="Natacha"
+                        src={
+                          "https://api.dicebear.com/6.x/pixel-art/svg?seed=" +
+                          data.username
+                        }
                       />
                     }
-                  key={data.userId}
-                  label={data.username}
-                  sx={{ marginLeft: 2 }}
-                />
-              ))}
+                    key={data.userId}
+                    label={data.username}
+                    sx={{ marginLeft: 2 }}
+                  />
+                )
+              )}
             </ul>
             <Typography variant="h2">Game Settings</Typography>
             <TextField
