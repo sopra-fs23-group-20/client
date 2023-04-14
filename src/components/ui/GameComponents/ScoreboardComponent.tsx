@@ -31,6 +31,7 @@ const ScoreboardComponent: React.FC<Props> = (props) => {
   const gameId = props.gameId;
   const gameGetDTO = props.gameGetDTO;
   const [currentCountry, setCurrentCountry] = useState<string | null>(null);
+  const [winnerUpdated, setWinnerUpdated] = useState(false);
 
   useEffect(() => {
     const getCurrentCountry = async () => {
@@ -71,11 +72,12 @@ const ScoreboardComponent: React.FC<Props> = (props) => {
       const participantsArray = Array.from(gameGetDTO.participants);
       const sortedParticipants = sortParticipantsByScore(participantsArray);
       const winner = sortedParticipants[0];
-      if (winner && winner.userId) {
+      if (winner && winner.userId && !winnerUpdated) {
         updateWinnerGamesWon(winner.userId);
+        setWinnerUpdated(true);
       }
     }
-  }, [isGameEnded, gameGetDTO]);
+  }, [isGameEnded, winnerUpdated, gameGetDTO]);
 
   if (currentUser === null || gameGetDTO === null) {
     return null;
@@ -126,6 +128,7 @@ const ScoreboardComponent: React.FC<Props> = (props) => {
         headers: { Authorization: localStorage.getItem("token")! },
       });
       const userData = response.data;
+      console.log(userData);
 
       const currentGamesWon = userData.gamesWon || 0;
       const updatedGamesWon = currentGamesWon + 1;
