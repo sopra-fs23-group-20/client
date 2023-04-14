@@ -2,13 +2,14 @@ const puppeteer = require("puppeteer");
 const fs = require("fs");
 const os = require("os");
 const path = require("path");
+process.setMaxListeners(50);
 
 //Register URL
 const registerPage = "https://sopra-fs23-group20-client.pktriot.net/register";
 
 //Needs to be created before running the script and then set the game-URL here
 const specificGamePage =
-  "https://sopra-fs23-group20-client.pktriot.net/game/lobby/29976";
+  "https://sopra-fs23-group20-client.pktriot.net/game/lobby/72947";
 
 async function registerUser() {
   const tempDir = await fs.promises.mkdtemp(
@@ -42,9 +43,9 @@ async function registerUser() {
 }
 
 (async () => {
-  //Create 9 Users who join the game
-  for (let i = 0; i < 9; i++) {
-    console.log("Registering user #" + (i + 1));
-    await registerUser();
-  }
+  // Create an array of registration tasks
+  const tasks = Array.from({ length: 9 }, () => registerUser());
+
+  // Run all the tasks in parallel and wait for all of them to complete
+  await Promise.all(tasks);
 })();
