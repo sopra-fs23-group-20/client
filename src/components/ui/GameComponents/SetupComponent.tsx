@@ -12,6 +12,9 @@ import {
   FormControlLabel,
   Checkbox,
   Switch,
+  Stack,
+  Chip,
+  Avatar,
 } from "@mui/material";
 import User from "models/User";
 import { AxiosError } from "axios";
@@ -28,10 +31,6 @@ import Tooltip from "@mui/material/Tooltip";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { string } from "yup";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
-import Chip from "@mui/material/Chip";
-import Stack from "@mui/material/Stack";
-import Avatar from "@mui/material/Avatar";
-import { type } from "os";
 import GameUser from "models/GameUser";
 
 interface Props {
@@ -46,7 +45,13 @@ const GuessingComponent: React.FC<Props> = (props) => {
   const userId = localStorage.getItem("userId");
   const url = window.location.href;
   var gameID = game?.gameId;
-  //console.log(" Players: ", game?.participants);
+  const [selectedRegions, setSelectedRegions] = useState({
+    africa: false,
+    asia: false,
+    europe: false,
+    america: false,
+    oceania: false,
+  });
   const playerSet = game?.participants;
   let playerArray: GameUser[] = [];
   if (playerSet != undefined) {
@@ -62,10 +67,6 @@ const GuessingComponent: React.FC<Props> = (props) => {
       return 0;
     });
   }
-
-  //console.log(" Player Array: ", playerArray);
-
-  //let playerArray = Array.from( playerSet );
 
   console.log("url:");
 
@@ -108,6 +109,14 @@ const GuessingComponent: React.FC<Props> = (props) => {
       }
     }
   }
+
+  const handleRegionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, checked } = event.target;
+    setSelectedRegions({
+      ...selectedRegions,
+      [name as keyof typeof selectedRegions]: checked,
+    });
+  };
 
   return (
     <Container
@@ -209,7 +218,9 @@ const GuessingComponent: React.FC<Props> = (props) => {
                 </Button>
               </Tooltip>
             </Box>
-            <Typography variant="h2">Joined Players: {playerArray.length} </Typography>
+            <Typography variant="h2">
+              Joined Players: {playerArray.length}{" "}
+            </Typography>
             <Typography variant="h4">
               Game Creator{" "}
               <Tooltip title="The game creator has set up the game and defined the settings">
@@ -241,15 +252,15 @@ const GuessingComponent: React.FC<Props> = (props) => {
             <ul>
               {playerArray.map((data, index) => (
                 <Chip
-                    avatar={
-                      <Avatar
-                          alt="Natacha"
-                          src={
-                              "https://api.dicebear.com/6.x/pixel-art/svg?seed=" +
-                              data.username
-                          }
-                      />
-                    }
+                  avatar={
+                    <Avatar
+                      alt="Natacha"
+                      src={
+                        "https://api.dicebear.com/6.x/pixel-art/svg?seed=" +
+                        data.username
+                      }
+                    />
+                  }
                   key={data.userId}
                   label={data.username}
                   sx={{ marginLeft: 2 }}
@@ -305,6 +316,28 @@ const GuessingComponent: React.FC<Props> = (props) => {
                         shrink: true,
                       }}
                       value={category}
+                      disabled={true}
+                    />
+                  </FormControl>
+                </Box>
+              ))
+            ) : (
+              <div></div>
+            )}
+          </FormControl>
+          <FormControl component="fieldset" sx={{ marginTop: "1rem" }}>
+            <Typography variant="subtitle1">Selected Regions:</Typography>
+            {game?.regionSet?.getRegions() ? (
+              game?.regionSet.getRegions().map((region, index) => (
+                <Box key={index} sx={{ marginBottom: "1rem" }}>
+                  <FormControl sx={{ minWidth: "200px" }}>
+                    <TextField
+                      id={`selected-region-${index}`}
+                      label={`Selected Region ${index + 1}`}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      value={region}
                       disabled={true}
                     />
                   </FormControl>

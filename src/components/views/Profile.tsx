@@ -133,6 +133,7 @@ const Profile: React.FC = () => {
         response.data.profilePicture
           ? setProfilePicture(response.data.profilePicture)
           : setProfilePicture(null);
+        console.log(response.data);
         setGamesWon(response.data.gamesWon);
       } catch (error: AxiosError | any) {
         if (error.response.status === 404) {

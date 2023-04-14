@@ -111,14 +111,25 @@ const Login: React.FC = () => {
       document.removeEventListener("keydown", listener);
     };
   }, [password, username, doLogin]);
-
   return (
     <StyledContainer>
-      <img src={Logo} alt="Logo" />
-      <Box component="span" sx={{ p: 2, border: 1 }}>
+      <img src={Logo} alt="Logo" style={{ marginBottom: "2rem" }} />
+      <Box
+        component="span"
+        sx={{
+          p: 2,
+          border: 1,
+          borderColor: "divider",
+          borderRadius: 2,
+          backgroundColor: "background.paper",
+        }}
+      >
         <Typography
           variant="h1"
-          style={{ fontFamily: "'Roboto Slab', serif", marginBottom: "25px" }}
+          sx={{
+            fontFamily: "'Roboto Slab', serif",
+            marginBottom: "25px",
+          }}
         >
           Login to your account
         </Typography>
@@ -127,7 +138,7 @@ const Login: React.FC = () => {
             <Grid item xs={12}>
               <Typography
                 variant="h3"
-                style={{ fontFamily: "'Roboto Slab', serif" }}
+                sx={{ fontFamily: "'Roboto Slab', serif" }}
               >
                 Username
               </Typography>
@@ -146,7 +157,7 @@ const Login: React.FC = () => {
             <Grid item xs={12}>
               <Typography
                 variant="h3"
-                style={{ fontFamily: "'Roboto Slab', serif" }}
+                sx={{ fontFamily: "'Roboto Slab', serif" }}
               >
                 Password
               </Typography>
@@ -190,7 +201,10 @@ const Login: React.FC = () => {
               variant="contained"
               disabled={!(formik.isValid && formik.dirty) || loading}
               type="submit"
-              sx={{ backgroundColor: "#D5E5F5", color: "#333" }}
+              sx={{
+                backgroundColor: "primary.main",
+                color: "primary.contrastText",
+              }}
             >
               {loading ? <CircularProgress size={24} /> : "Login"}
             </Button>
@@ -204,14 +218,15 @@ const Login: React.FC = () => {
             marginTop: 2,
           }}
         >
-          <Typography
-            variant="h5"
-            style={{ fontFamily: "'Roboto Slab', serif" }}
-          >
+          <Typography variant="h5" sx={{ fontFamily: "'Roboto Slab', serif" }}>
             Not yet a User?{" "}
           </Typography>
           <Button
-            sx={{ marginLeft: 2, backgroundColor: "#D5E5F5", color: "#333" }}
+            sx={{
+              marginLeft: 2,
+              backgroundColor: "primary.main",
+              color: "primary.contrastText",
+            }}
             variant="contained"
             onClick={() => navigate("/register")}
           >
@@ -222,5 +237,4 @@ const Login: React.FC = () => {
     </StyledContainer>
   );
 };
-
 export default Login;

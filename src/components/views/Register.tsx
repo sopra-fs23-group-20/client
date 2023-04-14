@@ -122,8 +122,17 @@ const Register: React.FC = () => {
 
   return (
     <StyledContainer>
-      <img src={Logo} alt="Logo" />
-      <Box component="span" sx={{ p: 2, border: 1 }}>
+      <img src={Logo} alt="Logo" style={{ marginBottom: "2rem" }} />
+      <Box
+        component="span"
+        sx={{
+          p: 2,
+          border: 1,
+          borderColor: "divider",
+          borderRadius: 2,
+          backgroundColor: "background.paper",
+        }}
+      >
         <Typography
           variant="h1"
           style={{ fontFamily: "'Roboto Slab', serif", marginBottom: "25px" }}
