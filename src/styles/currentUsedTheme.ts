@@ -1,6 +1,6 @@
 import { createTheme } from '@mui/material/styles';
 
-const chatGPTtheme = createTheme({
+const currentUsedTheme = createTheme({
   palette: {
     mode: 'dark',
     primary: {
@@ -102,4 +102,4 @@ const chatGPTtheme = createTheme({
   },
 });
 
-export default chatGPTtheme;
+export default currentUsedTheme;
