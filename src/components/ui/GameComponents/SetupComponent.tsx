@@ -250,37 +250,22 @@ const GuessingComponent: React.FC<Props> = (props) => {
             <Typography variant="h4">All Players</Typography>
 
             <ul>
-              {playerArray.map(
-                (data: {
-                  username:
-                    | string
-                    | number
-                    | boolean
-                    | React.ReactElement<
-                        any,
-                        string | React.JSXElementConstructor<any>
-                      >
-                    | React.ReactFragment
-                    | null
-                    | undefined;
-                  userId: React.Key | null | undefined;
-                }) => (
-                  <Chip
-                    avatar={
-                      <Avatar
-                        alt="Natacha"
-                        src={
-                          "https://api.dicebear.com/6.x/pixel-art/svg?seed=" +
-                          data.username
-                        }
-                      />
-                    }
-                    key={data.userId}
-                    label={data.username}
-                    sx={{ marginLeft: 2 }}
-                  />
-                )
-              )}
+              {playerArray.map((data, index) => (
+                <Chip
+                  avatar={
+                    <Avatar
+                      alt="Natacha"
+                      src={
+                        "https://api.dicebear.com/6.x/pixel-art/svg?seed=" +
+                        data.username
+                      }
+                    />
+                  }
+                  key={data.userId}
+                  label={data.username}
+                  sx={{ marginLeft: 2 }}
+                />
+              ))}
             </ul>
             <Typography variant="h2">Game Settings</Typography>
             <TextField
