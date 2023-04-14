@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
-import chatGPTtheme from "styles/chatGPTtheme";
+import currentUsedTheme from "styles/currentUsedTheme";
 import { ThemeProvider } from "@mui/material/styles";
 
 const root = ReactDOM.createRoot(
@@ -9,9 +9,7 @@ const root = ReactDOM.createRoot(
 );
 
 root.render(
-
-    <ThemeProvider theme={chatGPTtheme}>
-      <App />
-    </ThemeProvider>
-
+  <ThemeProvider theme={currentUsedTheme}>
+    <App />
+  </ThemeProvider>
 );

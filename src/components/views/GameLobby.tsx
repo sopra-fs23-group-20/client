@@ -23,7 +23,6 @@ const GameLobby: React.FC = () => {
   const navigate = useNavigate();
 
   const [gameGetDTO, setGameGetDTO] = useState<GameGetDTO | null>(null);
-  const [isFetching, setIsFetching] = useState(false);
   const [allCountries, setAllCountries] = useState<Array<string>>([]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
@@ -80,17 +79,26 @@ const GameLobby: React.FC = () => {
     }
   }
 
+  const isFetching = useRef(false);
+
   useEffect(() => {
-    const intervalId = setInterval(async () => {
-      if (!isFetching) {
-        setIsFetching(true);
+    let timeoutId: NodeJS.Timeout | undefined;
+
+    const startPolling = async () => {
+      if (!isFetching.current) {
+        isFetching.current = true;
         await PollingfetchGame();
-        setIsFetching(false);
+        isFetching.current = false;
       }
-    }, 200); // 0.2 seconds
+      timeoutId = setTimeout(startPolling, 200); // 0.2 seconds
+    };
+
+    startPolling();
 
     return () => {
-      clearInterval(intervalId); // Clean up the interval when the component unmounts
+      if (timeoutId) {
+        clearTimeout(timeoutId); // Clean up the timeout when the component unmounts
+      }
     };
   }, []);
 
@@ -240,13 +248,15 @@ const GameLobby: React.FC = () => {
       break;
     case GameState.ENDED:
       console.log("case ENDED");
-      content = <EndedComponent
+      content = (
+        <EndedComponent
           {...{
             currentUser: currentUser,
             gameId: gameId,
             gameGetDTO: gameGetDTO,
           }}
-      />;
+        />
+      );
       break;
     case null:
       console.log("case null");
