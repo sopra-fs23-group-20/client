@@ -21,13 +21,13 @@ import { TextField } from "@mui/material";
 import React, { useMemo } from "react";
 import HintComponent from "../HintComponent";
 import GameGetDTO from "models/GameGetDTO";
-import DeleteIcon from '@mui/icons-material/Delete';
-import InfoIcon from '@mui/icons-material/Info';
-import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import {string} from "yup";
-import ClickAwayListener from '@mui/material/ClickAwayListener';
+import DeleteIcon from "@mui/icons-material/Delete";
+import InfoIcon from "@mui/icons-material/Info";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import { string } from "yup";
+import ClickAwayListener from "@mui/material/ClickAwayListener";
 
 interface Props {
   gameGetDTO: GameGetDTO | null;
@@ -37,15 +37,22 @@ const GuessingComponent: React.FC<Props> = (props) => {
   console.log("GuessingComponent props: ", props);
   const game = props.gameGetDTO;
   const userId = localStorage.getItem("userId");
-  const url = window.location.href
+  const url = window.location.href;
   var gameID = game?.gameId;
-  console.log("url:")
+  const [selectedRegions, setSelectedRegions] = useState({
+    africa: false,
+    asia: false,
+    europe: false,
+    america: false,
+    oceania: false,
+  });
 
-  console.log(url)
+  console.log("url:");
+
+  console.log(url);
 
   const [open, setOpen] = React.useState(false);
   const [openLink, setOpenLink] = React.useState(false);
-
 
   const handleTooltipCloseGameId = () => {
     setOpen(false);
@@ -63,10 +70,8 @@ const GuessingComponent: React.FC<Props> = (props) => {
     setOpenLink(true);
   };
 
-
   async function startGame(): Promise<void> {
     try {
-
       const request = await api.put(
         `/games/${game ? game.gameId : null}/start`,
         userId
@@ -77,14 +82,20 @@ const GuessingComponent: React.FC<Props> = (props) => {
     }
   }
   function createGameId() {
-
-    if (game != null){
-      if(game.gameId != undefined ){
-        navigator.clipboard.writeText(game.gameId.toString())
+    if (game != null) {
+      if (game.gameId != undefined) {
+        navigator.clipboard.writeText(game.gameId.toString());
       }
     }
-
   }
+
+  const handleRegionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, checked } = event.target;
+    setSelectedRegions({
+      ...selectedRegions,
+      [name as keyof typeof selectedRegions]: checked,
+    });
+  };
 
   return (
     <Container
@@ -106,56 +117,85 @@ const GuessingComponent: React.FC<Props> = (props) => {
       <FormControl>
         <DialogContent>
           <FormControl sx={{ minWidth: "200px", marginBottom: "1rem" }}>
-            <Typography variant="h5">You can share this game code, so your friends can join it. <Tooltip title="You can join a lobby using your code when clicking on the 'Join a lobby' button on the Dashboard or use the created link">
-              <IconButton>
-                <InfoIcon />
-              </IconButton>
-            </Tooltip></Typography>
+            <Typography variant="h5">
+              You can share this game code, so your friends can join it.{" "}
+              <Tooltip title="You can join a lobby using your code when clicking on the 'Join a lobby' button on the Dashboard or use the created link">
+                <IconButton>
+                  <InfoIcon />
+                </IconButton>
+              </Tooltip>
+            </Typography>
             <Box
-                component="form"
-                sx={{
-                  '& > :not(style)': { m: 1, width: '20ch' },
-                }}
-                noValidate
-                autoComplete="off"
+              component="form"
+              sx={{
+                "& > :not(style)": { m: 1, width: "20ch" },
+              }}
+              noValidate
+              autoComplete="off"
             >
-              <TextField disabled id="outlined-basic" color="primary" label="Game Id" variant="filled"  defaultValue={game?.gameId}/>
+              <TextField
+                disabled
+                id="outlined-basic"
+                color="primary"
+                label="Game Id"
+                variant="filled"
+                defaultValue={game?.gameId}
+              />
               <Tooltip
-                  PopperProps={{
-                    disablePortal: true,
-                  }}
-                  onClose={handleTooltipCloseGameId}
-                  open={open}
-                  disableFocusListener
-                  disableHoverListener
-                  disableTouchListener
-                  title="Copied Game ID!"
+                PopperProps={{
+                  disablePortal: true,
+                }}
+                onClose={handleTooltipCloseGameId}
+                open={open}
+                disableFocusListener
+                disableHoverListener
+                disableTouchListener
+                title="Copied Game ID!"
               >
-                <Button variant="contained" color="success" endIcon={<ContentCopyIcon />}
-                        onClick={() => {createGameId();handleTooltipOpenGameId();}}
+                <Button
+                  variant="contained"
+                  color="success"
+                  endIcon={<ContentCopyIcon />}
+                  onClick={() => {
+                    createGameId();
+                    handleTooltipOpenGameId();
+                  }}
                 >
                   Copy Game Id
                 </Button>
               </Tooltip>
 
-              <TextField disabled id="outlined-basic" color="secondary" label="Link" variant="filled"  defaultValue={url}/>
+              <TextField
+                disabled
+                id="outlined-basic"
+                color="secondary"
+                label="Link"
+                variant="filled"
+                defaultValue={url}
+              />
               <Tooltip
-                  PopperProps={{
-                    disablePortal: true,
-                  }}
-                  onClose={handleTooltipCloseGameLink}
-                  open={openLink}
-                  disableFocusListener
-                  disableHoverListener
-                  disableTouchListener
-                  title="Copied Game Link!"
+                PopperProps={{
+                  disablePortal: true,
+                }}
+                onClose={handleTooltipCloseGameLink}
+                open={openLink}
+                disableFocusListener
+                disableHoverListener
+                disableTouchListener
+                title="Copied Game Link!"
               >
-              <Button variant="contained" color="success" endIcon={<ContentCopyIcon />}
-                      onClick={() => {navigator.clipboard.writeText(url); handleTooltipOpenGameLink();}}>
-                Copy Game Link
-              </Button>
+                <Button
+                  variant="contained"
+                  color="success"
+                  endIcon={<ContentCopyIcon />}
+                  onClick={() => {
+                    navigator.clipboard.writeText(url);
+                    handleTooltipOpenGameLink();
+                  }}
+                >
+                  Copy Game Link
+                </Button>
               </Tooltip>
-
             </Box>
             <Typography variant="h2">Game Settings</Typography>
 
@@ -207,6 +247,28 @@ const GuessingComponent: React.FC<Props> = (props) => {
                         shrink: true,
                       }}
                       value={category}
+                      disabled={true}
+                    />
+                  </FormControl>
+                </Box>
+              ))
+            ) : (
+              <div></div>
+            )}
+          </FormControl>
+          <FormControl component="fieldset" sx={{ marginTop: "1rem" }}>
+            <Typography variant="subtitle1">Selected Regions:</Typography>
+            {game?.regionSet?.getRegions() ? (
+              game?.regionSet.getRegions().map((region, index) => (
+                <Box key={index} sx={{ marginBottom: "1rem" }}>
+                  <FormControl sx={{ minWidth: "200px" }}>
+                    <TextField
+                      id={`selected-region-${index}`}
+                      label={`Selected Region ${index + 1}`}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      value={region}
                       disabled={true}
                     />
                   </FormControl>
