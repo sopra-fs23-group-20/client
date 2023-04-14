@@ -10,7 +10,7 @@ import {
   Grid,
   Card,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import PropTypes from "prop-types";
 import User from "models/User";
 import React from "react";
@@ -82,6 +82,13 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
         return undefined;
     }
   }
+
+
+  const [isHovered1, setIsHovered1] = useState(false);
+  const [isHovered2, setIsHovered2] = useState(false);
+  const [isHovered3, setIsHovered3] = useState(false);
+
+
 
   const makeOffline = async (): Promise<void> => {
     try {
@@ -216,6 +223,66 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
 
   return (
     <div>
+      <Container>
+        <Typography variant="h1">Dashboard</Typography>
+        <Box
+          sx={{
+            pt: 3,
+            pb: 3,
+            display: "flex",
+            flexWrap: "wrap",
+            "& > :not(style)": {
+              m: 1,
+              width: 128,
+              height: 128,
+            },
+          }}
+        >
+          <Link to="/game/lobbyCreation" style={{ textDecoration: 'none' }}>
+            <Card
+                sx={{ height: '100%', width: '100%'}}
+                elevation={isHovered1 ? 30 : 3}
+                onMouseEnter={() => setIsHovered1(true)}
+                onMouseLeave={() => setIsHovered1(false)}
+            >
+              <CardContent sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+              <Typography gutterBottom variant="h5" component="div">
+                    Create a new Game!
+                  </Typography>
+              </CardContent>
+            </Card>
+          </Link>
+          <Link to="/game/lobby" style={{ textDecoration: 'none' }}>
+            <Card
+                sx={{ height: '100%', width: '100%'}}
+                elevation={isHovered2 ? 30 : 3}
+                onMouseEnter={() => setIsHovered2(true)}
+                onMouseLeave={() => setIsHovered2(false)}
+            >
+              <CardContent sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+              <Typography gutterBottom variant="h5" component="div">
+                    Join a Lobby!
+                  </Typography>
+              </CardContent>
+            </Card>
+          </Link>
+          <Link to="/game/countries" style={{ textDecoration: 'none' }}>
+            <Card
+                sx={{ height: '100%', width: '100%' }}
+                elevation={isHovered3 ? 30 : 3}
+                onMouseEnter={() => setIsHovered3(true)}
+                onMouseLeave={() => setIsHovered3(false)}
+            >
+              <CardContent sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+                <Typography gutterBottom variant="h5" component="div">
+                  Learn!
+                </Typography>
+              </CardContent>
+            </Card>
+          </Link>
+
+        </Box>
+      </Container>
       <Button
           id="basic-button"
           aria-controls={open ? 'basic-menu' : undefined}
@@ -239,63 +306,6 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
         <MenuItem onClick={() => navigate("/game/countries")}>All Countries</MenuItem>
         <MenuItem onClick={() => logout()}>Logout</MenuItem>
       </Menu>
-      <Container>
-        <Typography variant="h1">Dashboard</Typography>
-        <Box
-          sx={{
-            display: "flex",
-            flexWrap: "wrap",
-            "& > :not(style)": {
-              m: 1,
-              width: 128,
-              height: 128,
-            },
-          }}
-        >
-          <Card elevation={0}>
-            <CardActionArea>
-              <CardContent>
-                <Typography
-                  gutterBottom
-                  variant="h5"
-                  component="div"
-                  onClick={() => navigate("/game/lobbyCreation")}
-                >
-                  Create a new Game!
-                </Typography>
-              </CardContent>
-            </CardActionArea>
-          </Card>
-          <Card>
-            <CardActionArea>
-              <CardContent>
-                <Typography
-                  gutterBottom
-                  variant="h5"
-                  component="div"
-                  onClick={() => goToGameLobby()}
-                >
-                  Join a Lobby!
-                </Typography>
-              </CardContent>
-            </CardActionArea>
-          </Card>
-          <Card elevation={3}>
-            <CardActionArea>
-              <CardContent>
-                <Typography
-                  gutterBottom
-                  variant="h5"
-                  component="div"
-                  onClick={() => navigate("/game/countries")}
-                >
-                  Learn!
-                </Typography>
-              </CardContent>
-            </CardActionArea>
-          </Card>
-        </Box>
-      </Container>
     </div>
   );
 };
