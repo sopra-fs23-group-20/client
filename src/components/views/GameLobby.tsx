@@ -19,6 +19,7 @@ import {
   updateGameGetDTO,
 } from "helpers/handleWebsocketUpdate";
 import WebsocketPacket from "models/WebsocketPacket";
+import { getDomain } from "helpers/getDomain";
 
 const GameLobby: React.FC = () => {
   const navigate = useNavigate();
@@ -142,7 +143,7 @@ const GameLobby: React.FC = () => {
   }
 
   useEffect(() => {
-    const websocketUrl = "http://localhost:8080/socket";
+    const websocketUrl = `${getDomain()}/socket`;
 
     const socket = new SockJS(websocketUrl);
 
