@@ -8,13 +8,15 @@ import {
   FormControlLabel,
   FormGroup,
   Checkbox,
-  Grid, IconButton, Tooltip,
+  Grid,
+  IconButton,
+  Tooltip,
 } from "@mui/material";
 import { AxiosError } from "axios";
 import { SelectChangeEvent } from "@mui/material/Select";
 import * as React from "react";
 import { Switch } from "@mui/material";
-import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
+import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 
 import {
   TextField,
@@ -27,6 +29,7 @@ import CategoryEnum from "models/constant/CategoryEnum";
 import RegionEnum from "models/constant/RegionEnum";
 import GamePostDTO from "models/GamePostDTO";
 import InfoIcon from "@mui/icons-material/Info";
+import useTypewriter from "react-typewriter-hook/build/useTypewriter";
 
 interface Props {
   gameId: string | undefined;
@@ -54,6 +57,8 @@ const GameCreation: React.FC<Props> = (props) => {
     location: true,
     capital: true,
   });
+
+  const typewriterText = useTypewriter("Game Settings");
 
   function transformHintsToCategorieEnumList(data: {
     population?: boolean;
@@ -163,220 +168,236 @@ const GameCreation: React.FC<Props> = (props) => {
   };
 
   return (
-      <div>
-
-
-    <Container
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <Typography variant="h2">Choose Game Settings</Typography>
-      <DialogActions>
-        <Button variant="outlined" size="small" color="error" startIcon={<KeyboardArrowLeftIcon />} onClick={() => navigate("/game/")}>
-          Back to Dashboard
-        </Button>
-      </DialogActions>
-      <Box
+    <div>
+      <Container
         sx={{
           display: "flex",
-          justifyContent: "space-around",
-          marginTop: "1rem",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
         }}
-      ></Box>
-      <FormControl>
-        <DialogContent>
-          <Grid item xs={5}>
-            <FormControl sx={{ minWidth: "200px", marginBottom: "1rem" }}>
-              <TextField
-                id="round-seconds"
-                label="Round Seconds"
-                type="number"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                value={roundSeconds}
-                onChange={(e) =>
-                  handleRoundSecondsChange({
-                    target: { value: e.target.value },
-                  } as SelectChangeEvent<number>)
-                }
-                inputProps={{
-                  min: 10,
-                  max: 60,
-                  step: 10,
-                }}
-              />
-            </FormControl>
-            <TextField
-              id="number-of-rounds"
-              label="Number of Rounds"
-              type="number"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              value={numberOfRounds}
-              onChange={handleNumberOfRoundsChange}
-              inputProps={{
-                min: 1,
-                max: 10,
-              }}
-            />
-          </Grid>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={randomizedHints}
-                onChange={handleRandomizedHintsChange}
-              />
-            }
-            label="Randomized Hints"
-          />
-          <Grid container spacing={1}>
+      >
+        <Typography
+          variant="h1"
+          sx={{
+            fontFamily: "'Roboto Slab', serif",
+            fontSize: "3rem",
+            fontWeight: 800,
+            textShadow: "2px 2px 4px rgba(0, 0, 0, 0.25)",
+          }}
+        >
+          {typewriterText}
+        </Typography>
+        <DialogActions>
+          <Button
+            variant="outlined"
+            size="small"
+            color="error"
+            startIcon={<KeyboardArrowLeftIcon />}
+            onClick={() => navigate("/game/")}
+          >
+            Back to Dashboard
+          </Button>
+        </DialogActions>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-around",
+            marginTop: "1rem",
+          }}
+        ></Box>
+        <FormControl>
+          <DialogContent>
             <Grid item xs={5}>
-              <Typography variant="subtitle1">Select Region:</Typography>
-              <FormGroup>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={countries.africa}
-                      onChange={handleCountryChange}
-                      name="africa"
-                    />
+              <FormControl sx={{ minWidth: "200px", marginBottom: "1rem" }}>
+                <TextField
+                  id="round-seconds"
+                  label="Round Seconds"
+                  type="number"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  value={roundSeconds}
+                  onChange={(e) =>
+                    handleRoundSecondsChange({
+                      target: { value: e.target.value },
+                    } as SelectChangeEvent<number>)
                   }
-                  label="Africa"
+                  inputProps={{
+                    min: 10,
+                    max: 60,
+                    step: 10,
+                  }}
                 />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={countries.asia}
-                      onChange={handleCountryChange}
-                      name="asia"
-                    />
-                  }
-                  label="Asia"
+                <TextField
+                  id="number-of-rounds"
+                  label="Number of Rounds"
+                  type="number"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  value={numberOfRounds}
+                  onChange={handleNumberOfRoundsChange}
+                  inputProps={{
+                    min: 1,
+                    max: 10,
+                  }}
+                  sx={{ marginTop: "1rem" }}
                 />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={countries.europe}
-                      onChange={handleCountryChange}
-                      name="europe"
-                    />
-                  }
-                  label="Europe"
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={countries.america}
-                      onChange={handleCountryChange}
-                      name="america"
-                    />
-                  }
-                  label="America"
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={countries.oceania}
-                      onChange={handleCountryChange}
-                      name="oceania"
-                    />
-                  }
-                  label="Oceania"
-                />
-              </FormGroup>
-              <div>
-
-
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={openLobby}
-                    onChange={(event) => handleOpenLobbyChange(event)}
-                    color="primary"
-                  />
-                }
-                label="Open Lobby"
-              />
-                <Tooltip title="Open lobbies can be found by everyone in the lobby browser" placement="top">
-                  <IconButton>
-                    <InfoIcon />
-                  </IconButton>
-                </Tooltip>
-              </div>
+              </FormControl>
             </Grid>
-            <Grid item xs={5}>
-              <FormControl component="fieldset" sx={{ marginTop: "1rem" }}>
-                <Typography variant="subtitle1">Select Hints:</Typography>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={randomizedHints}
+                  onChange={handleRandomizedHintsChange}
+                />
+              }
+              label="Randomized Hints"
+            />
+            <Grid container spacing={1}>
+              <Grid item xs={5}>
+                <Typography variant="subtitle1">Select Region:</Typography>
                 <FormGroup>
                   <FormControlLabel
                     control={
                       <Checkbox
-                        checked={selectedHints.population}
-                        onChange={handleHintChange}
-                        name="population"
+                        checked={countries.africa}
+                        onChange={handleCountryChange}
+                        name="africa"
                       />
                     }
-                    label="Population"
+                    label="Africa"
                   />
                   <FormControlLabel
                     control={
                       <Checkbox
-                        checked={selectedHints.outline}
-                        onChange={handleHintChange}
-                        name="outline"
+                        checked={countries.asia}
+                        onChange={handleCountryChange}
+                        name="asia"
                       />
                     }
-                    label="Outline"
+                    label="Asia"
                   />
                   <FormControlLabel
                     control={
                       <Checkbox
-                        checked={selectedHints.flag}
-                        onChange={handleHintChange}
-                        name="flag"
+                        checked={countries.europe}
+                        onChange={handleCountryChange}
+                        name="europe"
                       />
                     }
-                    label="Flag"
+                    label="Europe"
                   />
                   <FormControlLabel
                     control={
                       <Checkbox
-                        checked={selectedHints.location}
-                        onChange={handleHintChange}
-                        name="location"
+                        checked={countries.america}
+                        onChange={handleCountryChange}
+                        name="america"
                       />
                     }
-                    label="Location"
+                    label="America"
                   />
                   <FormControlLabel
                     control={
                       <Checkbox
-                        checked={selectedHints.capital}
-                        onChange={handleHintChange}
-                        name="capital"
+                        checked={countries.oceania}
+                        onChange={handleCountryChange}
+                        name="oceania"
                       />
                     }
-                    label="Capital"
+                    label="Oceania"
                   />
                 </FormGroup>
-              </FormControl>
+                <div>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={openLobby}
+                        onChange={(event) => handleOpenLobbyChange(event)}
+                        color="primary"
+                      />
+                    }
+                    label="Open Lobby"
+                  />
+                  <Tooltip
+                    title="Open lobbies can be found by everyone in the lobby browser"
+                    placement="top"
+                  >
+                    <IconButton>
+                      <InfoIcon />
+                    </IconButton>
+                  </Tooltip>
+                </div>
+              </Grid>
+              <Grid item xs={5}>
+                <FormControl component="fieldset" sx={{ marginTop: "1rem" }}>
+                  <Typography variant="subtitle1">Select Hints:</Typography>
+                  <FormGroup>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={selectedHints.population}
+                          onChange={handleHintChange}
+                          name="population"
+                        />
+                      }
+                      label="Population"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={selectedHints.outline}
+                          onChange={handleHintChange}
+                          name="outline"
+                        />
+                      }
+                      label="Outline"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={selectedHints.flag}
+                          onChange={handleHintChange}
+                          name="flag"
+                        />
+                      }
+                      label="Flag"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={selectedHints.location}
+                          onChange={handleHintChange}
+                          name="location"
+                        />
+                      }
+                      label="Location"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={selectedHints.capital}
+                          onChange={handleHintChange}
+                          name="capital"
+                        />
+                      }
+                      label="Capital"
+                    />
+                  </FormGroup>
+                </FormControl>
+              </Grid>
             </Grid>
-          </Grid>
-        </DialogContent>
-        <DialogActions>
-          <Button variant="outlined" onClick={() => startGame()}>
-            Save Settings
-          </Button>
-        </DialogActions>
-      </FormControl>
-    </Container>
-      </div>
+          </DialogContent>
+          <DialogActions>
+            <Button variant="outlined" onClick={() => startGame()}>
+              Save Settings
+            </Button>
+          </DialogActions>
+        </FormControl>
+      </Container>
+    </div>
   );
 };
 
