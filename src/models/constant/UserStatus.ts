@@ -1,5 +1,5 @@
 enum UserStatus {
-    OFFLINE,
-    ONLINE,
+  OFFLINE = "OFFLINE",
+  ONLINE = "ONLINE",
 }
 export default UserStatus;

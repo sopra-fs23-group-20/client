@@ -93,6 +93,28 @@ const GuessingComponent: React.FC<Props> = (props) => {
     return formattedNumber.replace(/,/g, "'");
   };
 
+  const hasPlayerGuessed = (): boolean => {
+    const gameUsers = game?.participants;
+    if (gameUsers == null || gameUsers == undefined) return false;
+    const gameUsersArray = Array.from(gameUsers);
+    for (let i = 0; i < gameUsersArray.length; i++) {
+      if (gameUsersArray[i].userId == currentUserId) {
+        if (
+          gameUsersArray[i].hasAlreadyGuessed == null ||
+          gameUsersArray[i].hasAlreadyGuessed == undefined
+        ) {
+          return false;
+        }
+        if (gameUsersArray[i].hasAlreadyGuessed == true) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    }
+    return false;
+  };
+
   return (
     <Container>
       <Box
@@ -149,6 +171,7 @@ const GuessingComponent: React.FC<Props> = (props) => {
         variant="outlined"
         sx={{ marginTop: 2 }}
         onClick={() => submitGuess()}
+        disabled={hasPlayerGuessed()}
       >
         Submit your Guess
       </Button>

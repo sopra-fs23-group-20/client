@@ -30,6 +30,7 @@
     "react-router-dom": "^6.9.0",
     "react-scripts": "^5.0.0",
     "react-simple-maps": "^3.0.0",
+    "react-stomp": "^5.1.0",
     "react-typewriter-hook": "^1.0.1",
     "sockjs-client": "^1.6.1",
     "typescript": "^4.9.5",

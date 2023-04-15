@@ -5,21 +5,22 @@ import { useNavigate } from "react-router-dom";
 import User from "models/User";
 import { AxiosError } from "axios";
 import GameState from "models/constant/GameState";
-import Country from "models/Country";
-import { getDomain } from "helpers/getDomain";
 import WebsocketType from "models/constant/WebsocketType";
-import WebsocketPacket from "models/WebsocketPacket";
 import GuessingComponent from "components/ui/GameComponents/GuessingComponent";
 import ScoreboardComponent from "components/ui/GameComponents/ScoreboardComponent";
 import SetupComponent from "components/ui/GameComponents/SetupComponent";
 import EndedComponent from "components/ui/GameComponents/EndedComponent";
-import { useWebSocket } from "helpers/WebSocketContext";
 import NotJoinedComponent from "components/ui/GameComponents/NotJoinedComponent";
-import GameUser from "../../models/GameUser";
 import GameGetDTO from "models/GameGetDTO";
+import { Client, IMessage } from "@stomp/stompjs";
+import SockJS from "sockjs-client";
+import {
+  convertToGameStateEnum,
+  updateGameGetDTO,
+} from "helpers/handleWebsocketUpdate";
+import WebsocketPacket from "models/WebsocketPacket";
 
 const GameLobby: React.FC = () => {
-  const socket = useWebSocket();
   const navigate = useNavigate();
 
   const [gameGetDTO, setGameGetDTO] = useState<GameGetDTO | null>(null);
@@ -28,44 +29,6 @@ const GameLobby: React.FC = () => {
 
   const gameId = window.location.pathname.split("/").pop();
   const currentUserId = localStorage.getItem("userId");
-  const websocketUrl = `${getDomain()}/game/${gameId}`;
-
-  function convertToWebsocketTypeEnum(
-    typeString: string
-  ): WebsocketType | undefined {
-    switch (typeString) {
-      case "GAMESTATEUPDATE":
-        return WebsocketType.GAMESTATEUPDATE;
-      case "CATEGORYUPDATE":
-        return WebsocketType.CATEGORYUPDATE;
-      case "TIMEUPDATE":
-        return WebsocketType.TIMEUPDATE;
-      case "PLAYERUPDATE":
-        return WebsocketType.PLAYERUPDATE;
-      case "POINTSUPDATE":
-        return WebsocketType.POINTSUPDATE;
-      default:
-        console.error(`Invalid WebsocketType string received: ${typeString}`);
-        return undefined;
-    }
-  }
-
-  function convertToGameStateEnum(type: string | null): GameState | null {
-    if (type === null) return null;
-    switch (type) {
-      case "SETUP":
-        return GameState.SETUP;
-      case "GUESSING":
-        return GameState.GUESSING;
-      case "SCOREBOARD":
-        return GameState.SCOREBOARD;
-      case "ENDED":
-        return GameState.ENDED;
-      default:
-        console.error(`Invalid GameState string received: ${type}`);
-        return null;
-    }
-  }
 
   async function PollingfetchGame(): Promise<void> {
     try {
@@ -80,7 +43,7 @@ const GameLobby: React.FC = () => {
   }
 
   const isFetching = useRef(false);
-
+  /*
   useEffect(() => {
     let timeoutId: NodeJS.Timeout | undefined;
 
@@ -90,7 +53,7 @@ const GameLobby: React.FC = () => {
         await PollingfetchGame();
         isFetching.current = false;
       }
-      timeoutId = setTimeout(startPolling, 200); // 0.2 seconds
+      timeoutId = setTimeout(startPolling, 150000); // 0.2 seconds
     };
 
     startPolling();
@@ -100,7 +63,7 @@ const GameLobby: React.FC = () => {
         clearTimeout(timeoutId); // Clean up the timeout when the component unmounts
       }
     };
-  }, []);
+  }, []);*/
 
   useEffect(() => {
     async function fetchCountries(): Promise<void> {
@@ -113,6 +76,18 @@ const GameLobby: React.FC = () => {
         localStorage.removeItem("token");
         localStorage.removeItem("id");
         navigate("/register");
+        console.error(error);
+      }
+    }
+
+    async function fetchGame(): Promise<void> {
+      try {
+        const response = await api.get(`/games/${gameId}`);
+        const newGameGetDTO: GameGetDTO = { ...response.data };
+        console.log("Fetched Game : ", newGameGetDTO);
+        setGameGetDTO(newGameGetDTO);
+      } catch (error: AxiosError | any) {
+        alert(error.response.data.message);
         console.error(error);
       }
     }
@@ -146,56 +121,65 @@ const GameLobby: React.FC = () => {
       }
     }
 
+    fetchGame();
     fetchCountries();
     fetchUser();
     joinLobby();
+  }, []);
+
+  function handleGameUpdate(message: IMessage): void {
+    const messageObject = JSON.parse(message.body);
+    const websocketPacket = new WebsocketPacket(
+      messageObject.type,
+      messageObject.payload
+    );
+
+    setGameGetDTO((prevGameGetDTO) => {
+      const newGameGetDTO = updateGameGetDTO(prevGameGetDTO, websocketPacket);
+      console.log("New GameGetDTO: ", newGameGetDTO);
+      return newGameGetDTO;
+    });
+  }
+
+  useEffect(() => {
+    const websocketUrl = "http://localhost:8080/socket";
+
+    const socket = new SockJS(websocketUrl);
+
+    const stompClient = new Client({
+      webSocketFactory: () => socket,
+      debug: (str) => console.log(str),
+    });
+
+    stompClient.onConnect = (frame) => {
+      stompClient.subscribe(`/topic/games/${gameId}`, (message) => {
+        handleGameUpdate(message);
+      });
+    };
+
+    stompClient.onStompError = (frame) => {
+      console.error(`Stomp error: ${frame}`);
+    };
+
+    stompClient.activate();
+
+    return () => {
+      stompClient.deactivate();
+    };
   }, [gameId]);
 
-  /*
   useEffect(() => {
-    if (socket && game !== null && currentUser !== null) {
-      socket.addEventListener("message", handleMessage);
-      return () => {
-        socket.removeEventListener("message", handleMessage);
-      };
+    console.log("UPDATE OF GGGGameGetDTO: ", gameGetDTO);
+  }, [gameGetDTO]);
+
+  function getPlayersGameState(): GameState | null {
+    if (gameGetDTO?.currentState == null) {
+      console.log("current state is null");
+      return null;
     }
-  }, [socket]);
 
-  const handleMessage = (event: MessageEvent) => {
-    
-    const websocketPackage = JSON.parse(event.data);
-    const type = websocketPackage.type;
-    const payload = websocketPackage.payload;
-    console.log("Received a Message through websocket", websocketPackage);
-    const typeTransformed = convertToWebsocketTypeEnum(type);
-    const websocketPacket = new WebsocketPacket(typeTransformed, payload);
-    console.log("The saved Packet is: ", websocketPacket);
-    switch (websocketPacket.type) {
-      case WebsocketType.GAMESTATEUPDATE:
-        if (websocketPacket.payload === "SCOREBOARD") {
-          getCountry();
-        }
-        const gameStateTemp: GameState | null = convertToGameStateEnum(
-          websocketPacket.payload
-        );
-        handleSetGameState(gameStateTemp);
-        break;
-
-      case WebsocketType.PLAYERUPDATE:
-        if (game !== null) {
-          const gameState = convertToGameStateEnum(websocketPacket.payload);
-          handleSetGameState(gameState, game, currentUser);
-        }
-        break;
-    }
-   
-  };
- */
-
-  let content = <Typography variant="h2">Loading...</Typography>;
-
-  function getPlayersGameState(): string | null {
     const participants = gameGetDTO?.participants;
+
     if (participants == null || currentUserId == null) {
       return null;
     }
@@ -204,15 +188,20 @@ const GameLobby: React.FC = () => {
         if (participant.currentState == null) {
           return null;
         }
-        return participant.currentState.toString();
+        return participant.currentState;
       }
     }
     return null;
   }
 
-  switch (convertToGameStateEnum(getPlayersGameState())) {
+  let content = <Typography variant="h2">Loading...</Typography>;
+  if (gameGetDTO?.currentState == null) {
+    return content;
+  }
+
+  switch (gameGetDTO.currentState) {
     case GameState.SETUP:
-      console.log("case SETUP");
+      console.log("Game state is setup");
       content = (
         <SetupComponent
           {...{
@@ -222,7 +211,7 @@ const GameLobby: React.FC = () => {
       );
       break;
     case GameState.GUESSING:
-      console.log("case Guessing");
+      console.log("Game state is guessing");
       content = (
         <GuessingComponent
           {...{
@@ -234,7 +223,7 @@ const GameLobby: React.FC = () => {
       );
       break;
     case GameState.SCOREBOARD:
-      console.log("case Scoreboard");
+      console.log("Game state is scoreboard");
       content = (
         <ScoreboardComponent
           {...{
@@ -247,7 +236,7 @@ const GameLobby: React.FC = () => {
       );
       break;
     case GameState.ENDED:
-      console.log("case ENDED");
+      console.log("Game state is ended");
       content = (
         <EndedComponent
           {...{
@@ -259,8 +248,12 @@ const GameLobby: React.FC = () => {
       );
       break;
     case null:
-      console.log("case null");
+      console.log("Game state is null");
       content = <NotJoinedComponent gameId={gameId}></NotJoinedComponent>;
+      break;
+    default:
+      console.log("Unexpected game state:", gameGetDTO?.currentState);
+      content = <div>Unexpected game state</div>;
       break;
   }
 

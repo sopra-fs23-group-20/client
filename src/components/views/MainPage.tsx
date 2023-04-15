@@ -22,7 +22,6 @@ import WebsocketPacket from "models/WebsocketPacket";
 import WebsocketType from "models/constant/WebsocketType";
 import { Client } from "@stomp/stompjs";
 import { getDomain } from "helpers/getDomain";
-import { useWebSocket } from "helpers/WebSocketContext";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import CardContent from "@mui/material/CardContent";
@@ -47,8 +46,6 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
     setAnchorEl(null);
   };
   const navigate = useNavigate();
-
-  const socket = useWebSocket();
 
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
