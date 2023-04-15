@@ -9,7 +9,7 @@ const registerPage = "https://sopra-fs23-group20-client.pktriot.net/register";
 
 //Needs to be created before running the script and then set the game-URL here
 const specificGamePage =
-  "https://sopra-fs23-group20-client.pktriot.net/game/lobby/72947";
+  "https://sopra-fs23-group20-client.pktriot.net/game/lobby/30799";
 
 async function registerUser() {
   const tempDir = await fs.promises.mkdtemp(
@@ -22,7 +22,10 @@ async function registerUser() {
   });
 
   const page = await browser.newPage();
-  await page.goto(registerPage, { waitUntil: "networkidle2" });
+  await page.goto(registerPage, {
+    waitUntil: "networkidle2",
+    timeout: 10000000,
+  });
 
   // Generate random username and password
   const username = "user_" + Math.random().toString(36).substring(7);
@@ -36,7 +39,7 @@ async function registerUser() {
   await page.type(passwordInputSelector, password);
   await page.click(registerButtonSelector);
 
-  await page.waitForNavigation(); // Wait for the registration process to complete
+  await page.waitForNavigation({ timeout: 10000000 }); // Wait for the registration process to complete
 
   console.log(`Registered: ${username} / ${password}`);
   await page.goto(specificGamePage);
@@ -44,7 +47,7 @@ async function registerUser() {
 
 (async () => {
   // Create an array of registration tasks
-  const tasks = Array.from({ length: 9 }, () => registerUser());
+  const tasks = Array.from({ length: 19 }, () => registerUser());
 
   // Run all the tasks in parallel and wait for all of them to complete
   await Promise.all(tasks);
