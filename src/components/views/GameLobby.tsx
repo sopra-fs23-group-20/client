@@ -28,7 +28,7 @@ const GameLobby: React.FC = () => {
   const [allCountries, setAllCountries] = useState<Array<string>>([]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
-  const isWebsocketConnected = useRef(false);
+  const [usePolling, setUsePolling] = useState(false);
   const isFetching = useRef(false);
 
   const gameId = window.location.pathname.split("/").pop();
@@ -55,10 +55,12 @@ const GameLobby: React.FC = () => {
         await PollingfetchGame();
         isFetching.current = false;
       }
-      timeoutId = setTimeout(startPolling, 200); // 0.2 seconds
+      if (usePolling) {
+        timeoutId = setTimeout(startPolling, 200); // 0.2 seconds
+      }
     };
 
-    if (!isWebsocketConnected.current) {
+    if (usePolling) {
       startPolling();
     }
 
@@ -67,7 +69,7 @@ const GameLobby: React.FC = () => {
         clearTimeout(timeoutId); // Clean up the timeout when the component unmounts
       }
     };
-  }, [isWebsocketConnected.current]);
+  }, [usePolling]);
 
   useEffect(() => {
     async function fetchCountries(): Promise<void> {
@@ -141,7 +143,7 @@ const GameLobby: React.FC = () => {
     });
 
     stompClient.onConnect = (frame) => {
-      isWebsocketConnected.current = true;
+      setUsePolling(false);
       stompClient.subscribe(`/topic/games/${gameId}`, (message) => {
         handleGameUpdate(message);
       });
@@ -149,19 +151,18 @@ const GameLobby: React.FC = () => {
 
     stompClient.onStompError = (frame) => {
       console.error(`Stomp error: ${frame}`);
-      isWebsocketConnected.current = false;
+      setUsePolling(true);
     };
 
     stompClient.onWebSocketClose = (event) => {
       console.error("WebSocket connection closed:", event);
-      isWebsocketConnected.current = false;
+      setUsePolling(true);
     };
 
     stompClient.activate();
 
     return () => {
       stompClient.deactivate();
-      isWebsocketConnected.current = false;
     };
   }, [gameId]);
 
