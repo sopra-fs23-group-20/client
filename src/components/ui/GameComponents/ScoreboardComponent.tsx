@@ -72,7 +72,18 @@ const ScoreboardComponent: React.FC<Props> = (props) => {
       const participantsArray = Array.from(gameGetDTO.participants);
       const sortedParticipants = sortParticipantsByScore(participantsArray);
       const winner = sortedParticipants[0];
-      if (winner && winner.userId && !winnerUpdated) {
+      const isDraw =
+        winner &&
+        sortedParticipants[1] &&
+        winner.gamePoints === sortedParticipants[1].gamePoints;
+      const onlyLobbyCreator = participantsArray.length === 1;
+      if (
+        winner &&
+        winner.userId &&
+        !winnerUpdated &&
+        !onlyLobbyCreator &&
+        !isDraw
+      ) {
         updateWinnerGamesWon(winner.userId);
         setWinnerUpdated(true);
       }
