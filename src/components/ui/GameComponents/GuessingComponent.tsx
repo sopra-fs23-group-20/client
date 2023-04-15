@@ -95,7 +95,16 @@ const GuessingComponent: React.FC<Props> = (props) => {
 
   return (
     <Container>
-      <Typography variant="h2">You are now in a Game!</Typography>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Typography variant="h2">You are now in a Game!</Typography>
+      </Box>
 
       <Box sx={{ display: "flex", alignItems: "center", marginTop: 5 }}>
         <Autocomplete
