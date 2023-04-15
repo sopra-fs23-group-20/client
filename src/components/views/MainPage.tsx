@@ -37,39 +37,6 @@ interface Props {
   onTokenChange: (token: string | null) => void;
 }
 
-const useTypewriterr = (text: string, speed = 100, pause = 1000) => {
-  const [typewriterText, setTypewriterText] = useState("");
-
-  useEffect(() => {
-    let index = 0;
-    let isDeleting = false;
-
-    const typeWriter = () => {
-      if (!isDeleting && index < text.length) {
-        setTypewriterText((prev) => prev + text.charAt(index));
-        index++;
-        setTimeout(typeWriter, speed);
-      } else if (!isDeleting && index === text.length) {
-        setTimeout(() => {
-          isDeleting = true;
-          typeWriter();
-        }, pause);
-      } else if (isDeleting && index > 0) {
-        setTypewriterText((prev) => prev.substring(0, prev.length - 1));
-        index--;
-        setTimeout(typeWriter, speed);
-      } else if (isDeleting && index === 0) {
-        isDeleting = false;
-        setTimeout(typeWriter, pause);
-      }
-    };
-
-    typeWriter();
-  }, [text, speed, pause]);
-
-  return typewriterText;
-};
-
 const MainPage: React.FC<Props> = ({ onTokenChange }) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -88,38 +55,8 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
   const userId = localStorage.getItem("userId");
   const token = localStorage.getItem("token");
 
-  const typewriterText = useTypewriterr("Select game mode", 100, 1000);
+  const typewriterText = useTypewriter("Welcome to GuessTheCountry!");
 
-  const cardAnimation = keyframes`
-  0% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-  100% {
-    transform: translateY(0);
-  }
-`;
-  const AnimatedCard = styled(Card)`
-    &:hover {
-      transform: scale(1.05);
-      background-color: ${(props) =>
-        props.theme.palette.mode === "dark"
-          ? darken(props.theme.palette.background.paper, 0.1)
-          : lighten(props.theme.palette.background.paper, 0.1)};
-    }
-  `;
-  const AnimatedButton = styled(Button)`
-    transition: all 0.3s ease;
-    &:hover {
-      background-color: ${(props) =>
-        alpha(
-          props.theme.palette.primary.main,
-          props.theme.palette.action.hoverOpacity
-        )};
-    }
-  `;
   const [websocketPacket, setWebsocketPacket] =
     useState<WebsocketPacket | null>(null);
 
@@ -207,55 +144,26 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
     <Container>
       <Box
         sx={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          mt: 2,
-          ml: 2,
+          width: "800px",
+          height: "80px",
+          justifyContent: "center",
+          alignItems: "center",
+          display: "flex",
+          flexDirection: "column",
         }}
       >
-        <AnimatedButton
-          id="basic-button"
-          aria-controls={open ? "basic-menu" : undefined}
-          aria-haspopup="true"
-          aria-expanded={open ? "true" : undefined}
-          onClick={handleClick}
+        <Typography
+          variant="h1"
           sx={{
             fontFamily: "'Roboto Slab', serif",
+            fontSize: "3rem",
+            fontWeight: 800,
+            textShadow: "2px 2px 4px rgba(0, 0, 0, 0.25)",
           }}
         >
-          Menu
-        </AnimatedButton>
-        <Menu
-          id="basic-menu"
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleClose}
-          MenuListProps={{
-            "aria-labelledby": "basic-button",
-          }}
-        >
-          <MenuItem onClick={() => navigate(`/game/profile/${userId}`)}>
-            My Account
-          </MenuItem>
-          <MenuItem onClick={() => navigate("/game/countries")}>
-            All Countries
-          </MenuItem>
-          <MenuItem onClick={() => logout()}>Logout</MenuItem>
-        </Menu>
+          {typewriterText}
+        </Typography>
       </Box>
-      <Typography
-        variant="h1"
-        sx={{
-          fontFamily: "'Roboto Slab', serif",
-          fontSize: "3rem",
-          fontWeight: 800,
-          textShadow: "2px 2px 4px rgba(0, 0, 0, 0.25)",
-        }}
-      >
-        {typewriterText}
-      </Typography>
-
       <Box
         sx={{
           display: "flex",
@@ -270,7 +178,6 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
             pb: 3,
             display: "flex",
             flexWrap: "wrap",
-            gap: 4,
             "& > :not(style)": {
               m: 1,
               width: 128,
@@ -278,9 +185,37 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
             },
           }}
         >
+          <Button
+            id="basic-button"
+            aria-controls={open ? "basic-menu" : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? "true" : undefined}
+            onClick={handleClick}
+            variant="outlined"
+          >
+            Menu
+          </Button>
+          <Menu
+            id="basic-menu"
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            MenuListProps={{
+              "aria-labelledby": "basic-button",
+            }}
+          >
+            <MenuItem onClick={() => navigate(`/game/profile/${userId}`)}>
+              My Account
+            </MenuItem>
+            <MenuItem onClick={() => navigate("/game/countries")}>
+              All Countries
+            </MenuItem>
+            <MenuItem onClick={() => logout()}>Logout</MenuItem>
+          </Menu>
+
           <Link to="/game/lobbyCreation" style={{ textDecoration: "none" }}>
-            <AnimatedCard
-              sx={{ height: "125%", width: "125%" }}
+            <Card
+              sx={{ height: "100%", width: "100%" }}
               elevation={isHovered1 ? 30 : 3}
               onMouseEnter={() => setIsHovered1(true)}
               onMouseLeave={() => setIsHovered1(false)}
@@ -293,23 +228,15 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
                   height: "100%",
                 }}
               >
-                <Typography
-                  gutterBottom
-                  variant="h5"
-                  component="div"
-                  sx={{
-                    fontFamily: "'Roboto Slab', serif",
-                    fontSize: "1.5rem",
-                  }}
-                >
-                  Create New Game
+                <Typography gutterBottom variant="h5" component="div">
+                  Create Game!
                 </Typography>
               </CardContent>
-            </AnimatedCard>
+            </Card>
           </Link>
           <Link to="/game/lobbies" style={{ textDecoration: "none" }}>
-            <AnimatedCard
-              sx={{ height: "125%", width: "125%" }}
+            <Card
+              sx={{ height: "100%", width: "100%" }}
               elevation={isHovered2 ? 30 : 3}
               onMouseEnter={() => setIsHovered2(true)}
               onMouseLeave={() => setIsHovered2(false)}
@@ -322,19 +249,11 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
                   height: "100%",
                 }}
               >
-                <Typography
-                  gutterBottom
-                  variant="h5"
-                  component="div"
-                  sx={{
-                    fontFamily: "'Roboto Slab', serif",
-                    fontSize: "1.5rem",
-                  }}
-                >
-                  Join Lobby
+                <Typography gutterBottom variant="h5" component="div">
+                  Join Lobby!
                 </Typography>
               </CardContent>
-            </AnimatedCard>
+            </Card>
           </Link>
         </Box>
       </Box>
