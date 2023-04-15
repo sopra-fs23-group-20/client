@@ -82,11 +82,12 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
   const navigate = useNavigate();
 
   const socket = useWebSocket();
-  const [users, setUsers] = useState<User[] | null>(null);
+
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(
-    localStorage.getItem("token")
-  );
+
+  const userId = localStorage.getItem("userId");
+  const token = localStorage.getItem("token");
+
   const typewriterText = useTypewriterr("Select game mode", 100, 1000);
 
   const cardAnimation = keyframes`
@@ -119,9 +120,6 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
         )};
     }
   `;
-
-  const userId = localStorage.getItem("userId");
-
   const [websocketPacket, setWebsocketPacket] =
     useState<WebsocketPacket | null>(null);
 
@@ -155,7 +153,6 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
 
   const [isHovered1, setIsHovered1] = useState(false);
   const [isHovered2, setIsHovered2] = useState(false);
-  const [isHovered3, setIsHovered3] = useState(false);
 
   const makeOffline = async (): Promise<void> => {
     try {
@@ -185,30 +182,16 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
     makeOffline();
   };
 
-  interface PlayerProps {
-    user: User;
-  }
-
-  const Player = ({ user }: PlayerProps): JSX.Element => (
-    <div className="player container">
-      <div className="player username"></div>
-    </div>
-  );
-
-  Player.propTypes = {
-    user: PropTypes.object,
-  };
-
   useEffect(() => {
-    async function fetchData(): Promise<void> {
+    async function fetchCurrentUser(): Promise<void> {
       try {
-        const response = await api.get("/users", {
+        const response = await api.get(`/users/${userId}`, {
           headers: {
             Authorization: localStorage.getItem("token")!,
           },
         });
 
-        setUsers(response.data);
+        setCurrentUser(response.data);
       } catch (error: AxiosError | any) {
         alert(error.response.data.message);
         localStorage.removeItem("token");
@@ -217,94 +200,77 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
         console.error(error);
       }
     }
-    fetchData();
+    fetchCurrentUser();
   }, []);
-
-  useEffect(() => {
-    async function fetchUser(): Promise<void> {
-      try {
-        let id = localStorage.getItem("id");
-
-        const response = await api.get(`/users/${id}`, {
-          headers: {
-            Authorization: localStorage.getItem("token")!,
-          },
-        });
-
-        setCurrentUser(response.data);
-      } catch (error) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("id");
-        navigate("/register");
-        console.error(error);
-      }
-    }
-    fetchUser();
-  }, []);
-
-  const goToSettings = async (): Promise<void> => {
-    navigate(`/game/profile/${currentUser?.id}`);
-  };
-  let content = <></>;
-
-  if (users) {
-    content = (
-      <Box
-        sx={{
-          maxHeight: 500, // Adjust this value according to your desired maximum list height
-          overflow: "auto",
-        }}
-      >
-        <List>
-          {users.map((user) => (
-            <ListItem key={user.id}>
-              <Button
-                variant="contained"
-                onClick={() => navigate(`/game/profile/${user.id}`)}
-              >
-                <Typography variant="h6"> {user.username}</Typography>
-              </Button>
-            </ListItem>
-          ))}
-        </List>
-      </Box>
-    );
-  }
-
-  let usercontent = <p>You aren't logged in</p>;
-
-  if (currentUser) {
-    usercontent = (
-      <Typography variant="h4">
-        You are currently logged in as:{" "}
-        <span style={{ color: "MediumAquaMarine", fontWeight: 800 }}>
-          {currentUser.username}
-        </span>
-      </Typography>
-    );
-  }
 
   return (
-    <div>
-      <Container>
-        <Typography
-          variant="h1"
+    <Container>
+      <Box
+        sx={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          mt: 2,
+          ml: 2,
+        }}
+      >
+        <AnimatedButton
+          id="basic-button"
+          aria-controls={open ? "basic-menu" : undefined}
+          aria-haspopup="true"
+          aria-expanded={open ? "true" : undefined}
+          onClick={handleClick}
           sx={{
             fontFamily: "'Roboto Slab', serif",
-            fontSize: "3rem",
-            fontWeight: 800,
-            textShadow: "2px 2px 4px rgba(0, 0, 0, 0.25)",
           }}
         >
-          {typewriterText}
-        </Typography>
+          Menu
+        </AnimatedButton>
+        <Menu
+          id="basic-menu"
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleClose}
+          MenuListProps={{
+            "aria-labelledby": "basic-button",
+          }}
+        >
+          <MenuItem onClick={() => navigate(`/game/profile/${userId}`)}>
+            My Account
+          </MenuItem>
+          <MenuItem onClick={() => navigate("/game/countries")}>
+            All Countries
+          </MenuItem>
+          <MenuItem onClick={() => logout()}>Logout</MenuItem>
+        </Menu>
+      </Box>
+      <Typography
+        variant="h1"
+        sx={{
+          fontFamily: "'Roboto Slab', serif",
+          fontSize: "3rem",
+          fontWeight: 800,
+          textShadow: "2px 2px 4px rgba(0, 0, 0, 0.25)",
+        }}
+      >
+        {typewriterText}
+      </Typography>
+
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
         <Box
           sx={{
             pt: 3,
             pb: 3,
             display: "flex",
             flexWrap: "wrap",
-            gap: 5,
+            gap: 4,
             "& > :not(style)": {
               m: 1,
               width: 128,
@@ -314,7 +280,7 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
         >
           <Link to="/game/lobbyCreation" style={{ textDecoration: "none" }}>
             <AnimatedCard
-              sx={{ height: "130%", width: "130%" }}
+              sx={{ height: "125%", width: "125%" }}
               elevation={isHovered1 ? 30 : 3}
               onMouseEnter={() => setIsHovered1(true)}
               onMouseLeave={() => setIsHovered1(false)}
@@ -336,14 +302,14 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
                     fontSize: "1.5rem",
                   }}
                 >
-                  Create a new Game
+                  Create New Game
                 </Typography>
               </CardContent>
             </AnimatedCard>
           </Link>
-          <Link to="/game/lobby" style={{ textDecoration: "none" }}>
+          <Link to="/game/lobbies" style={{ textDecoration: "none" }}>
             <AnimatedCard
-              sx={{ height: "130%", width: "130%" }}
+              sx={{ height: "125%", width: "125%" }}
               elevation={isHovered2 ? 30 : 3}
               onMouseEnter={() => setIsHovered2(true)}
               onMouseLeave={() => setIsHovered2(false)}
@@ -365,42 +331,15 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
                     fontSize: "1.5rem",
                   }}
                 >
-                  Join a Lobby
+                  Join Lobby
                 </Typography>
               </CardContent>
             </AnimatedCard>
           </Link>
         </Box>
-      </Container>
-      <AnimatedButton
-        id="basic-button"
-        aria-controls={open ? "basic-menu" : undefined}
-        aria-haspopup="true"
-        aria-expanded={open ? "true" : undefined}
-        onClick={handleClick}
-        sx={{
-          fontFamily: "'Roboto Slab', serif",
-        }}
-      >
-        Dashboard
-      </AnimatedButton>
-      <Menu
-        id="basic-menu"
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        MenuListProps={{
-          "aria-labelledby": "basic-button",
-        }}
-      >
-        <MenuItem onClick={() => navigate("/game/")}>Dashboard</MenuItem>
-        <MenuItem onClick={goToSettings}>My Account</MenuItem>
-        <MenuItem onClick={() => navigate("/game/countries")}>
-          All Countries
-        </MenuItem>
-        <MenuItem onClick={() => logout()}>Logout</MenuItem>
-      </Menu>
-    </div>
+      </Box>
+    </Container>
   );
 };
+
 export default MainPage;
