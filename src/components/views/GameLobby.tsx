@@ -264,18 +264,7 @@ const GameLobby: React.FC = () => {
       break;
   }
 
-  return (
-    <Container
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      {content}
-    </Container>
-  );
+  return <Container sx={{ marginTop: 5 }}>{content}</Container>;
 };
 
 export default GameLobby;

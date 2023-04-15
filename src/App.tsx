@@ -1,22 +1,16 @@
 import Header from "./components/views/Header";
 import AppRouter from "./components/routing/routers/AppRouter";
 import React, { useState } from "react";
-import {
-  Box,
-  CssBaseline,
-  createTheme,
-  ThemeProvider,
-  adaptV4Theme,
-} from "@mui/material";
-import darkTheme from "styles/darkTheme";
-import lightTheme from "styles/lightTheme";
+import { Box, CssBaseline, ThemeProvider } from "@mui/material";
+
 import { WebSocketProvider } from "helpers/WebSocketContext";
+import currentUsedTheme from "styles/currentUsedTheme";
 
 const App = () => {
   const [token, setToken] = useState<string | null>(null);
 
   return (
-    <>
+    <ThemeProvider theme={currentUsedTheme}>
       <CssBaseline />
       <Box
         sx={{
@@ -26,13 +20,14 @@ const App = () => {
           justifyContent: "center",
           alignItems: "center",
           margin: 0,
+          background: currentUsedTheme.palette.background.default,
         }}
       >
         <WebSocketProvider token={token}>
           <AppRouter onTokenChange={setToken} />
         </WebSocketProvider>
       </Box>
-    </>
+    </ThemeProvider>
   );
 };
 

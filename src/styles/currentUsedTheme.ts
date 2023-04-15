@@ -12,7 +12,7 @@ const currentUsedTheme = createTheme({
       contrastText: '#000',
     },
     background: {
-      default: '#121212',
+      default: 'linear-gradient(180deg, #0d0d0d 0%, #2e2e2e 100%)',
       paper: '#1f1f1f',
     },
     text: {
