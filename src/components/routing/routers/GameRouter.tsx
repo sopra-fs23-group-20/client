@@ -6,6 +6,7 @@ import Profile from "components/views/Profile";
 import GameLobby from "components/views/GameLobby";
 import GameLobbyOverview from "components/views/GameLobbyOverview";
 import GameCreation from "components/views/GameCreation";
+import CountriesOverview from "components/views/CountriesOverview";
 
 interface GameRouterProps {
   base: string;
@@ -28,6 +29,7 @@ const GameRouter: FC<GameRouterProps> = ({ base, onTokenChange }) => {
         />
         <Route path="lobby/:gameID" element={<GameLobby />} />
         <Route path="lobbies" element={<GameLobbyOverview />} />
+        <Route path="countries" element={<CountriesOverview />} />
       </Routes>
     </div>
   );
