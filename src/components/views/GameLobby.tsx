@@ -28,24 +28,25 @@ const GameLobby: React.FC = () => {
   const [allCountries, setAllCountries] = useState<Array<string>>([]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
+  const isWebsocketConnected = useRef(false);
+  const isFetching = useRef(false);
+
   const gameId = window.location.pathname.split("/").pop();
   const currentUserId = localStorage.getItem("userId");
 
-  async function PollingfetchGame(): Promise<void> {
-    try {
-      const response = await api.get(`/games/${gameId}`);
-      const newGameGetDTO: GameGetDTO = { ...response.data };
-      console.log("Fetched Game : ", newGameGetDTO);
-      setGameGetDTO(newGameGetDTO);
-    } catch (error: AxiosError | any) {
-      alert(error.response.data.message);
-      console.error(error);
-    }
-  }
-
-  const isFetching = useRef(false);
-  /*
   useEffect(() => {
+    async function PollingfetchGame(): Promise<void> {
+      try {
+        const response = await api.get(`/games/${gameId}`);
+        const newGameGetDTO: GameGetDTO = { ...response.data };
+        console.log("Fetched Game : ", newGameGetDTO);
+        setGameGetDTO(newGameGetDTO);
+      } catch (error: AxiosError | any) {
+        alert(error.response.data.message);
+        console.error(error);
+      }
+    }
+
     let timeoutId: NodeJS.Timeout | undefined;
 
     const startPolling = async () => {
@@ -54,17 +55,19 @@ const GameLobby: React.FC = () => {
         await PollingfetchGame();
         isFetching.current = false;
       }
-      timeoutId = setTimeout(startPolling, 150000); // 0.2 seconds
+      timeoutId = setTimeout(startPolling, 200); // 0.2 seconds
     };
 
-    startPolling();
+    if (!isWebsocketConnected.current) {
+      startPolling();
+    }
 
     return () => {
       if (timeoutId) {
         clearTimeout(timeoutId); // Clean up the timeout when the component unmounts
       }
     };
-  }, []);*/
+  }, [isWebsocketConnected.current]);
 
   useEffect(() => {
     async function fetchCountries(): Promise<void> {
@@ -128,6 +131,40 @@ const GameLobby: React.FC = () => {
     joinLobby();
   }, []);
 
+  useEffect(() => {
+    const websocketUrl = `${getDomain()}/socket`;
+    const socket = new SockJS(websocketUrl);
+
+    const stompClient = new Client({
+      webSocketFactory: () => socket,
+      debug: (str) => console.log(str),
+    });
+
+    stompClient.onConnect = (frame) => {
+      isWebsocketConnected.current = true;
+      stompClient.subscribe(`/topic/games/${gameId}`, (message) => {
+        handleGameUpdate(message);
+      });
+    };
+
+    stompClient.onStompError = (frame) => {
+      console.error(`Stomp error: ${frame}`);
+      isWebsocketConnected.current = false;
+    };
+
+    stompClient.onWebSocketClose = (event) => {
+      console.error("WebSocket connection closed:", event);
+      isWebsocketConnected.current = false;
+    };
+
+    stompClient.activate();
+
+    return () => {
+      stompClient.deactivate();
+      isWebsocketConnected.current = false;
+    };
+  }, [gameId]);
+
   function handleGameUpdate(message: IMessage): void {
     const messageObject = JSON.parse(message.body);
     const websocketPacket = new WebsocketPacket(
@@ -142,60 +179,8 @@ const GameLobby: React.FC = () => {
     });
   }
 
-  useEffect(() => {
-    const websocketUrl = `${getDomain()}/socket`;
-
-    const socket = new SockJS(websocketUrl);
-
-    const stompClient = new Client({
-      webSocketFactory: () => socket,
-      debug: (str) => console.log(str),
-    });
-
-    stompClient.onConnect = (frame) => {
-      stompClient.subscribe(`/topic/games/${gameId}`, (message) => {
-        handleGameUpdate(message);
-      });
-    };
-
-    stompClient.onStompError = (frame) => {
-      console.error(`Stomp error: ${frame}`);
-    };
-
-    stompClient.activate();
-
-    return () => {
-      stompClient.deactivate();
-    };
-  }, [gameId]);
-
-  useEffect(() => {
-    console.log("UPDATE OF GGGGameGetDTO: ", gameGetDTO);
-  }, [gameGetDTO]);
-
-  function getPlayersGameState(): GameState | null {
-    if (gameGetDTO?.currentState == null) {
-      console.log("current state is null");
-      return null;
-    }
-
-    const participants = gameGetDTO?.participants;
-
-    if (participants == null || currentUserId == null) {
-      return null;
-    }
-    for (const participant of participants) {
-      if (participant.userId == parseInt(currentUserId)) {
-        if (participant.currentState == null) {
-          return null;
-        }
-        return participant.currentState;
-      }
-    }
-    return null;
-  }
-
   let content = <Typography variant="h2">Loading...</Typography>;
+
   if (gameGetDTO?.currentState == null) {
     return content;
   }
