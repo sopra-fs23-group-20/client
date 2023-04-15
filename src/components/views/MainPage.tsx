@@ -10,7 +10,7 @@ import {
   Grid,
   Card,
 } from "@mui/material";
-import {Link, useNavigate} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import User from "models/User";
 import React from "react";
@@ -24,9 +24,6 @@ import { useWebSocket } from "helpers/WebSocketContext";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
-import { CardActionArea } from "@mui/material";
-import Badge from "@mui/material/Badge";
 
 interface Props {
   onTokenChange: (token: string | null) => void;
@@ -44,13 +41,11 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
   const navigate = useNavigate();
 
   const socket = useWebSocket();
-  const [users, setUsers] = useState<User[] | null>(null);
+
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(
-    localStorage.getItem("token")
-  );
 
   const userId = localStorage.getItem("userId");
+  const token = localStorage.getItem("token");
 
   const [websocketPacket, setWebsocketPacket] =
     useState<WebsocketPacket | null>(null);
@@ -83,12 +78,8 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
     }
   }
 
-
   const [isHovered1, setIsHovered1] = useState(false);
   const [isHovered2, setIsHovered2] = useState(false);
-  const [isHovered3, setIsHovered3] = useState(false);
-
-
 
   const makeOffline = async (): Promise<void> => {
     try {
@@ -118,30 +109,16 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
     makeOffline();
   };
 
-  interface PlayerProps {
-    user: User;
-  }
-
-  const Player = ({ user }: PlayerProps): JSX.Element => (
-    <div className="player container">
-      <div className="player username"></div>
-    </div>
-  );
-
-  Player.propTypes = {
-    user: PropTypes.object,
-  };
-
   useEffect(() => {
-    async function fetchData(): Promise<void> {
+    async function fetchCurrentUser(): Promise<void> {
       try {
-        const response = await api.get("/users", {
+        const response = await api.get(`/users/${userId}`, {
           headers: {
             Authorization: localStorage.getItem("token")!,
           },
         });
 
-        setUsers(response.data);
+        setCurrentUser(response.data);
       } catch (error: AxiosError | any) {
         alert(error.response.data.message);
         localStorage.removeItem("token");
@@ -150,81 +127,21 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
         console.error(error);
       }
     }
-    fetchData();
+    fetchCurrentUser();
   }, []);
-
-  useEffect(() => {
-    async function fetchUser(): Promise<void> {
-      try {
-        let id = localStorage.getItem("id");
-
-        const response = await api.get(`/users/${id}`, {
-          headers: {
-            Authorization: localStorage.getItem("token")!,
-          },
-        });
-
-        setCurrentUser(response.data);
-      } catch (error) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("id");
-        navigate("/register");
-        console.error(error);
-      }
-    }
-    fetchUser();
-  }, []);
-
-  const goToSettings = async (): Promise<void> => {
-    navigate(`/game/profile/${currentUser?.id}`);
-  };
-  const goToGameLobby = async (): Promise<void> => {
-    navigate(`/game/lobbies/`);
-  };
-
-  let content = <></>;
-
-  if (users) {
-    content = (
-      <Box
-        sx={{
-          maxHeight: 500, // Adjust this value according to your desired maximum list height
-          overflow: "auto",
-        }}
-      >
-        <List>
-          {users.map((user) => (
-            <ListItem key={user.id}>
-              <Button
-                variant="contained"
-                onClick={() => navigate(`/game/profile/${user.id}`)}
-              >
-                <Typography variant="h6"> {user.username}</Typography>
-              </Button>
-            </ListItem>
-          ))}
-        </List>
-      </Box>
-    );
-  }
-
-  let usercontent = <p>You aren't logged in</p>;
-
-  if (currentUser) {
-    usercontent = (
-      <Typography variant="h4">
-        You are currently logged in as:{" "}
-        <span style={{ color: "MediumAquaMarine", fontWeight: 800 }}>
-          {currentUser.username}
-        </span>
-      </Typography>
-    );
-  }
 
   return (
-    <div>
-      <Container>
-        <Typography variant="h1">Dashboard</Typography>
+    <Container>
+      <Typography variant="h1">Welcome to GuessTheCountry!</Typography>
+
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
         <Box
           sx={{
             pt: 3,
@@ -238,75 +155,79 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
             },
           }}
         >
-          <Link to="/game/lobbyCreation" style={{ textDecoration: 'none' }}>
+          <Button
+            id="basic-button"
+            aria-controls={open ? "basic-menu" : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? "true" : undefined}
+            onClick={handleClick}
+            variant="outlined"
+          >
+            Menu
+          </Button>
+          <Menu
+            id="basic-menu"
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            MenuListProps={{
+              "aria-labelledby": "basic-button",
+            }}
+          >
+            <MenuItem onClick={() => navigate(`/game/profile/${userId}`)}>
+              My Account
+            </MenuItem>
+            <MenuItem onClick={() => navigate("/game/countries")}>
+              All Countries
+            </MenuItem>
+            <MenuItem onClick={() => logout()}>Logout</MenuItem>
+          </Menu>
+
+          <Link to="/game/lobbyCreation" style={{ textDecoration: "none" }}>
             <Card
-                sx={{ height: '100%', width: '100%'}}
-                elevation={isHovered1 ? 30 : 3}
-                onMouseEnter={() => setIsHovered1(true)}
-                onMouseLeave={() => setIsHovered1(false)}
+              sx={{ height: "100%", width: "100%" }}
+              elevation={isHovered1 ? 30 : 3}
+              onMouseEnter={() => setIsHovered1(true)}
+              onMouseLeave={() => setIsHovered1(false)}
             >
-              <CardContent sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
-              <Typography gutterBottom variant="h5" component="div">
-                    Create a new Game!
-                  </Typography>
-              </CardContent>
-            </Card>
-          </Link>
-          <Link to="/game/lobby" style={{ textDecoration: 'none' }}>
-            <Card
-                sx={{ height: '100%', width: '100%'}}
-                elevation={isHovered2 ? 30 : 3}
-                onMouseEnter={() => setIsHovered2(true)}
-                onMouseLeave={() => setIsHovered2(false)}
-            >
-              <CardContent sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
-              <Typography gutterBottom variant="h5" component="div">
-                    Join a Lobby!
-                  </Typography>
-              </CardContent>
-            </Card>
-          </Link>
-          <Link to="/game/countries" style={{ textDecoration: 'none' }}>
-            <Card
-                sx={{ height: '100%', width: '100%' }}
-                elevation={isHovered3 ? 30 : 3}
-                onMouseEnter={() => setIsHovered3(true)}
-                onMouseLeave={() => setIsHovered3(false)}
-            >
-              <CardContent sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+              <CardContent
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  height: "100%",
+                }}
+              >
                 <Typography gutterBottom variant="h5" component="div">
-                  Learn!
+                  Create Game!
                 </Typography>
               </CardContent>
             </Card>
           </Link>
-
+          <Link to="/game/lobbies" style={{ textDecoration: "none" }}>
+            <Card
+              sx={{ height: "100%", width: "100%" }}
+              elevation={isHovered2 ? 30 : 3}
+              onMouseEnter={() => setIsHovered2(true)}
+              onMouseLeave={() => setIsHovered2(false)}
+            >
+              <CardContent
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  height: "100%",
+                }}
+              >
+                <Typography gutterBottom variant="h5" component="div">
+                  Join Lobby!
+                </Typography>
+              </CardContent>
+            </Card>
+          </Link>
         </Box>
-      </Container>
-      <Button
-          id="basic-button"
-          aria-controls={open ? 'basic-menu' : undefined}
-          aria-haspopup="true"
-          aria-expanded={open ? 'true' : undefined}
-          onClick={handleClick}
-      >
-        Dashboard
-      </Button>
-      <Menu
-          id="basic-menu"
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleClose}
-          MenuListProps={{
-            'aria-labelledby': 'basic-button',
-          }}
-      >
-        <MenuItem onClick={() => navigate("/game/")}>Dashboard</MenuItem>
-        <MenuItem onClick={goToSettings}>My Account</MenuItem>
-        <MenuItem onClick={() => navigate("/game/countries")}>All Countries</MenuItem>
-        <MenuItem onClick={() => logout()}>Logout</MenuItem>
-      </Menu>
-    </div>
+      </Box>
+    </Container>
   );
 };
 
