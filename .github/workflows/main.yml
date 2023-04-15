@@ -74,3 +74,4 @@ jobs:
           RASPBERRY_PI_PORT: ${{ secrets.RASPBERRY_PI_PORT }}
         run: |
           sshpass -p $RASPBERRY_PI_PASSWORD ssh -p $RASPBERRY_PI_PORT -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $RASPBERRY_PI_USERNAME@$RASPBERRY_PI_HOST "sudo /home/pi/clientBuildRun.sh"
+        continue-on-error: true
