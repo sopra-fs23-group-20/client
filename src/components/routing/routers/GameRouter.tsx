@@ -3,10 +3,8 @@ import MainPage from "components/views/MainPage";
 import PropTypes from "prop-types";
 import React, { FC } from "react";
 import Profile from "components/views/Profile";
-import CountriesOverview from "components/views/CountriesOverview";
 import GameLobby from "components/views/GameLobby";
 import GameLobbyOverview from "components/views/GameLobbyOverview";
-import SetupComponent from "components/ui/GameComponents/SetupComponent";
 import GameCreation from "components/views/GameCreation";
 
 interface GameRouterProps {
@@ -24,7 +22,6 @@ const GameRouter: FC<GameRouterProps> = ({ base, onTokenChange }) => {
           element={<MainPage onTokenChange={onTokenChange} />}
         />
         <Route path="profile/:userID" element={<Profile />} />
-        <Route path="countries" element={<CountriesOverview />} />
         <Route
           path="lobbyCreation"
           element={<GameCreation gameId={undefined} />}
