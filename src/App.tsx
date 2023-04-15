@@ -3,7 +3,6 @@ import AppRouter from "./components/routing/routers/AppRouter";
 import React, { useState } from "react";
 import { Box, CssBaseline, ThemeProvider } from "@mui/material";
 
-import { WebSocketProvider } from "helpers/WebSocketContext";
 import currentUsedTheme from "styles/currentUsedTheme";
 
 const App = () => {
@@ -23,9 +22,7 @@ const App = () => {
           background: currentUsedTheme.palette.background.default,
         }}
       >
-        <WebSocketProvider token={token}>
-          <AppRouter onTokenChange={setToken} />
-        </WebSocketProvider>
+        <AppRouter onTokenChange={setToken} />
       </Box>
     </ThemeProvider>
   );
