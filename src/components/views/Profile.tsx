@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { api, handleError } from "helpers/api";
 import User from "models/User";
 import { useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import "./Profile.css";
 import {
   Button,
   Container,
@@ -94,6 +96,7 @@ const Profile: React.FC = () => {
     ];
     return colors[Math.floor(Math.random() * colors.length)];
   };
+  const [avatarBgColor, setAvatarBgColor] = useState<string>();
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -108,13 +111,25 @@ const Profile: React.FC = () => {
     reader.readAsDataURL(file);
   };
 
+  const getRandomColor = () => {
+    if (!avatarBgColor) {
+      const color = randomColor();
+      setAvatarBgColor(color);
+    }
+  };
+
   const removeImage = () => {
     setProfilePicture(null);
     localStorage.removeItem("profilePicture");
   };
 
+  useEffect(() => {
+    getRandomColor();
+  }, []);
+
   // Fetch user data on component mount
   useEffect(() => {
+    getRandomColor();
     async function fetchUser() {
       try {
         const response = await api.get(`/users/${id}`, {
@@ -173,10 +188,13 @@ const Profile: React.FC = () => {
           sx={{ display: "flex", justifyContent: "center", marginBottom: 2 }}
         >
           <Avatar
+            className="avatar"
             sx={{
               width: 100,
               height: 100,
-              backgroundColor: profilePicture ? "transparent" : randomColor(),
+              backgroundColor: profilePicture ? "transparent" : avatarBgColor,
+              border: "2px solid #3f51b5",
+              boxShadow: 3,
             }}
             src={profilePicture || ""}
             alt={currentUser.username ?? ""}
@@ -221,7 +239,16 @@ const Profile: React.FC = () => {
             </IconButton>
           )}
         </Box>
-        <Typography variant="h3">
+        <Typography
+          variant="h4"
+          sx={{
+            marginTop: 2,
+            marginBottom: 1,
+            backgroundColor: "rgba(0, 0, 0, 0.1)",
+            padding: 1,
+            borderRadius: 1,
+          }}
+        >
           Username:
           <TextField
             value={username!}
@@ -230,7 +257,16 @@ const Profile: React.FC = () => {
             sx={{ marginLeft: 2 }}
           />
         </Typography>
-        <Typography variant="h3">
+        <Typography
+          variant="h4"
+          sx={{
+            marginTop: 2,
+            marginBottom: 1,
+            backgroundColor: "rgba(0, 0, 0, 0.1)",
+            padding: 1,
+            borderRadius: 1,
+          }}
+        >
           Password:
           <TextField
             value={password!}
@@ -239,11 +275,29 @@ const Profile: React.FC = () => {
             sx={{ marginLeft: 2.8 }}
           />
         </Typography>
-        <Typography variant="h4" sx={{ marginTop: 2 }}>
+        <Typography
+          variant="h4"
+          sx={{
+            marginTop: 2,
+            marginBottom: 1,
+            backgroundColor: "rgba(0, 0, 0, 0.1)",
+            padding: 1,
+            borderRadius: 1,
+          }}
+        >
           Status: {currentUser.status}{" "}
         </Typography>
 
-        <Typography variant="h4" sx={{ marginTop: 2 }}>
+        <Typography
+          variant="h4"
+          sx={{
+            marginTop: 2,
+            marginBottom: 1,
+            backgroundColor: "rgba(0, 0, 0, 0.1)",
+            padding: 1,
+            borderRadius: 1,
+          }}
+        >
           Creation Date:{" "}
           {currentUser.creation_date
             ? new Date(currentUser.creation_date).toLocaleDateString("de-DE", {
@@ -254,7 +308,16 @@ const Profile: React.FC = () => {
             : "No Creation Date"}
         </Typography>
 
-        <Typography variant="h4" sx={{ marginTop: 3 }}>
+        <Typography
+          variant="h4"
+          sx={{
+            marginTop: 2,
+            marginBottom: 1,
+            backgroundColor: "rgba(0, 0, 0, 0.1)",
+            padding: 1,
+            borderRadius: 1,
+          }}
+        >
           Birthday:
           <LocalizationProvider dateAdapter={AdapterDayjs} locale="en">
             <DatePicker
@@ -267,7 +330,16 @@ const Profile: React.FC = () => {
             />
           </LocalizationProvider>
         </Typography>
-        <Typography variant="h4" sx={{ marginTop: 3 }}>
+        <Typography
+          variant="h4"
+          sx={{
+            marginTop: 2,
+            marginBottom: 1,
+            backgroundColor: "rgba(0, 0, 0, 0.1)",
+            padding: 1,
+            borderRadius: 1,
+          }}
+        >
           Nationality:
           <Autocomplete
             sx={{ marginLeft: 2 }}
@@ -321,7 +393,9 @@ const Profile: React.FC = () => {
             sx={{
               width: 100,
               height: 100,
-              backgroundColor: profilePicture ? "transparent" : randomColor(),
+              backgroundColor: profilePicture ? "transparent" : avatarBgColor,
+              border: "2px solid #3f51b5",
+              boxShadow: 3,
             }}
             src={profilePicture || ""}
             alt={currentUser.username ?? ""}
@@ -331,46 +405,106 @@ const Profile: React.FC = () => {
               : currentUser.username?.[0]?.toUpperCase() ?? ""}
           </Avatar>
         </Box>
-        <Typography variant="h4">
-          Username:{" "}
-          <span style={{ color: "MediumAquaMarine" }}>
-            {currentUser.username}
-          </span>
-        </Typography>
-        <Typography sx={{ marginTop: 2 }} variant="h4">
-          Status: {currentUser.status}
-        </Typography>
-        <Typography variant="h4" sx={{ marginTop: 2 }}>
-          Creation Date:{" "}
-          {new Date(currentUser.creation_date!).toLocaleDateString("de-DE", {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric",
-          })}
-        </Typography>
-        {currentUser.birthday ? (
-          <Typography variant="h4" sx={{ marginTop: 2 }}>
-            Birthday:{" "}
-            {currentUser.birthday
-              ? new Date(currentUser.birthday).toLocaleDateString("de-DE", {
-                  day: "2-digit",
-                  month: "2-digit",
-                  year: "numeric",
-                })
-              : "No Birthday"}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <Typography
+            variant="h4"
+            sx={{
+              marginTop: 2,
+              marginBottom: 1,
+              backgroundColor: "rgba(0, 0, 0, 0.1)",
+              padding: 1,
+              borderRadius: 1,
+            }}
+          >
+            Username:{" "}
+            <span style={{ color: "MediumAquaMarine" }}>
+              {currentUser.username}
+            </span>
           </Typography>
-        ) : (
-          <div></div>
-        )}
-        {currentUser.nationality && (
-          <Typography variant="h4" sx={{ marginTop: 3 }}>
-            Nationality: {currentUser.nationality}
+          <Typography
+            variant="h4"
+            sx={{
+              marginTop: 2,
+              marginBottom: 1,
+              backgroundColor: "rgba(0, 0, 0, 0.1)",
+              padding: 1,
+              borderRadius: 1,
+            }}
+          >
+            Status: {currentUser.status}
           </Typography>
-        )}
-        <Typography variant="h4">
-          Games Won:{" "}
-          <span>{currentUser.gamesWon ? currentUser.gamesWon : 0}</span>
-        </Typography>
+          <Typography
+            variant="h4"
+            sx={{
+              marginTop: 2,
+              marginBottom: 1,
+              backgroundColor: "rgba(0, 0, 0, 0.1)",
+              padding: 1,
+              borderRadius: 1,
+            }}
+          >
+            Creation Date:{" "}
+            {new Date(currentUser.creation_date!).toLocaleDateString("de-DE", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+            })}
+          </Typography>
+          {currentUser.birthday ? (
+            <Typography
+              variant="h4"
+              sx={{
+                marginTop: 2,
+                marginBottom: 1,
+                backgroundColor: "rgba(0, 0, 0, 0.1)",
+                padding: 1,
+                borderRadius: 1,
+              }}
+            >
+              Birthday:{" "}
+              {currentUser.birthday
+                ? new Date(currentUser.birthday).toLocaleDateString("de-DE", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                  })
+                : "No Birthday"}
+            </Typography>
+          ) : (
+            <div></div>
+          )}
+          {currentUser.nationality && (
+            <Typography
+              variant="h4"
+              sx={{
+                marginTop: 2,
+                marginBottom: 1,
+                backgroundColor: "rgba(0, 0, 0, 0.1)",
+                padding: 1,
+                borderRadius: 1,
+              }}
+            >
+              Nationality: {currentUser.nationality}
+            </Typography>
+          )}
+          <Typography
+            variant="h4"
+            sx={{
+              marginTop: 2,
+              marginBottom: 1,
+              backgroundColor: "rgba(0, 0, 0, 0.1)",
+              padding: 1,
+              borderRadius: 1,
+            }}
+          >
+            Games Won:{" "}
+            <span>{currentUser.gamesWon ? currentUser.gamesWon : 0}</span>
+          </Typography>
+        </motion.div>
 
         {String(localStorage.getItem("id")) === String(currentUser.id) ? (
           <Button
@@ -396,16 +530,34 @@ const Profile: React.FC = () => {
 
   // Main content rendering
   const content = currentUser ? (
-    editMode ? (
-      renderEditForm()
-    ) : (
-      renderProfileView()
-    )
+    <AnimatePresence mode="wait">
+      {editMode ? (
+        <motion.div
+          key="edit"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          {renderEditForm()}
+        </motion.div>
+      ) : (
+        <motion.div
+          key="view"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          {renderProfileView()}
+        </motion.div>
+      )}
+    </AnimatePresence>
   ) : (
     <div></div>
   );
 
-  return <Container>{content}</Container>;
+  return <Container className="profile-container">{content}</Container>;
 };
 
 export default Profile;
