@@ -21,6 +21,7 @@
     "axios": "^0.24.0",
     "dayjs": "^1.11.7",
     "formik": "^2.2.9",
+    "framer-motion": "^10.12.2",
     "node-gyp": "^8.4.1",
     "node-sass": "^8.0.0",
     "puppeteer": "^19.9.0",
