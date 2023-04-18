@@ -12,7 +12,6 @@ import {
   IconButton,
   Tooltip,
 } from "@mui/material";
-import { AxiosError } from "axios";
 import { SelectChangeEvent } from "@mui/material/Select";
 import * as React from "react";
 import { Switch } from "@mui/material";
@@ -24,32 +23,29 @@ import {
   DialogActions,
   FormControl,
 } from "@mui/material";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import CategoryEnum from "models/constant/CategoryEnum";
 import RegionEnum from "models/constant/RegionEnum";
 import GamePostDTO from "models/GamePostDTO";
 import InfoIcon from "@mui/icons-material/Info";
 import useTypewriter from "react-typewriter-hook/build/useTypewriter";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { AxiosError } from "axios";
 
 interface Props {
   gameId: string | undefined;
 }
 
 const GameCreation: React.FC<Props> = (props) => {
-  const gameId = props.gameId;
   const navigate = useNavigate();
 
   const [roundSeconds, setRoundSeconds] = useState(30);
   const [randomizedHints, setRandomizedHints] = useState(false);
-  const [countries, setCountries] = useState({
-    africa: true,
-    asia: true,
-    europe: true,
-    america: true,
-    oceania: true,
-  });
+
   const [numberOfRounds, setNumberOfRounds] = useState(3);
   const [openLobby, setOpenLobby] = useState(true);
+
+  const [selectedRegions, setSelectedRegions] = useState<RegionEnum[]>([]);
   const [selectedHints, setSelectedHints] = useState({
     population: true,
     outline: true,
@@ -76,38 +72,40 @@ const GameCreation: React.FC<Props> = (props) => {
     return categoriesSelected;
   }
 
-  function transformCountriesToRegionsSelectedList(data: {
-    africa?: boolean;
-    asia?: boolean;
-    europe?: boolean;
-    america?: boolean;
-    oceania?: boolean;
-  }): RegionEnum[] {
-    let regionsSelected: RegionEnum[] = [];
-    if (data.africa) regionsSelected.push(RegionEnum.AFRICA);
-    if (data.asia) regionsSelected.push(RegionEnum.ASIA);
-    if (data.europe) regionsSelected.push(RegionEnum.EUROPE);
-    if (data.america) regionsSelected.push(RegionEnum.AMERICA);
-    if (data.oceania) regionsSelected.push(RegionEnum.OCEANIA);
-    return regionsSelected;
+  function stringToRegionEnum(regionString: string): RegionEnum | undefined {
+    switch (regionString) {
+      case "Africa":
+        return RegionEnum.AFRICA;
+      case "Asia":
+        return RegionEnum.ASIA;
+      case "Europe":
+        return RegionEnum.EUROPE;
+      case "Americas":
+        return RegionEnum.AMERICA;
+      case "Oceania":
+        return RegionEnum.OCEANIA;
+      case "Antarctic":
+        return RegionEnum.ANTARCTICA;
+      default:
+        return undefined;
+    }
   }
 
   async function startGame(): Promise<void> {
     const userIdString = localStorage.getItem("userId");
 
+    console.log(selectedRegions);
+
     try {
       if (userIdString) {
         const categoriesSelected =
           transformHintsToCategorieEnumList(selectedHints);
-
-        const regionsSelected =
-          transformCountriesToRegionsSelectedList(countries);
         const gamePostDTO = new GamePostDTO(
           userIdString,
           roundSeconds,
           numberOfRounds,
           categoriesSelected,
-          regionsSelected,
+          selectedRegions,
           randomizedHints,
           openLobby
         );
@@ -135,12 +133,22 @@ const GameCreation: React.FC<Props> = (props) => {
   ) => {
     setRandomizedHints(event.target.checked);
   };
-
   const handleCountryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = event.target;
-    setCountries({
-      ...countries,
-      [name as keyof typeof countries]: checked,
+    const region = stringToRegionEnum(name);
+
+    if (!region) {
+      return;
+    }
+
+    setSelectedRegions((prevRegions) => {
+      let newRegions = [...prevRegions];
+      if (checked) {
+        newRegions.push(region);
+      } else {
+        newRegions = newRegions.filter((r) => r !== region);
+      }
+      return newRegions;
     });
   };
 
@@ -258,13 +266,14 @@ const GameCreation: React.FC<Props> = (props) => {
             <Grid container spacing={1}>
               <Grid item xs={5}>
                 <Typography variant="subtitle1">Select Region:</Typography>
+
                 <FormGroup>
                   <FormControlLabel
                     control={
                       <Checkbox
-                        checked={countries.africa}
+                        checked={selectedRegions.includes(RegionEnum.AFRICA)}
                         onChange={handleCountryChange}
-                        name="africa"
+                        name="Africa"
                       />
                     }
                     label="Africa"
@@ -272,9 +281,9 @@ const GameCreation: React.FC<Props> = (props) => {
                   <FormControlLabel
                     control={
                       <Checkbox
-                        checked={countries.asia}
+                        checked={selectedRegions.includes(RegionEnum.ASIA)}
                         onChange={handleCountryChange}
-                        name="asia"
+                        name="Asia"
                       />
                     }
                     label="Asia"
@@ -282,9 +291,9 @@ const GameCreation: React.FC<Props> = (props) => {
                   <FormControlLabel
                     control={
                       <Checkbox
-                        checked={countries.europe}
+                        checked={selectedRegions.includes(RegionEnum.EUROPE)}
                         onChange={handleCountryChange}
-                        name="europe"
+                        name="Europe"
                       />
                     }
                     label="Europe"
@@ -292,9 +301,9 @@ const GameCreation: React.FC<Props> = (props) => {
                   <FormControlLabel
                     control={
                       <Checkbox
-                        checked={countries.america}
+                        checked={selectedRegions.includes(RegionEnum.AMERICA)}
                         onChange={handleCountryChange}
-                        name="america"
+                        name="Americas"
                       />
                     }
                     label="America"
@@ -302,103 +311,114 @@ const GameCreation: React.FC<Props> = (props) => {
                   <FormControlLabel
                     control={
                       <Checkbox
-                        checked={countries.oceania}
+                        checked={selectedRegions.includes(RegionEnum.OCEANIA)}
                         onChange={handleCountryChange}
-                        name="oceania"
+                        name="Oceania"
                       />
                     }
                     label="Oceania"
                   />
-                </FormGroup>
-                <div>
                   <FormControlLabel
                     control={
-                      <Switch
-                        checked={openLobby}
-                        onChange={(event) => handleOpenLobbyChange(event)}
-                        color="primary"
+                      <Checkbox
+                        checked={selectedRegions.includes(
+                          RegionEnum.ANTARCTICA
+                        )}
+                        onChange={handleCountryChange}
+                        name="Antarctica"
                       />
                     }
-                    label="Open Lobby"
+                    label="Antarctica"
                   />
-                  <Tooltip
-                    title="Open lobbies can be found by everyone in the lobby browser"
-                    placement="top"
-                  >
-                    <IconButton>
-                      <InfoIcon />
-                    </IconButton>
-                  </Tooltip>
-                </div>
-              </Grid>
-              <Grid item xs={5}>
-                <FormControl component="fieldset" sx={{ marginTop: "1rem" }}>
-                  <Typography variant="subtitle1">Select Hints:</Typography>
-                  <FormGroup>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={selectedHints.population}
-                          onChange={handleHintChange}
-                          name="population"
-                        />
-                      }
-                      label="Population"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={selectedHints.outline}
-                          onChange={handleHintChange}
-                          name="outline"
-                        />
-                      }
-                      label="Outline"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={selectedHints.flag}
-                          onChange={handleHintChange}
-                          name="flag"
-                        />
-                      }
-                      label="Flag"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={selectedHints.location}
-                          onChange={handleHintChange}
-                          name="location"
-                        />
-                      }
-                      label="Location"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={selectedHints.capital}
-                          onChange={handleHintChange}
-                          name="capital"
-                        />
-                      }
-                      label="Capital"
-                    />
-                  </FormGroup>
-                </FormControl>
+                </FormGroup>
               </Grid>
             </Grid>
+            <div>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={openLobby}
+                    onChange={(event) => handleOpenLobbyChange(event)}
+                    color="primary"
+                  />
+                }
+                label="Open Lobby"
+              />
+              <Tooltip
+                title="Open lobbies can be found by everyone in the lobby browser"
+                placement="top"
+              >
+                <IconButton>
+                  <InfoIcon />
+                </IconButton>
+              </Tooltip>
+            </div>
+            <Grid item xs={5}>
+              <FormControl component="fieldset" sx={{ marginTop: "1rem" }}>
+                <Typography variant="subtitle1">Select Hints:</Typography>
+                <FormGroup>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={selectedHints.population}
+                        onChange={handleHintChange}
+                        name="population"
+                      />
+                    }
+                    label="Population"
+                  />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={selectedHints.outline}
+                        onChange={handleHintChange}
+                        name="outline"
+                      />
+                    }
+                    label="Outline"
+                  />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={selectedHints.flag}
+                        onChange={handleHintChange}
+                        name="flag"
+                      />
+                    }
+                    label="Flag"
+                  />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={selectedHints.location}
+                        onChange={handleHintChange}
+                        name="location"
+                      />
+                    }
+                    label="Location"
+                  />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={selectedHints.capital}
+                        onChange={handleHintChange}
+                        name="capital"
+                      />
+                    }
+                    label="Capital"
+                  />
+                </FormGroup>
+              </FormControl>
+            </Grid>
+            <DialogActions>
+              <Button variant="outlined" onClick={() => startGame()}>
+                Save Settings
+              </Button>
+            </DialogActions>
           </DialogContent>
-          <DialogActions>
-            <Button variant="outlined" onClick={() => startGame()}>
-              Save Settings
-            </Button>
-          </DialogActions>
         </FormControl>
       </Container>
     </div>
   );
 };
-
 export default GameCreation;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { api, handleError } from "helpers/api";
+import { api } from "helpers/api";
 import { useNavigate } from "react-router-dom";
 import SendIcon from "@mui/icons-material/Send";
 import Chip from "@mui/material/Chip";
@@ -65,7 +65,6 @@ const GameLobbyOverview: React.FC = () => {
       try {
         console.log("started fetching all games");
         const response = await api.get("/games");
-        const lobbies = response;
         setAllLobbies(response.data);
         console.log("response:");
         console.log(response);
@@ -77,7 +76,7 @@ const GameLobbyOverview: React.FC = () => {
       }
     }
     fetchLobbies();
-  }, []);
+  }, [allLobbies]);
 
   return (
     <Container>
@@ -110,6 +109,7 @@ const GameLobbyOverview: React.FC = () => {
       />
       <Button
         variant="contained"
+        // eslint-disable-next-line no-sequences
         onClick={() => (handleClick(), navigate(`/game/lobby/${GameId}`))}
       >
         Join game!

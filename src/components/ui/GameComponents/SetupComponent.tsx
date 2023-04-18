@@ -1,36 +1,27 @@
-import { useEffect, useState } from "react";
-import { api, handleError } from "helpers/api";
+import { api } from "helpers/api";
 import {
   Button,
   Container,
   Typography,
   Box,
-  Grid,
   FormGroup,
   FormControl,
   DialogContent,
   FormControlLabel,
-  Checkbox,
   Switch,
   Stack,
   Chip,
   Avatar,
 } from "@mui/material";
-import User from "models/User";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { AxiosError } from "axios";
-import Country from "models/Country";
-import Autocomplete from "@mui/material/Autocomplete";
 import { TextField } from "@mui/material";
-import React, { useMemo } from "react";
-import HintComponent from "../HintComponent";
+import React from "react";
 import GameGetDTO from "models/GameGetDTO";
-import DeleteIcon from "@mui/icons-material/Delete";
 import InfoIcon from "@mui/icons-material/Info";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import { string } from "yup";
-import ClickAwayListener from "@mui/material/ClickAwayListener";
 import GameUser from "models/GameUser";
 
 interface Props {
@@ -40,20 +31,11 @@ interface Props {
 const GuessingComponent: React.FC<Props> = (props) => {
   //console.log("GuessingComponent props: ", props);
   const game = props.gameGetDTO;
-  const [allLobbies, setAllLobbies] = useState<[GameGetDTO] | null>(null);
-  //setAllLobbies(response.data);
   const userId = localStorage.getItem("userId");
   const url = window.location.href;
-  var gameID = game?.gameId;
-  const [selectedRegions, setSelectedRegions] = useState({
-    africa: false,
-    asia: false,
-    europe: false,
-    america: false,
-    oceania: false,
-  });
   const playerSet = game?.participants;
   let playerArray: GameUser[] = [];
+  // eslint-disable-next-line eqeqeq
   if (playerSet != undefined) {
     playerArray = Array.from(playerSet);
     playerArray.sort((a, b) => {
@@ -98,25 +80,19 @@ const GuessingComponent: React.FC<Props> = (props) => {
         userId
       );
       const requestBody = request.data;
+      console.log(requestBody);
     } catch (error: AxiosError | any) {
       console.log(error);
     }
   }
   function createGameId() {
     if (game != null) {
+      // eslint-disable-next-line eqeqeq
       if (game.gameId != undefined) {
         navigator.clipboard.writeText(game.gameId.toString());
       }
     }
   }
-
-  const handleRegionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, checked } = event.target;
-    setSelectedRegions({
-      ...selectedRegions,
-      [name as keyof typeof selectedRegions]: checked,
-    });
-  };
 
   return (
     <Container
@@ -327,8 +303,8 @@ const GuessingComponent: React.FC<Props> = (props) => {
           </FormControl>
           <FormControl component="fieldset" sx={{ marginTop: "1rem" }}>
             <Typography variant="subtitle1">Selected Regions:</Typography>
-            {game?.regionSet?.getRegions() ? (
-              game?.regionSet.getRegions().map((region, index) => (
+            {game?.selectedRegions ? (
+              [...game.selectedRegions].map((region, index) => (
                 <Box key={index} sx={{ marginBottom: "1rem" }}>
                   <FormControl sx={{ minWidth: "200px" }}>
                     <TextField
