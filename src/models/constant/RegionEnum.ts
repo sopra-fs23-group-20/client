@@ -1,10 +1,10 @@
 enum RegionEnum {
-  AFRICA,
-  ASIA,
-  EUROPE,
-  AMERICA,
-  OCEANIA,
-  ANTARCTICA,
+  AFRICA = "AFRICA",
+  ASIA = "ASIA",
+  EUROPE = "EUROPE",
+  AMERICA = "AMERICA",
+  OCEANIA = "OCEANIA",
+  ANTARCTICA = "ANTARCTICA",
 }
 
 export default RegionEnum;
