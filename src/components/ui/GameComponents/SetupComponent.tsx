@@ -419,9 +419,15 @@ const GuessingComponent: React.FC<Props> = (props) => {
           </FormControl>
         </DialogContent>
       </FormControl>
-      <Button variant="outlined" onClick={() => startGame()}>
-        Start Game
-      </Button>
+      {parseInt(userId ?? "0") === game?.lobbyCreator?.userId ? (
+        <Button variant="outlined" onClick={() => startGame()}>
+          Start Game
+        </Button>
+      ) : (
+        <Typography variant="h5">
+          Please wait for the lobby creator to start the game.
+        </Typography>
+      )}
     </Container>
   );
 };
