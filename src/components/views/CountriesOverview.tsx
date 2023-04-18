@@ -1,17 +1,10 @@
 import { useEffect, useState } from "react";
-import { api, handleError } from "helpers/api";
+import { api } from "helpers/api";
 import { useNavigate } from "react-router-dom";
 import React from "react";
 import Country from "models/Country";
 import CountryContainer from "components/ui/CountryContainer";
-import {
-  Container,
-  Typography,
-  Box,
-  List,
-  ListItem,
-  Grid,
-} from "@mui/material";
+import { Container, Typography, List, ListItem, Grid } from "@mui/material";
 import Button from "@mui/material/Button";
 
 const CountriesOverview: React.FC = () => {
@@ -24,7 +17,7 @@ const CountriesOverview: React.FC = () => {
       try {
         const response = await api.get("/countries");
         console.log(response.data);
-        if (response.data.length != 0) {
+        if (response.data.length !== 0) {
           setCountries(
             response.data.map(
               (getCountry: any) =>

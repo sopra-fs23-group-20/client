@@ -1,4 +1,3 @@
-import Header from "./components/views/Header";
 import AppRouter from "./components/routing/routers/AppRouter";
 import React, { useState } from "react";
 import { Box, CssBaseline, ThemeProvider } from "@mui/material";
@@ -6,7 +5,7 @@ import { Box, CssBaseline, ThemeProvider } from "@mui/material";
 import currentUsedTheme from "styles/currentUsedTheme";
 
 const App = () => {
-  const [token, setToken] = useState<string | null>(null);
+  const [, setToken] = useState<string | null>(null);
 
   return (
     <ThemeProvider theme={currentUsedTheme}>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { api, handleError } from "helpers/api";
+import { api } from "helpers/api";
 import User from "models/User";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -11,11 +11,11 @@ import {
   Typography,
   Box,
   Avatar,
-  Input,
 } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { AxiosError } from "axios";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -53,6 +53,7 @@ const Profile: React.FC = () => {
       const response = await api.put(`/users/${id}`, requestBody, {
         headers: { Authorization: localStorage.getItem("token")! },
       });
+      console.log(response.data);
 
       setEditMode(false);
       const copyCurrentUser = { ...currentUser! };
@@ -125,6 +126,7 @@ const Profile: React.FC = () => {
 
   useEffect(() => {
     getRandomColor();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Fetch user data on component mount
@@ -165,6 +167,7 @@ const Profile: React.FC = () => {
     }
 
     fetchUser();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -522,7 +525,7 @@ const Profile: React.FC = () => {
           sx={{ marginTop: 2, marginLeft: 2 }}
           variant="outlined"
         >
-          Back to Users Overview
+          Back to Main Page
         </Button>
       </div>
     );

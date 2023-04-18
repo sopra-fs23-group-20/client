@@ -1,7 +1,7 @@
 import { CategoryStack } from "./CategoryStack";
 import GameState from "./constant/GameState";
+import RegionEnum from "./constant/RegionEnum";
 import GameUser from "./GameUser";
-import RegionSet from "./RegionSet";
 
 class GameGetDTO {
   gameId: number | null;
@@ -14,7 +14,7 @@ class GameGetDTO {
   numberOfRounds: number | null;
   remainingRounds: number | null;
   remainingRoundPoints: number | null;
-  regionSet: RegionSet | null;
+  selectedRegions: RegionEnum[] | null;
   categoryStack: CategoryStack | null;
   randomizedHints: boolean | null;
   openLobby: boolean | null;
@@ -30,7 +30,7 @@ class GameGetDTO {
     numberOfRounds: number | null,
     remainingRounds: number | null,
     remainingRoundPoints: number | null,
-    regionSet: RegionSet | null,
+    selectedRegions: RegionEnum[] | null,
     categoryStack: CategoryStack | null,
     randomizedHints: boolean | null,
     openLobby: boolean | null
@@ -45,7 +45,7 @@ class GameGetDTO {
     this.numberOfRounds = numberOfRounds;
     this.remainingRounds = remainingRounds;
     this.remainingRoundPoints = remainingRoundPoints;
-    this.regionSet = regionSet;
+    this.selectedRegions = selectedRegions;
     this.categoryStack = categoryStack;
     this.randomizedHints = randomizedHints;
     this.openLobby = openLobby;

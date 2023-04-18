@@ -2,35 +2,18 @@ import { useEffect, useState } from "react";
 import { api } from "helpers/api";
 import useTypewriter from "react-typewriter-hook";
 
-import {
-  Button,
-  List,
-  Typography,
-  ListItem,
-  Container,
-  Box,
-  Grid,
-  Card,
-} from "@mui/material";
+import { Button, Typography, Container, Box, Card } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
-import PropTypes from "prop-types";
 import User from "models/User";
 import React from "react";
-import axios, { AxiosError } from "axios";
-import SockJS from "sockjs-client";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { AxiosError } from "axios";
 import WebsocketPacket from "models/WebsocketPacket";
 import WebsocketType from "models/constant/WebsocketType";
-import { Client } from "@stomp/stompjs";
 import { getDomain } from "helpers/getDomain";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
-import { CardActionArea } from "@mui/material";
-import Badge from "@mui/material/Badge";
-import { styled, keyframes } from "@mui/system";
-import { Alert } from "@mui/lab";
-import { alpha, darken, lighten } from "@mui/material/styles";
 
 interface Props {
   onTokenChange: (token: string | null) => void;
@@ -54,9 +37,11 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
 
   const typewriterText = useTypewriter("Welcome to GuessTheCountry!");
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [websocketPacket, setWebsocketPacket] =
     useState<WebsocketPacket | null>(null);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const websocketUrl = `${getDomain()}/topic/${token}`;
 
   useEffect(() => {
@@ -65,8 +50,9 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
     } else {
       console.log("No token found in local storage");
     }
-  }, []);
+  }, [onTokenChange, token]);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   function convertToWebsocketTypeEnum(
     typeString: string
   ): WebsocketType | undefined {
@@ -100,6 +86,7 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
         },
         { headers: { Authorization: localStorage.getItem("token") ?? "" } }
       );
+      console.log(response.data);
 
       localStorage.removeItem("token");
       localStorage.removeItem("id");
@@ -135,7 +122,7 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
       }
     }
     fetchCurrentUser();
-  }, []);
+  }, [navigate, userId]);
 
   return (
     <Container>
@@ -248,6 +235,27 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
               >
                 <Typography gutterBottom variant="h5" component="div">
                   Join Lobby!
+                </Typography>
+              </CardContent>
+            </Card>
+          </Link>
+          <Link to="/game/rules" style={{ textDecoration: "none" }}>
+            <Card
+              sx={{ height: "100%", width: "100%" }}
+              elevation={isHovered1 ? 30 : 3}
+              onMouseEnter={() => setIsHovered1(true)}
+              onMouseLeave={() => setIsHovered1(false)}
+            >
+              <CardContent
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  height: "100%",
+                }}
+              >
+                <Typography gutterBottom variant="h5" component="div">
+                  Game Rules
                 </Typography>
               </CardContent>
             </Card>
