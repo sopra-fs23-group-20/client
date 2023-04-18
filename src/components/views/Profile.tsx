@@ -507,6 +507,22 @@ const Profile: React.FC = () => {
             Games Won:{" "}
             <span>{currentUser.gamesWon ? currentUser.gamesWon : 0}</span>
           </Typography>
+            <Typography
+                variant="h4"
+                sx={{
+                    marginTop: 2,
+                    marginBottom: 1,
+                    backgroundColor: "rgba(0, 0, 0, 0.1)",
+                    padding: 1,
+                    borderRadius: 1,
+                }}
+            >
+                Avatar:
+                <span><Avatar alt="Remy Sharp" src={
+                    "https://api.dicebear.com/6.x/pixel-art/svg?seed=" +
+                    currentUser.username
+                } /></span>
+            </Typography>
         </motion.div>
 
         {String(localStorage.getItem("id")) === String(currentUser.id) ? (
