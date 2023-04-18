@@ -4,7 +4,7 @@ enum RegionEnum {
   EUROPE = "EUROPE",
   AMERICA = "AMERICA",
   OCEANIA = "OCEANIA",
-  ANTARCTIC = "ANTARCTIC",
+  ANTARCTICA = "ANTARCTICA",
 }
 
 export default RegionEnum;

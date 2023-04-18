@@ -336,36 +336,13 @@ const GuessingComponent: React.FC<Props> = (props) => {
                   value={game?.roundDuration}
                   disabled={true}
                 />
+
                 <FormGroup>
                   <TextField
                     id="number-of-rounds"
                     label="Number of Rounds"
                     type="number"
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    value={game?.numberOfRounds}
-                    disabled={true}
-                  />
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={game?.openLobby ?? false}
-                        disabled={true}
-                        color="primary"
-                      />
-                    }
-                    label="Open Lobby"
-                  />
-                </FormGroup>
-                <FormGroup>
-                  <TextField
-                    id="number-of-rounds"
-                    label="Number of Rounds"
-                    type="number"
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
+                    sx={{ marginTop: 3 }}
                     value={game?.numberOfRounds}
                     disabled={true}
                   />
@@ -382,7 +359,9 @@ const GuessingComponent: React.FC<Props> = (props) => {
                 </FormGroup>
 
                 <FormControl component="fieldset" sx={{ marginTop: "1rem" }}>
-                  <Typography variant="subtitle1">Selected Hints:</Typography>
+                  <Typography sx={{ marginBottom: 2 }} variant="h4">
+                    Selected Hints:
+                  </Typography>
                   {game?.categoryStack?.selectedCategories ? (
                     game?.categoryStack.selectedCategories.map(
                       (category, index) => (
@@ -406,10 +385,18 @@ const GuessingComponent: React.FC<Props> = (props) => {
                   )}
                 </FormControl>
                 <FormControl component="fieldset" sx={{ marginTop: "1rem" }}>
-                  <Typography variant="subtitle1">Selected Regions:</Typography>
+                  <Typography
+                    sx={{ marginBottom: 2, marginLeft: 2 }}
+                    variant="h4"
+                  >
+                    Selected Regions:
+                  </Typography>
                   {game?.selectedRegions ? (
                     [...game.selectedRegions].map((region, index) => (
-                      <Box key={index} sx={{ marginBottom: "1rem" }}>
+                      <Box
+                        key={index}
+                        sx={{ marginBottom: "1rem", marginLeft: 2 }}
+                      >
                         <FormControl sx={{ minWidth: "200px" }}>
                           <TextField
                             id={`selected-region-${index}`}

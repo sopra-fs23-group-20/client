@@ -49,7 +49,7 @@ const GameCreation: React.FC<Props> = (props) => {
     RegionEnum.EUROPE,
     RegionEnum.AFRICA,
     RegionEnum.AMERICA,
-    RegionEnum.ANTARCTIC,
+    RegionEnum.ANTARCTICA,
     RegionEnum.ASIA,
     RegionEnum.OCEANIA,
   ]);
@@ -91,8 +91,8 @@ const GameCreation: React.FC<Props> = (props) => {
         return RegionEnum.AMERICA;
       case "Oceania":
         return RegionEnum.OCEANIA;
-      case "Antarctic":
-        return RegionEnum.ANTARCTIC;
+      case "Antarctica":
+        return RegionEnum.ANTARCTICA;
       default:
         return undefined;
     }
@@ -328,12 +328,14 @@ const GameCreation: React.FC<Props> = (props) => {
                   <FormControlLabel
                     control={
                       <Checkbox
-                        checked={selectedRegions.includes(RegionEnum.ANTARCTIC)}
+                        checked={selectedRegions.includes(
+                          RegionEnum.ANTARCTICA
+                        )}
                         onChange={handleCountryChange}
-                        name="Antarctic"
+                        name="Antarctica"
                       />
                     }
-                    label="Antarctic"
+                    label="Antarctica"
                   />
                 </FormGroup>
               </Grid>
