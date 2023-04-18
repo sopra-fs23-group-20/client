@@ -175,7 +175,6 @@ const GameLobby: React.FC = () => {
 
     setGameGetDTO((prevGameGetDTO) => {
       const newGameGetDTO = updateGameGetDTO(prevGameGetDTO, websocketPacket);
-      console.log("New GameGetDTO: ", newGameGetDTO);
       return newGameGetDTO;
     });
   }
@@ -188,7 +187,6 @@ const GameLobby: React.FC = () => {
 
   switch (gameGetDTO.currentState) {
     case GameState.SETUP:
-      console.log("Game state is setup");
       content = (
         <SetupComponent
           {...{
@@ -198,7 +196,6 @@ const GameLobby: React.FC = () => {
       );
       break;
     case GameState.GUESSING:
-      console.log("Game state is guessing");
       content = (
         <GuessingComponent
           {...{
@@ -210,7 +207,6 @@ const GameLobby: React.FC = () => {
       );
       break;
     case GameState.SCOREBOARD:
-      console.log("Game state is scoreboard");
       content = (
         <ScoreboardComponent
           {...{
@@ -223,7 +219,6 @@ const GameLobby: React.FC = () => {
       );
       break;
     case GameState.ENDED:
-      console.log("Game state is ended");
       content = (
         <EndedComponent
           {...{
@@ -235,7 +230,6 @@ const GameLobby: React.FC = () => {
       );
       break;
     case null:
-      console.log("Game state is null");
       content = <NotJoinedComponent gameId={gameId}></NotJoinedComponent>;
       break;
     default:
