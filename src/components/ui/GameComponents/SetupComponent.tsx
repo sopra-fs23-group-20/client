@@ -273,7 +273,7 @@ Here you can see an overview of the game you just joined and you can invite your
                       },
                     }}
                     logo={{
-                      src: 'https://raw.githubusercontent.com/sopra-fs23-group-20/client/qr-code-dev/src/components/views/images/GTC-Logo.png',
+                      src: 'https://raw.githubusercontent.com/sopra-fs23-group-20/client/main/src/components/views/images/GTC-Logo.png',
                       options: {
                         width: 35,
                         x: undefined,
