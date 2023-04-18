@@ -45,7 +45,14 @@ const GameCreation: React.FC<Props> = (props) => {
   const [numberOfRounds, setNumberOfRounds] = useState(3);
   const [openLobby, setOpenLobby] = useState(true);
 
-  const [selectedRegions, setSelectedRegions] = useState<RegionEnum[]>([]);
+  const [selectedRegions, setSelectedRegions] = useState<RegionEnum[]>([
+    RegionEnum.EUROPE,
+    RegionEnum.AFRICA,
+    RegionEnum.AMERICA,
+    RegionEnum.ANTARCTICA,
+    RegionEnum.ASIA,
+    RegionEnum.OCEANIA,
+  ]);
   const [selectedHints, setSelectedHints] = useState({
     population: true,
     outline: true,
