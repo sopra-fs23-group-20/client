@@ -66,6 +66,7 @@ const Register: React.FC = () => {
       doRegister();
     },
   });
+
   const doRegister = useCallback(async () => {
     setLoading(true);
     try {
@@ -102,6 +103,45 @@ const Register: React.FC = () => {
       );
     }
   }, [formik.values.username, formik.values.password, navigate]);
+
+  const doGuestRegister = async () => {
+    setLoading(true);
+    const usernameGuest = "Guest_" + Math.floor(Math.random() * 1000000);
+    const passwordGuest = "Guest_" + Math.floor(Math.random() * 1000000);
+    try {
+      const requestBody = JSON.stringify({
+        username: usernameGuest,
+        password: passwordGuest,
+      });
+      const response = await api.post("/users", requestBody);
+
+      const user = new User(response.data);
+
+      if (user.id) {
+        localStorage.setItem("userId", user.id.toString());
+      }
+
+      if (response.headers.authorization) {
+        localStorage.setItem("token", response.headers.authorization);
+      } else {
+        throw new Error("No token received");
+      }
+      if (user.id) {
+        localStorage.setItem("id", user.id.toString());
+      } else {
+        throw new Error("No id received");
+      }
+
+      navigate(decodeURIComponent(redirectUrl));
+    } catch (error: AxiosError | any) {
+      setLoading(false);
+      alert(
+        `Something went wrong during the registration phase: \n${handleError(
+          error
+        )}`
+      );
+    }
+  };
 
   useEffect(() => {
     const listener = (event: Event) => {
@@ -215,6 +255,24 @@ const Register: React.FC = () => {
               sx={{ backgroundColor: "#D5E5F5", color: "#333" }}
             >
               {loading ? <CircularProgress size={24} /> : "Register"}
+            </Button>
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              marginTop: 2,
+            }}
+          >
+            <Button
+              fullWidth
+              variant="contained"
+              type="submit"
+              onClick={doGuestRegister}
+              sx={{ backgroundColor: "#D5E5F5", color: "#333" }}
+            >
+              {loading ? <CircularProgress size={24} /> : "Guest Register"}
             </Button>
           </Box>
         </form>
