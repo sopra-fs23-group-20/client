@@ -5,6 +5,7 @@ enum WebsocketType {
   PLAYERUPDATE = "PLAYERUPDATE",
   POINTSUPDATE = "POINTSUPDATE",
   ROUNDUPDATE = "ROUNDUPDATE",
+  GAMEUPDATE = "GAMEUPDATE",
 }
 
 export default WebsocketType;

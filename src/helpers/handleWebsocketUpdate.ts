@@ -46,33 +46,38 @@ export function updateGameGetDTO(
 ): GameGetDTO | null {
   if (gameGetDTO === null || gameGetDTO === undefined) return null;
 
-  console.log("THe websocket package type is: " + websocketPackage.type);
-
-  const gameGetDTO2 = { ...gameGetDTO };
+  let gameGetDTO2 = { ...gameGetDTO };
 
   switch (websocketPackage?.type) {
     case WebsocketType.GAMESTATEUPDATE:
-      console.log("Updating game state");
+      console.log("Updating game state to: " + websocketPackage.payload);
       gameGetDTO2.currentState = websocketPackage.payload;
       break;
     case WebsocketType.CATEGORYUPDATE:
-      console.log("Updating category stack");
+      console.log("Updating category stack to: " + websocketPackage.payload);
       gameGetDTO2.categoryStack = websocketPackage.payload;
       break;
     case WebsocketType.TIMEUPDATE:
-      console.log("Updating remaining time");
+      console.log("Updating remaining time to: " + websocketPackage.payload);
       gameGetDTO2.remainingTime = websocketPackage.payload;
       break;
     case WebsocketType.POINTSUPDATE:
-      console.log("Updating remaining round points");
+      console.log(
+        "Updating remaining round points to: " + websocketPackage.payload
+      );
       gameGetDTO2.remainingRoundPoints = websocketPackage.payload;
       break;
     case WebsocketType.PLAYERUPDATE:
-      console.log("Updating players");
+      console.log("Updating players to: " + websocketPackage.payload);
       gameGetDTO2.participants = websocketPackage.payload;
+      break;
     case WebsocketType.ROUNDUPDATE:
-      console.log("Updating round");
+      console.log("Updating round to: " + websocketPackage.payload);
       gameGetDTO2.remainingRounds = websocketPackage.payload;
+      break;
+    case WebsocketType.GAMEUPDATE:
+      console.log("Updating game to: " + websocketPackage.payload);
+      gameGetDTO2 = { ...websocketPackage.payload };
   }
   return gameGetDTO2;
 }

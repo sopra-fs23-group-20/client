@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { api, handleError } from "helpers/api";
 import User from "models/User";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import InfoIcon from "@mui/icons-material/Info";
 import {
   Button,
@@ -41,6 +41,9 @@ const validationSchema = Yup.object({
 
 const Register: React.FC = () => {
   const navigate = useNavigate();
+  const currentLocation = useLocation();
+  const searchParams = new URLSearchParams(currentLocation.search);
+  const redirectUrl = searchParams.get("redirect") || "/";
 
   const [loading, setLoading] = useState(false);
   const [username, setUsername] = useState<string | null>(null);
@@ -63,6 +66,7 @@ const Register: React.FC = () => {
       doRegister();
     },
   });
+
   const doRegister = useCallback(async () => {
     setLoading(true);
     try {
@@ -89,7 +93,7 @@ const Register: React.FC = () => {
         throw new Error("No id received");
       }
 
-      navigate(`/game`);
+      navigate(decodeURIComponent(redirectUrl));
     } catch (error: AxiosError | any) {
       setLoading(false);
       alert(
@@ -99,6 +103,45 @@ const Register: React.FC = () => {
       );
     }
   }, [formik.values.username, formik.values.password, navigate]);
+
+  const doGuestRegister = async () => {
+    setLoading(true);
+    const usernameGuest = "Guest_" + Math.floor(Math.random() * 1000000);
+    const passwordGuest = "Guest_" + Math.floor(Math.random() * 1000000);
+    try {
+      const requestBody = JSON.stringify({
+        username: usernameGuest,
+        password: passwordGuest,
+      });
+      const response = await api.post("/users", requestBody);
+
+      const user = new User(response.data);
+
+      if (user.id) {
+        localStorage.setItem("userId", user.id.toString());
+      }
+
+      if (response.headers.authorization) {
+        localStorage.setItem("token", response.headers.authorization);
+      } else {
+        throw new Error("No token received");
+      }
+      if (user.id) {
+        localStorage.setItem("id", user.id.toString());
+      } else {
+        throw new Error("No id received");
+      }
+
+      navigate(decodeURIComponent(redirectUrl));
+    } catch (error: AxiosError | any) {
+      setLoading(false);
+      alert(
+        `Something went wrong during the registration phase: \n${handleError(
+          error
+        )}`
+      );
+    }
+  };
 
   useEffect(() => {
     const listener = (event: Event) => {
@@ -206,12 +249,32 @@ const Register: React.FC = () => {
           >
             <Button
               fullWidth
+              id="regular-register"
               variant="contained"
               disabled={!(formik.isValid && formik.dirty) || loading}
               type="submit"
               sx={{ backgroundColor: "#D5E5F5", color: "#333" }}
             >
               {loading ? <CircularProgress size={24} /> : "Register"}
+            </Button>
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              marginTop: 2,
+            }}
+          >
+            <Button
+              fullWidth
+              variant="contained"
+              type="submit"
+              id="guest-register"
+              onClick={doGuestRegister}
+              sx={{ backgroundColor: "#D5E5F5", color: "#333" }}
+            >
+              {loading ? <CircularProgress size={24} /> : "Guest Register"}
             </Button>
           </Box>
         </form>
