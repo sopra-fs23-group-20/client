@@ -44,6 +44,7 @@ const GameCreation: React.FC<Props> = (props) => {
 
   const [numberOfRounds, setNumberOfRounds] = useState(3);
   const [openLobby, setOpenLobby] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const [selectedRegions, setSelectedRegions] = useState<RegionEnum[]>([
     RegionEnum.EUROPE,
@@ -62,6 +63,13 @@ const GameCreation: React.FC<Props> = (props) => {
   });
 
   const typewriterText = useTypewriter("Game Settings");
+
+  function isFormValid() {
+    return (
+      selectedRegions.length > 0 &&
+      Object.values(selectedHints).some((value) => value === true)
+    );
+  }
 
   function transformHintsToCategorieEnumList(data: {
     population?: boolean;
@@ -272,7 +280,9 @@ const GameCreation: React.FC<Props> = (props) => {
             />
             <Grid container spacing={1}>
               <Grid item xs={5}>
-                <Typography variant="subtitle1">Select Region:</Typography>
+                <Typography variant="subtitle1">
+                  Select Region (minimum of 1):
+                </Typography>
 
                 <FormGroup>
                   <FormControlLabel
@@ -362,7 +372,9 @@ const GameCreation: React.FC<Props> = (props) => {
             </div>
             <Grid item xs={5}>
               <FormControl component="fieldset" sx={{ marginTop: "1rem" }}>
-                <Typography variant="subtitle1">Select Hints:</Typography>
+                <Typography variant="subtitle1">
+                  Select Hints (minimum of 1):
+                </Typography>
                 <FormGroup>
                   <FormControlLabel
                     control={
@@ -418,7 +430,11 @@ const GameCreation: React.FC<Props> = (props) => {
               </FormControl>
             </Grid>
             <DialogActions>
-              <Button variant="outlined" onClick={() => startGame()}>
+              <Button
+                variant="outlined"
+                onClick={() => startGame()}
+                disabled={!isFormValid()}
+              >
                 Save Settings
               </Button>
             </DialogActions>
