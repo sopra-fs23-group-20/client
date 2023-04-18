@@ -249,6 +249,7 @@ const Register: React.FC = () => {
           >
             <Button
               fullWidth
+              id="regular-register"
               variant="contained"
               disabled={!(formik.isValid && formik.dirty) || loading}
               type="submit"
@@ -269,6 +270,7 @@ const Register: React.FC = () => {
               fullWidth
               variant="contained"
               type="submit"
+              id="guest-register"
               onClick={doGuestRegister}
               sx={{ backgroundColor: "#D5E5F5", color: "#333" }}
             >
