@@ -43,14 +43,6 @@ const GuessingComponent: React.FC<Props> = (props) => {
   const userId = localStorage.getItem("userId");
   const url = window.location.href;
   const stringurl = url.toString();
-  var gameID = game?.gameId;
-  const [selectedRegions, setSelectedRegions] = useState({
-    africa: false,
-    asia: false,
-    europe: false,
-    america: false,
-    oceania: false,
-  });
   const playerSet = game?.participants;
   let playerArray: GameUser[] = [];
   // eslint-disable-next-line eqeqeq
@@ -415,8 +407,8 @@ const GuessingComponent: React.FC<Props> = (props) => {
                 </FormControl>
                 <FormControl component="fieldset" sx={{ marginTop: "1rem" }}>
                   <Typography variant="subtitle1">Selected Regions:</Typography>
-                  {game?.regionSet?.getRegions() ? (
-                    game?.regionSet.getRegions().map((region, index) => (
+                  {game?.selectedRegions ? (
+                    [...game.selectedRegions].map((region, index) => (
                       <Box key={index} sx={{ marginBottom: "1rem" }}>
                         <FormControl sx={{ minWidth: "200px" }}>
                           <TextField
