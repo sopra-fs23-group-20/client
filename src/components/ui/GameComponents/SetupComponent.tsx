@@ -38,6 +38,8 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import {useNavigate} from "react-router-dom";
+import { useQRCode } from 'next-qrcode';
+
 
 
 interface Props {
@@ -46,13 +48,14 @@ interface Props {
 
 const GuessingComponent: React.FC<Props> = (props) => {
   const navigate = useNavigate();
-
+  const { Canvas } = useQRCode();
   //console.log("GuessingComponent props: ", props);
   const game = props.gameGetDTO;
   const [allLobbies, setAllLobbies] = useState<[GameGetDTO] | null>(null);
   //setAllLobbies(response.data);
   const userId = localStorage.getItem("userId");
   const url = window.location.href;
+  const stringurl = url.toString();
   var gameID = game?.gameId;
   const [selectedRegions, setSelectedRegions] = useState({
     africa: false,
@@ -146,6 +149,9 @@ const GuessingComponent: React.FC<Props> = (props) => {
       >
         Back to Dashboard
       </Button>
+      <Typography align="left">
+Here you can see an overview of the game you just joined and you can invite your friends.
+      </Typography>
       <Box
         sx={{
           display: "flex",
@@ -246,6 +252,35 @@ const GuessingComponent: React.FC<Props> = (props) => {
                     </Button>
                   </Tooltip>
                 </Box>
+                <Typography>
+                  QR Code
+                  <Tooltip title="Your friends can scan this code using a smartphone">
+                    <IconButton>
+                      <InfoIcon />
+                    </IconButton>
+                  </Tooltip>
+                </Typography>
+                <Canvas
+                    text={stringurl}
+                    options={{
+                      level: 'L',
+                      margin: 2,
+                      scale: 5,
+                      width: 150,
+                      color: {
+                        dark: '#000000',
+                        light: '#ffffff',
+                      },
+                    }}
+                    logo={{
+                      src: 'https://raw.githubusercontent.com/sopra-fs23-group-20/client/qr-code-dev/src/components/views/images/GTC-Logo.png',
+                      options: {
+                        width: 35,
+                        x: undefined,
+                        y: undefined,
+                      },
+                    }}
+                />
               </AccordionDetails>
             </Accordion>
             <Accordion>
