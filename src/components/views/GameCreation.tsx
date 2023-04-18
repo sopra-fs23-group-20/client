@@ -44,7 +44,6 @@ const GameCreation: React.FC<Props> = (props) => {
 
   const [numberOfRounds, setNumberOfRounds] = useState(3);
   const [openLobby, setOpenLobby] = useState(true);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const [selectedRegions, setSelectedRegions] = useState<RegionEnum[]>([
     RegionEnum.EUROPE,
