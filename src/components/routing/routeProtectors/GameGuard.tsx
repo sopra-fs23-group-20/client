@@ -7,10 +7,13 @@ interface GameGuardProps {
 }
 
 export const GameGuard: FC<GameGuardProps> = ({ children }) => {
+  const url = window.location.pathname;
   if (localStorage.getItem("token")) {
     return <>{children}</>;
   }
-  return <Navigate to="/login" replace />;
+  return (
+    <Navigate to={`/register?redirect=${encodeURIComponent(url)}`} replace />
+  );
 };
 
 GameGuard.propTypes = {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { api, handleError } from "helpers/api";
 import User from "models/User";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import InfoIcon from "@mui/icons-material/Info";
 import {
   Button,
@@ -41,6 +41,9 @@ const validationSchema = Yup.object({
 
 const Register: React.FC = () => {
   const navigate = useNavigate();
+  const currentLocation = useLocation();
+  const searchParams = new URLSearchParams(currentLocation.search);
+  const redirectUrl = searchParams.get("redirect") || "/";
 
   const [loading, setLoading] = useState(false);
   const [username, setUsername] = useState<string | null>(null);
@@ -89,7 +92,7 @@ const Register: React.FC = () => {
         throw new Error("No id received");
       }
 
-      navigate(`/game`);
+      navigate(decodeURIComponent(redirectUrl));
     } catch (error: AxiosError | any) {
       setLoading(false);
       alert(
