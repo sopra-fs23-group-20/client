@@ -31,6 +31,8 @@ import InfoIcon from "@mui/icons-material/Info";
 import useTypewriter from "react-typewriter-hook/build/useTypewriter";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { AxiosError } from "axios";
+import { CategoryStack } from "models/CategoryStack";
+import Category from "models/Category";
 
 interface Props {
   gameId: string | undefined;
@@ -53,37 +55,56 @@ const GameCreation: React.FC<Props> = (props) => {
     RegionEnum.ASIA,
     RegionEnum.OCEANIA,
   ]);
-  const [selectedHints, setSelectedHints] = useState({
-    population: true,
-    outline: true,
-    flag: true,
-    location: true,
-    capital: true,
-  });
+  const [selectedHints, setSelectedHints] = useState<CategoryEnum[]>([
+    CategoryEnum.CAPITAL,
+    CategoryEnum.FLAG,
+    CategoryEnum.LOCATION,
+    CategoryEnum.OUTLINE,
+    CategoryEnum.POPULATION,
+  ]);
+
+  const allCategories = [
+    CategoryEnum.CAPITAL,
+    CategoryEnum.FLAG,
+    CategoryEnum.LOCATION,
+    CategoryEnum.OUTLINE,
+    CategoryEnum.POPULATION,
+  ];
+
+  const remainingCategories = allCategories.filter(
+    (category) => !selectedHints.includes(category)
+  );
 
   const typewriterText = useTypewriter("Game Settings");
 
-  function isFormValid() {
-    return (
-      selectedRegions.length > 0 &&
-      Object.values(selectedHints).some((value) => value === true)
-    );
+  function shuffleArray(array: CategoryEnum[]): void {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
   }
 
-  function transformHintsToCategorieEnumList(data: {
-    population?: boolean;
-    outline?: boolean;
-    flag?: boolean;
-    location?: boolean;
-    capital?: boolean;
-  }): CategoryEnum[] {
-    let categoriesSelected: CategoryEnum[] = [];
-    if (data.population) categoriesSelected.push(CategoryEnum.POPULATION);
-    if (data.outline) categoriesSelected.push(CategoryEnum.OUTLINE);
-    if (data.flag) categoriesSelected.push(CategoryEnum.FLAG);
-    if (data.location) categoriesSelected.push(CategoryEnum.LOCATION);
-    if (data.capital) categoriesSelected.push(CategoryEnum.CAPITAL);
-    return categoriesSelected;
+  function isFormValid() {
+    return selectedRegions.length > 0 && selectedHints.length > 0;
+  }
+
+  function stringToCategoryEnum(
+    categoryString: string
+  ): CategoryEnum | undefined {
+    switch (categoryString) {
+      case "Population":
+        return CategoryEnum.POPULATION;
+      case "Outline":
+        return CategoryEnum.OUTLINE;
+      case "Flag":
+        return CategoryEnum.FLAG;
+      case "Location":
+        return CategoryEnum.LOCATION;
+      case "Capital":
+        return CategoryEnum.CAPITAL;
+      default:
+        return undefined;
+    }
   }
 
   function stringToRegionEnum(regionString: string): RegionEnum | undefined {
@@ -112,21 +133,31 @@ const GameCreation: React.FC<Props> = (props) => {
 
     try {
       if (userIdString) {
-        const categoriesSelected =
-          transformHintsToCategorieEnumList(selectedHints);
-        const gamePostDTO = new GamePostDTO(
-          userIdString,
-          roundSeconds,
-          numberOfRounds,
-          categoriesSelected,
-          selectedRegions,
-          randomizedHints,
-          openLobby
-        );
-        console.log("Game Post DTO: ", gamePostDTO);
-        const response = await api.post("/games", gamePostDTO);
-        console.log("Game Post Response: ", response.data);
-        navigate(`/game/lobby/${response.data.gameId}`);
+        if (selectedHints && selectedHints.length > 0) {
+          const currentCategoryEnum = selectedHints[0];
+          const currentCategory = new Category(currentCategoryEnum);
+
+          const gamePostDTO = new GamePostDTO(
+            userIdString,
+            roundSeconds,
+            numberOfRounds,
+            new CategoryStack(
+              currentCategory,
+              selectedHints,
+              remainingCategories,
+              null,
+              randomizedHints
+            ),
+            selectedRegions,
+            openLobby
+          );
+          console.log("Game Post DTO: ", gamePostDTO);
+          const response = await api.post("/games", gamePostDTO);
+          console.log("Game Post Response: ", response.data);
+          navigate(`/game/lobby/${response.data.gameId}`);
+        } else {
+          alert("Please select at least one category.");
+        }
       }
     } catch (error: AxiosError | any) {
       console.log(error);
@@ -146,7 +177,12 @@ const GameCreation: React.FC<Props> = (props) => {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setRandomizedHints(event.target.checked);
+    if (event.target.checked) {
+      shuffleArray(selectedHints);
+      setSelectedHints([...selectedHints]);
+    }
   };
+
   const handleCountryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = event.target;
     const region = stringToRegionEnum(name);
@@ -183,9 +219,25 @@ const GameCreation: React.FC<Props> = (props) => {
 
   const handleHintChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = event.target;
-    setSelectedHints({
-      ...selectedHints,
-      [name as keyof typeof selectedHints]: checked,
+    const category = stringToCategoryEnum(name);
+
+    if (!category) {
+      return;
+    }
+
+    setSelectedHints((prevHints) => {
+      let newHints = [...prevHints];
+      if (checked) {
+        newHints.push(category);
+      } else {
+        newHints = newHints.filter((h) => h !== category);
+      }
+
+      newHints.sort((a, b) => {
+        return allCategories.indexOf(a) - allCategories.indexOf(b);
+      });
+
+      return newHints;
     });
   };
 
@@ -268,15 +320,6 @@ const GameCreation: React.FC<Props> = (props) => {
                 />
               </FormControl>
             </Grid>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={randomizedHints}
-                  onChange={handleRandomizedHintsChange}
-                />
-              }
-              label="Randomized Hints"
-            />
             <Grid container spacing={1}>
               <Grid item xs={5}>
                 <Typography variant="subtitle1">
@@ -378,9 +421,11 @@ const GameCreation: React.FC<Props> = (props) => {
                   <FormControlLabel
                     control={
                       <Checkbox
-                        checked={selectedHints.population}
+                        checked={selectedHints.includes(
+                          CategoryEnum.POPULATION
+                        )}
                         onChange={handleHintChange}
-                        name="population"
+                        name="Population"
                       />
                     }
                     label="Population"
@@ -388,9 +433,9 @@ const GameCreation: React.FC<Props> = (props) => {
                   <FormControlLabel
                     control={
                       <Checkbox
-                        checked={selectedHints.outline}
+                        checked={selectedHints.includes(CategoryEnum.OUTLINE)}
                         onChange={handleHintChange}
-                        name="outline"
+                        name="Outline"
                       />
                     }
                     label="Outline"
@@ -398,19 +443,9 @@ const GameCreation: React.FC<Props> = (props) => {
                   <FormControlLabel
                     control={
                       <Checkbox
-                        checked={selectedHints.flag}
+                        checked={selectedHints.includes(CategoryEnum.LOCATION)}
                         onChange={handleHintChange}
-                        name="flag"
-                      />
-                    }
-                    label="Flag"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={selectedHints.location}
-                        onChange={handleHintChange}
-                        name="location"
+                        name="Location"
                       />
                     }
                     label="Location"
@@ -418,9 +453,19 @@ const GameCreation: React.FC<Props> = (props) => {
                   <FormControlLabel
                     control={
                       <Checkbox
-                        checked={selectedHints.capital}
+                        checked={selectedHints.includes(CategoryEnum.FLAG)}
                         onChange={handleHintChange}
-                        name="capital"
+                        name="Flag"
+                      />
+                    }
+                    label="Flag"
+                  />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={selectedHints.includes(CategoryEnum.CAPITAL)}
+                        onChange={handleHintChange}
+                        name="Capital"
                       />
                     }
                     label="Capital"
@@ -428,6 +473,18 @@ const GameCreation: React.FC<Props> = (props) => {
                 </FormGroup>
               </FormControl>
             </Grid>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={
+                    randomizedHints === null ? undefined : randomizedHints
+                  }
+                  onChange={handleRandomizedHintsChange}
+                  disabled={selectedHints.length === 1}
+                />
+              }
+              label="Randomized Hints"
+            />
             <DialogActions>
               <Button
                 variant="outlined"
