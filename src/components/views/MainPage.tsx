@@ -73,8 +73,10 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
 
   const [isHovered1, setIsHovered1] = useState(false);
   const [isHovered2, setIsHovered2] = useState(false);
+  const [isHovered3, setIsHovered3] = useState(false);
 
-  const makeOffline = async (): Promise<void> => {
+
+    const makeOffline = async (): Promise<void> => {
     try {
       const userId = localStorage.getItem("id");
       const response = await api.put(
@@ -242,9 +244,9 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
           <Link to="/game/rules" style={{ textDecoration: "none" }}>
             <Card
               sx={{ height: "100%", width: "100%" }}
-              elevation={isHovered1 ? 30 : 3}
-              onMouseEnter={() => setIsHovered1(true)}
-              onMouseLeave={() => setIsHovered1(false)}
+              elevation={isHovered3 ? 30 : 3}
+              onMouseEnter={() => setIsHovered3(true)}
+              onMouseLeave={() => setIsHovered3(false)}
             >
               <CardContent
                 sx={{

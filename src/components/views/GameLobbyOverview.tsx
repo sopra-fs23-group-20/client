@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect, useCallback} from "react";
 import { api } from "helpers/api";
 import { useNavigate } from "react-router-dom";
 import SendIcon from "@mui/icons-material/Send";
@@ -56,27 +56,23 @@ const GameLobbyOverview: React.FC = () => {
     setOpen(false);
   };
 
-  function refreshPage() {
-    window.location.reload();
-  }
+
+  const fetchLobbies = useCallback(async () => {
+    try {
+      console.log("started fetching all games");
+      const response = await api.get("/games");
+      setAllLobbies(response.data);
+      console.log("response:");
+      console.log(response);
+
+    } catch (error) {
+      console.error("Error fetching countries:", error);
+    }
+  },[setAllLobbies])
 
   useEffect(() => {
-    async function fetchLobbies() {
-      try {
-        console.log("started fetching all games");
-        const response = await api.get("/games");
-        setAllLobbies(response.data);
-        console.log("response:");
-        console.log(response);
-        console.log("allLobbies:");
-        console.log(allLobbies);
-        //console.log(allLobbies.data);
-      } catch (error) {
-        console.error("Error fetching countries:", error);
-      }
-    }
-    fetchLobbies();
-  }, [allLobbies]);
+    void fetchLobbies();
+  }, [fetchLobbies]);
 
   return (
     <Container>
@@ -177,7 +173,7 @@ const GameLobbyOverview: React.FC = () => {
             This is a success message!
           </Alert>
         </Snackbar>
-        <Chip label="Refresh!" onClick={refreshPage} />
+        <Chip label="Refresh!" onClick={fetchLobbies} />
       </TableContainer>
       <Button variant="outlined" onClick={() => navigate(`/game/`)}>
         Back to Main
