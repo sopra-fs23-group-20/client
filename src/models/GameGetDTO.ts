@@ -16,7 +16,6 @@ class GameGetDTO {
   remainingRoundPoints: number | null;
   selectedRegions: RegionEnum[] | null;
   categoryStack: CategoryStack | null;
-  randomizedHints: boolean | null;
   openLobby: boolean | null;
 
   constructor(
@@ -32,7 +31,6 @@ class GameGetDTO {
     remainingRoundPoints: number | null,
     selectedRegions: RegionEnum[] | null,
     categoryStack: CategoryStack | null,
-    randomizedHints: boolean | null,
     openLobby: boolean | null
   ) {
     this.gameId = gameId;
@@ -47,7 +45,6 @@ class GameGetDTO {
     this.remainingRoundPoints = remainingRoundPoints;
     this.selectedRegions = selectedRegions;
     this.categoryStack = categoryStack;
-    this.randomizedHints = randomizedHints;
     this.openLobby = openLobby;
   }
 }
