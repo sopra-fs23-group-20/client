@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Snackbar, Alert } from "@mui/material";
 import { api, handleError } from "helpers/api";
 import {
   Button,
@@ -76,6 +77,22 @@ const GameCreation: React.FC<Props> = (props) => {
   );
 
   const typewriterText = useTypewriter("Game Settings");
+
+  const [infoMessage, setInfoMessage] = useState("");
+
+  useEffect(() => {
+    if (
+      selectedRegions.length === 1 &&
+      selectedRegions.includes(RegionEnum.ANTARCTICA)
+    ) {
+      setNumberOfRounds(2);
+      setInfoMessage(
+        "Maximum number of rounds set to 2 since Antarctica only has 2 countries."
+      );
+    } else {
+      setInfoMessage("");
+    }
+  }, [selectedRegions]);
 
   function shuffleArray(array: CategoryEnum[]): void {
     for (let i = array.length - 1; i > 0; i--) {
@@ -158,6 +175,25 @@ const GameCreation: React.FC<Props> = (props) => {
         } else {
           alert("Please select at least one category.");
         }
+        <TextField
+          id="number-of-rounds"
+          label="Number of Rounds"
+          type="number"
+          InputLabelProps={{
+            shrink: true,
+          }}
+          value={numberOfRounds}
+          onChange={handleNumberOfRoundsChange}
+          inputProps={{
+            min: 1,
+            max:
+              selectedRegions.length === 1 &&
+              selectedRegions.includes(RegionEnum.ANTARCTICA)
+                ? 2
+                : 10,
+          }}
+          sx={{ marginTop: "1rem" }}
+        />;
       }
     } catch (error: AxiosError | any) {
       console.log(error);
@@ -202,13 +238,20 @@ const GameCreation: React.FC<Props> = (props) => {
     });
   };
 
-  const handleNumberOfRoundsChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const value = parseInt(event.target.value as string, 10);
-    if (value >= 1 && value <= 10) {
-      setNumberOfRounds(value);
+  const handleNumberOfRoundsChange = (event: { target: { value: any } }) => {
+    let newValue = event.target.value;
+
+    const maxRounds =
+      selectedRegions.length === 1 &&
+      selectedRegions.includes(RegionEnum.ANTARCTICA)
+        ? 2
+        : 10;
+
+    if (newValue > maxRounds) {
+      newValue = maxRounds;
     }
+
+    setNumberOfRounds(newValue);
   };
 
   const handleOpenLobbyChange = (
@@ -314,7 +357,11 @@ const GameCreation: React.FC<Props> = (props) => {
                   onChange={handleNumberOfRoundsChange}
                   inputProps={{
                     min: 1,
-                    max: 10,
+                    max:
+                      selectedRegions.length === 1 &&
+                      selectedRegions.includes(RegionEnum.ANTARCTICA)
+                        ? 2
+                        : 10,
                   }}
                   sx={{ marginTop: "1rem" }}
                 />
@@ -390,6 +437,11 @@ const GameCreation: React.FC<Props> = (props) => {
                     label="Antarctica"
                   />
                 </FormGroup>
+              </Grid>
+              <Grid item xs={12}>
+                <Typography variant="subtitle2" color="error">
+                  {infoMessage}
+                </Typography>
               </Grid>
             </Grid>
             <div>
