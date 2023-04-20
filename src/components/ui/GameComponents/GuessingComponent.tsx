@@ -128,12 +128,12 @@ const GuessingComponent: React.FC<Props> = (props) => {
         <Typography variant="h2">You are now in a Game!</Typography>
       </Box>
 
-      <Box sx={{ display: "flex", alignItems: "center", marginTop: 5 }}>
+      <Box sx={{ display: "flex", alignItems: "center", marginTop: "5%" }}>
         <Autocomplete
           disablePortal
           id="combo-box-demo"
           options={allCountries}
-          sx={{ width: 300 }}
+          sx={{ width: "100%"}}
           onChange={(event, value) => setValueEntered(value)}
           renderInput={(params) => (
             <TextField {...params} label="Enter your Guess here" />
@@ -141,7 +141,7 @@ const GuessingComponent: React.FC<Props> = (props) => {
         />
 
         {game?.remainingTime ? (
-          <Typography variant="h4" sx={{ marginLeft: 5 }}>
+          <Typography variant="h4" sx={{ marginLeft: "5%" }}>
             Time Remaining: {game.remainingTime.toString()}{" "}
           </Typography>
         ) : (
@@ -149,14 +149,14 @@ const GuessingComponent: React.FC<Props> = (props) => {
         )}
 
         {game?.remainingRoundPoints ? (
-          <Typography variant="h4" sx={{ marginLeft: 5 }}>
+          <Typography variant="h4" sx={{ marginLeft: "5%" }}>
             Current Round Points: {game.remainingRoundPoints.toString()}{" "}
           </Typography>
         ) : (
           <div></div>
         )}
 
-        <Typography variant="h4" sx={{ marginLeft: 5 }}>
+        <Typography variant="h4" sx={{ marginLeft: "5%" }}>
           Currently on Round:{" "}
           {game?.numberOfRounds != null && game?.remainingRounds != null
             ? game.numberOfRounds -
@@ -169,14 +169,14 @@ const GuessingComponent: React.FC<Props> = (props) => {
 
       <Button
         variant="outlined"
-        sx={{ marginTop: 2 }}
+        sx={{ marginTop: "2%" }}
         onClick={() => submitGuess()}
         disabled={hasPlayerGuessed()}
       >
         Submit your Guess
       </Button>
 
-      <Box sx={{ height: 500, width: 500, marginTop: 10 }}>
+      <Box sx={{ height: "50%", width: "100%", marginTop: "5%" }}>
         <HintComponent currentCaregory={game?.categoryStack?.currentCategory} />
       </Box>
     </Container>
