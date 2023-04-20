@@ -244,16 +244,14 @@ const ScoreboardComponent: React.FC<Props> = (props) => {
           alignItems="flex-start"
         >
           <Grid xs={12}>
+            <Typography variant="h4" sx={{ marginTop: 2 }}>
+              The correct country was: {currentCountry}
+            </Typography>
             {!isGameEnded && (
-              <>
-                <Typography variant="h4" sx={{ marginTop: 2 }}>
-                  The correct country was: {currentCountry}
-                </Typography>
-                <Typography variant="h4" sx={{ marginTop: 2 }}>
-                  Next round starts in:{" "}
-                  {gameGetDTO ? gameGetDTO.remainingTime : "undefined"}
-                </Typography>
-              </>
+              <Typography variant="h4" sx={{ marginTop: 2 }}>
+                Next round starts in:{" "}
+                {gameGetDTO ? gameGetDTO.remainingTime : "undefined"}
+              </Typography>
             )}
           </Grid>
         </Grid>
