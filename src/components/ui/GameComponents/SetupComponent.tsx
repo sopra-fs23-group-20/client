@@ -356,6 +356,20 @@ const GuessingComponent: React.FC<Props> = (props) => {
                     }
                     label="Open Lobby"
                   />
+                  <FormGroup>
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={
+                            game?.categoryStack?.randomizedHints ?? false
+                          }
+                          disabled={true}
+                          color="primary"
+                        />
+                      }
+                      label="Randomized Hints"
+                    />
+                  </FormGroup>
                 </FormGroup>
 
                 <FormControl component="fieldset" sx={{ marginTop: "1rem" }}>
