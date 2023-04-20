@@ -140,6 +140,7 @@ const GameLobby: React.FC = () => {
     const stompClient = new Client({
       webSocketFactory: () => socket,
       debug: (str) => console.log(str),
+      reconnectDelay: 500,
     });
 
     stompClient.onConnect = (frame) => {
