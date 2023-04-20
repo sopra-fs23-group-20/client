@@ -66,11 +66,12 @@ const CountriesOverview: React.FC = () => {
                             <div
                                 style={{
                                     flex: "1 1 auto",
-                                    minWidth: "200px",
+                                    minWidth: "600px",
                                     padding: "8px",
                                     backgroundColor: index % 2 ? "#232323" : "#161616",
                                     borderRadius: "20px",
                                     marginBottom: "15px"
+
                                 }}
                             >
                                 <CountryContainer {...country} />
