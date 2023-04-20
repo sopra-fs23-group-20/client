@@ -3,9 +3,11 @@ import { geoPath, geoIdentity, geoBounds } from "d3-geo";
 
 interface CountryOutlineProps {
   country: string;
+  width?: number;
+  height?: number;
 }
 
-const CountryOutline: React.FC<CountryOutlineProps> = ({ country }) => {
+const CountryOutline: React.FC<CountryOutlineProps> = ({ country, width = 500, height = 350 }) => {
   const countryJSON = JSON.parse(country);
   //const country = geoJSONCountries.features.find(
   //  (feature: any) => feature.properties.ISO_A3 === countryCode
@@ -16,9 +18,8 @@ const CountryOutline: React.FC<CountryOutlineProps> = ({ country }) => {
     return <div>Country not found</div>;
   }
 
-  const width = 500;
-  const height = 350;
-  const padding = 40;
+
+  const padding = 10;
 
   const bounds = geoBounds(countryJSON);
   const topLeft = bounds[0];
@@ -45,7 +46,7 @@ const CountryOutline: React.FC<CountryOutlineProps> = ({ country }) => {
       width={width}
       height={height}
       viewBox={`0 0 ${width} ${height}`}
-      style={{ backgroundColor: "#000000", marginTop: 10 }}
+      style={{ backgroundColor: "#000000" }}
     >
       <path
         d={pathData || ""}
