@@ -91,6 +91,7 @@ export default function Rules(){
           <Typography
             variant="h1"
             sx={{
+              minHeight: "56px",
               fontFamily: "'Roboto Slab', serif",
               fontSize: "3rem",
               fontWeight: 800,
