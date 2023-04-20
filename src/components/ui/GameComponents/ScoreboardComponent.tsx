@@ -308,7 +308,7 @@ const ScoreboardComponent: React.FC<Props> = (props) => {
             >
               <Grid xs={12}>
                 <TableContainer component={Paper}>
-                  <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                  <Table sx={{ width: "100%" }} aria-label="simple table">
                     <TableHead>
                       <TableRow>
                         <TableCell className={"tableColumnHeader"}>

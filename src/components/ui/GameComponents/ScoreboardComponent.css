@@ -103,7 +103,7 @@ div.Player div.name {
 }
 
 div.Player div.score {
-  max-width: 50px;
+  max-width: 10%;
   transition: color 0.5s;
   padding-right: 40px;
 }
@@ -111,7 +111,7 @@ div.Player div.score {
 .PrizeCabinet ul {
   padding: 0;
   margin: 24px auto;
-  width: 500px;
+  width: 60%;
   display: flex;
   align-content: space-around;
 }

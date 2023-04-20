@@ -35,7 +35,7 @@ const MainPage: React.FC<Props> = ({onTokenChange}) => {
     const userId = localStorage.getItem("userId");
     const token = localStorage.getItem("token");
 
-    const typewriterText = useTypewriter("Welcome to GuessTheCountry!");
+    const typewriterText = useTypewriter("Welcome to GTC!");
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [websocketPacket, setWebsocketPacket] =
@@ -131,8 +131,8 @@ const MainPage: React.FC<Props> = ({onTokenChange}) => {
         <Container>
             <Box
                 sx={{
-                    width: "800px",
-                    height: "80px",
+                    width: "100%",
+                    height: "100%",
                     justifyContent: "center",
                     alignItems: "center",
                     display: "flex",
