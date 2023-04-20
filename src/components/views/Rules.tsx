@@ -3,7 +3,7 @@ import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import useTypewriter from "react-typewriter-hook/build/useTypewriter";
-import { Typography } from "@mui/material";
+import {DialogActions, Typography} from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
@@ -18,6 +18,7 @@ import Logo from "./images/GTCText.png";
 import GameLobby from "./images/GameLobby.png";
 import GameSettings from "./images/GameSettings.png";
 import InTheGame from "./images/InTheGame.png";
+import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 
 
 const containerVariants = {
@@ -221,9 +222,17 @@ export default function Rules(){
           <div
             style={{ display: "flex", justifyContent: "center", marginTop: 2 }}
           >
-            <CustomButton onClick={() => navigate("/game")}>
-              Back to Main Page
-            </CustomButton>
+            <DialogActions>
+              <Button
+                  variant="outlined"
+                  size="small"
+                  color="error"
+                  startIcon={<KeyboardArrowLeftIcon />}
+                  onClick={() => navigate("/game/")}
+              >
+                Back to Dashboard
+              </Button>
+            </DialogActions>
           </div>
         </motion.div>
       </div>
