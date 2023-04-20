@@ -325,7 +325,7 @@ const GameCreation: React.FC<Props> = (props) => {
                     <DialogContent>
                         <Grid item container xs={12} spacing={2}>
                             <Grid item xs={6}>
-                                <FormControl sx={{minWidth: "200px"}}>
+                                <FormControl sx={{width: "100%"}}>
                                     <TextField
                                         id="round-seconds"
                                         label="Round Seconds"
@@ -348,7 +348,7 @@ const GameCreation: React.FC<Props> = (props) => {
                                 </FormControl>
                             </Grid>
                             <Grid item xs={6}>
-                                <FormControl sx={{minWidth: "200px",}}>
+                                <FormControl sx={{width: "100%",}}>
                                     <TextField
                                         id="number-of-rounds"
                                         label="Number of Rounds"

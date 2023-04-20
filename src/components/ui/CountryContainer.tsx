@@ -25,7 +25,7 @@ const CountryContainer: React.FC<Country> = (country: Country) => {
         <div style={{ textAlign: "left" }}>
           <Avatar
             variant="square"
-            sx={{ width: 500, height: 350, marginTop: 1 }}
+            sx={{ width: "100%", height: 350, marginTop: 1 }}
             src={country.flag.toString()}
             alt={`${country.name} flag`}
           />

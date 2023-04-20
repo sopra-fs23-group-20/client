@@ -158,7 +158,7 @@ const GameLobbyOverview: React.FC = () => {
 
             <TableContainer component={Paper}>
                 <Typography variant="h2">Game Lobbies</Typography>
-                <Table sx={{minWidth: 650}} aria-label="simple table">
+                <Table sx={{width: "100%"}} aria-label="simple table">
                     <TableHead>
                         <TableRow>
                             <TableCell>GameId</TableCell>
