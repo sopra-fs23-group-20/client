@@ -28,7 +28,7 @@ const GameLobby: React.FC = () => {
   const [allCountries, setAllCountries] = useState<Array<string>>([]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
-  const [usePolling, setUsePolling] = useState(false);
+  const [usePolling, setUsePolling] = useState(true);
   const isFetching = useRef(false);
 
   const gameId = window.location.pathname.split("/").pop();
