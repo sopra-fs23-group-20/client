@@ -78,13 +78,22 @@ const GameLobbyOverview: React.FC = () => {
 
     return (
         <Container>
-            <Typography variant="h1">Game Lobbies</Typography>
-            <Typography variant="h5">
+            <Typography
+                sx= {{mb: 2}}
+                variant="h1">
+                Game Lobbies</Typography>
+            <Typography
+                sx= {{mb: 6}}
+                variant="h5"
+
+            >
                 You can either use a code provided by a friend to join a specific lobby
                 or you can choose a lobby from our list{" "}
             </Typography>
 
-            <Typography variant="h2">
+            <Typography
+                sx= {{mb: 2}}
+                variant="h2">
                 Join using a code
                 <Tooltip
                     title="You need a three digit code to join a specific game"
@@ -96,6 +105,7 @@ const GameLobbyOverview: React.FC = () => {
                 </Tooltip>
             </Typography>
             <TextField
+                sx= {{mb: 2}}
                 id="filled-number"
                 label="GameId"
                 type="number"
