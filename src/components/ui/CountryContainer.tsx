@@ -2,45 +2,45 @@ import React from "react";
 import Country from "models/Country";
 import MapContainer from "./MapContainer";
 import CountryOutline from "./CountryOutline";
-import { Avatar, Container, Typography, Grid } from "@mui/material";
+import {Avatar, Box, Typography, Stack} from "@mui/material";
 
 const CountryContainer: React.FC<Country> = (country: Country) => {
-  if (!country.location) {
-    // Country does not have longitude and latitude
-    return null;
-  }
+    if (!country.location) {
+        // Country does not have longitude and latitude
+        return null;
+    }
 
-  return (
-    <Container>
-      <Typography sx={{ marginTop: 4 }} variant="h2">
-        Name: {country.name}{" "}
-      </Typography>
-      <Typography sx={{ marginTop: 1 }} variant="h3">
-        Population: {country.population?.toString()}
-      </Typography>
-      <Typography sx={{ marginTop: 1 }} variant="h3">
-        Capital: {country.capital}
-      </Typography>
-      {country.flag ? (
-        <div style={{ textAlign: "left" }}>
-          <Avatar
-            variant="square"
-            sx={{ width: 500, height: 350, marginTop: 1 }}
-            src={country.flag.toString()}
-            alt={`${country.name} flag`}
-          />
-        </div>
-      ) : null}
-      <Typography variant="h3">
-        {country.outline ? (
-          <CountryOutline country={country.outline.toString()}></CountryOutline>
-        ) : (
-          <div />
-        )}
-      </Typography>
-      <MapContainer {...country} />
-    </Container>
-  );
+    return (
+        <Box sx={{display: 'flex', flexDirection: 'row', justifyContent: 'center', my: 3, gap: "50px"}}>
+            <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                <Typography variant="h2" sx={{mb: 4}}>
+                    {country.name}
+                </Typography>
+                <Stack flexDirection="row" gap="20px">
+                    {country.flag &&
+                        <Avatar
+                            variant="square"
+                            sx={{width: 220, height: 150}}
+                            src={country.flag.toString()}
+                            alt={`${country.name} flag`}
+                        />
+                    }
+                    {country.outline &&
+                        <CountryOutline country={country.outline.toString()} width={220} height={150}></CountryOutline>
+                    }
+                </Stack>
+
+                <Typography variant="h5" sx={{mb: 1, mt: 4}}>
+                    Population: {country.population?.toString()}
+                </Typography>
+                <Typography variant="h5" sx={{mb: 1}}>
+                    Capital: {country.capital}
+                </Typography>
+
+            </Box>
+            <MapContainer {...country} />
+        </Box>
+    );
 };
 
 export default CountryContainer;
