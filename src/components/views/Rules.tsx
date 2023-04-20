@@ -47,7 +47,7 @@ const textVariants = {
 
 export default function Rules(){
 
-  const typewriterText = useTypewriter("GuessTheCountry: Rules and Guidelines");
+  const typewriterText = useTypewriter("Rules and Guidelines");
   const navigate = useNavigate();
   const [value, setValue] = React.useState('1');
 
@@ -92,10 +92,6 @@ export default function Rules(){
             variant="h1"
             sx={{
               minHeight: "56px",
-              fontFamily: "'Roboto Slab', serif",
-              fontSize: "3rem",
-              fontWeight: 800,
-              textShadow: "2px 2px 4px rgba(0, 0, 0, 0.25)",
               marginBottom: "2rem",
             }}
           >

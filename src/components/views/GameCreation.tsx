@@ -1,5 +1,4 @@
 import {useState, useEffect} from "react";
-import {Snackbar, Alert} from "@mui/material";
 import {api, handleError} from "helpers/api";
 import {
     Button,
@@ -298,9 +297,6 @@ const GameCreation: React.FC<Props> = (props) => {
                     variant="h1"
                     sx={{
                         minHeight: "56px",
-                        fontFamily: "'Roboto Slab', serif",
-                        fontSize: "3rem",
-                        fontWeight: 800,
                         textShadow: "2px 2px 4px rgba(0, 0, 0, 0.25)",
                     }}
                 >
@@ -314,6 +310,7 @@ const GameCreation: React.FC<Props> = (props) => {
                     }}
                 >
                     <Button
+                        sx = {{mb: 4}}
                         variant="outlined"
                         size="small"
                         color="error"
@@ -323,13 +320,7 @@ const GameCreation: React.FC<Props> = (props) => {
                         Back to Dashboard
                     </Button>
                 </DialogActions>
-                <Box
-                    sx={{
-                        display: "flex",
-                        justifyContent: "space-around",
-                        marginTop: "1rem",
-                    }}
-                ></Box>
+
                 <FormControl>
                     <DialogContent>
                         <Grid item container xs={12} spacing={2}>

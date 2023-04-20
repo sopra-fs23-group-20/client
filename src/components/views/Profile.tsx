@@ -170,18 +170,6 @@ const Profile: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    async function fetchCountries() {
-      try {
-        const response = await api.get("/countries");
-        setAllCountries(response.data.map((country: any) => country.name));
-      } catch (error) {
-        console.error("Error fetching countries:", error);
-      }
-    }
-    fetchCountries();
-  }, []);
-
   // Render profile edit form
   const renderEditForm = () => {
     if (!currentUser) return null;

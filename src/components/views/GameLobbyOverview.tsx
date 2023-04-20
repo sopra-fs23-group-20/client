@@ -25,6 +25,7 @@ import GameGetDTO from "models/GameGetDTO";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import LoginIcon from '@mui/icons-material/Login';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import useTypewriter from "react-typewriter-hook/build/useTypewriter";
 
 //for snackbar
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
@@ -37,8 +38,18 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 const GameLobbyOverview: React.FC = () => {
     const navigate = useNavigate();
 
-    const [GameId, setGameId] = useState<string | null>(null);
+    const [gameId, setGameId] = useState<string | null>(null);
     const [allLobbies, setAllLobbies] = useState<[GameGetDTO] | null>(null);
+
+    const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+
+    const handleGameIdChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const value = event.target.value;
+        setGameId(value);
+        setIsButtonDisabled(value === "");
+    };
+
+    const typewriterText = useTypewriter("Server List");
 
     //for snackbar
     const [open, setOpen] = React.useState(false);
@@ -79,11 +90,18 @@ const GameLobbyOverview: React.FC = () => {
     return (
         <Container>
             <Typography
-                sx= {{mb: 2}}
-                variant="h1">
-                Game Lobbies</Typography>
+                variant="h1"
+                sx={{
+                    minHeight: "56px",
+                    textShadow: "2px 2px 4px rgba(0, 0, 0, 0.25)",
+                    marginBottom: "2rem",
+                }}
+            >
+                {typewriterText}
+            </Typography>
+
             <Typography
-                sx= {{mb: 6}}
+                sx={{mb: 6}}
                 variant="h5"
 
             >
@@ -92,12 +110,12 @@ const GameLobbyOverview: React.FC = () => {
             </Typography>
 
             <Typography
-                sx= {{mb: 2}}
+                sx={{mb: 2}}
                 variant="h2">
                 Join using a code
                 <Tooltip
                     title="You need a three digit code to join a specific game"
-                    placement="top"
+                    placement="right"
                 >
                     <IconButton>
                         <InfoIcon/>
@@ -105,7 +123,7 @@ const GameLobbyOverview: React.FC = () => {
                 </Tooltip>
             </Typography>
             <TextField
-                sx= {{mb: 2}}
+                sx={{mb: 2}}
                 id="filled-number"
                 label="GameId"
                 type="number"
@@ -113,14 +131,15 @@ const GameLobbyOverview: React.FC = () => {
                     shrink: true,
                 }}
                 variant="filled"
-                onChange={(e) => setGameId(e.target.value)}
+                onChange={handleGameIdChange}
             />
             <Button
                 sx={{mt: 1.5, ml: 2}}
                 variant="contained"
                 size="small"
                 startIcon={<LoginIcon/>}
-                onClick={() => (handleClick(), navigate(`/game/lobby/${GameId}`))}
+                disabled={isButtonDisabled}
+                onClick={() => (handleClick(), navigate(`/game/lobby/${gameId}`))}
             >
                 Join game!
             </Button>
@@ -193,7 +212,7 @@ const GameLobbyOverview: React.FC = () => {
                     variant="outlined"
                     size="small"
                     startIcon={<RefreshIcon/>}
-                    onClick={() => (fetchLobbies)}
+                    onClick={() => fetchLobbies()}
                 >
                     Refresh!
                 </Button>
