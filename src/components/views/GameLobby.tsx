@@ -29,10 +29,15 @@ const GameLobby: React.FC = () => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   const [usePolling, setUsePolling] = useState(true);
+  const usePollingRef = useRef(usePolling);
   const isFetching = useRef(false);
 
   const gameId = window.location.pathname.split("/").pop();
   const currentUserId = localStorage.getItem("userId");
+
+  useEffect(() => {
+    usePollingRef.current = usePolling;
+  }, [usePolling]);
 
   useEffect(() => {
     async function PollingfetchGame(): Promise<void> {
@@ -55,8 +60,8 @@ const GameLobby: React.FC = () => {
         await PollingfetchGame();
         isFetching.current = false;
       }
-      if (usePolling) {
-        timeoutId = setTimeout(startPolling, 200); // 0.2 seconds
+      if (usePollingRef.current) {
+        timeoutId = setTimeout(startPolling, 200);
       }
     };
 
@@ -66,10 +71,10 @@ const GameLobby: React.FC = () => {
 
     return () => {
       if (timeoutId) {
-        clearTimeout(timeoutId); // Clean up the timeout when the component unmounts
+        clearTimeout(timeoutId);
       }
     };
-  }, [usePolling]);
+  }, []);
 
   useEffect(() => {
     async function fetchCountries(): Promise<void> {
