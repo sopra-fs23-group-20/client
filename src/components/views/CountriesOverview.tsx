@@ -66,9 +66,9 @@ const CountriesOverview: React.FC = () => {
                             <div
                                 style={{
                                     flex: "1 1 auto",
-                                    minWidth: "600px",
+                                    minWidth: "1200px",
                                     padding: "8px",
-                                    backgroundColor: index % 2 ? "#232323" : "#161616",
+                                    backgroundColor: index % 2 ? "#232323" : "#181818",
                                     borderRadius: "20px",
                                     marginBottom: "15px"
 
