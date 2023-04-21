@@ -170,7 +170,7 @@ const GameLobby: React.FC = () => {
     return () => {
       stompClient.deactivate();
     };
-  }, [gameId]);
+  }, []);
 
   function handleGameUpdate(message: IMessage): void {
     const messageObject = JSON.parse(message.body);
