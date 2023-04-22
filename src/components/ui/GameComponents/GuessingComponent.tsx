@@ -7,6 +7,9 @@ import Country from "models/Country";
 import Autocomplete from "@mui/material/Autocomplete";
 import HintComponent from "../HintComponent";
 import GameGetDTO from "models/GameGetDTO";
+import Logo from "../../views/images/GTCText.png";
+import CircularProgress from '@mui/material/CircularProgress';
+
 
 interface Props {
   gameGetDTO: GameGetDTO | null;
@@ -118,6 +121,17 @@ const GuessingComponent: React.FC<Props> = (props) => {
   return (
     <Container>
       <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            width:"100%"
+          }}
+      >
+        <img src={Logo} alt="Logo" style={{ marginBottom: "2rem" }} width={"100%"} />
+      </Box>
+      <Box
         sx={{
           display: "flex",
           flexDirection: "column",
@@ -125,7 +139,15 @@ const GuessingComponent: React.FC<Props> = (props) => {
           alignItems: "center",
         }}
       >
-        <Typography variant="h2">You are now in a Game!</Typography>
+        <Typography variant="h3">Game Round:{" "}
+          {game?.numberOfRounds != null && game?.remainingRounds != null
+              ? game.numberOfRounds -
+              game.remainingRounds +
+              "/" +
+              game.numberOfRounds
+              : "undefined"}
+        </Typography>
+        <CircularProgress color="success" />
       </Box>
 
       <Box sx={{ display: "flex", alignItems: "center", marginTop: "5%" }}>
@@ -147,15 +169,6 @@ const GuessingComponent: React.FC<Props> = (props) => {
           <div></div>
         )}
 
-        <Typography variant="h5" sx={{ marginLeft: "5%" }}>
-          Round:{" "}
-          {game?.numberOfRounds != null && game?.remainingRounds != null
-            ? game.numberOfRounds -
-              game.remainingRounds +
-              "/" +
-              game.numberOfRounds
-            : "undefined"}
-        </Typography>
 
       </Box>
       <Box sx={{ display: "flex", alignItems: "center", marginTop: "5%" }}>
