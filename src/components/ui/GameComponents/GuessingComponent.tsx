@@ -7,6 +7,9 @@ import Country from "models/Country";
 import Autocomplete from "@mui/material/Autocomplete";
 import HintComponent from "../HintComponent";
 import GameGetDTO from "models/GameGetDTO";
+import Logo from "../../views/images/GTCText.png";
+import CircularProgress from '@mui/material/CircularProgress';
+
 
 interface Props {
   gameGetDTO: GameGetDTO | null;
@@ -118,6 +121,17 @@ const GuessingComponent: React.FC<Props> = (props) => {
   return (
     <Container>
       <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            width:"100%"
+          }}
+      >
+        <img src={Logo} alt="Logo" style={{ marginBottom: "2rem" }} width={"100%"} />
+      </Box>
+      <Box
         sx={{
           display: "flex",
           flexDirection: "column",
@@ -125,23 +139,22 @@ const GuessingComponent: React.FC<Props> = (props) => {
           alignItems: "center",
         }}
       >
-        <Typography variant="h2">You are now in a Game!</Typography>
+        <Typography variant="h3">Game Round:{" "}
+          {game?.numberOfRounds != null && game?.remainingRounds != null
+              ? game.numberOfRounds -
+              game.remainingRounds +
+              "/" +
+              game.numberOfRounds
+              : "undefined"}
+        </Typography>
+        <CircularProgress color="success" />
       </Box>
 
       <Box sx={{ display: "flex", alignItems: "center", marginTop: "5%" }}>
-        <Autocomplete
-          disablePortal
-          id="combo-box-demo"
-          options={allCountries}
-          sx={{ width: "100%"}}
-          onChange={(event, value) => setValueEntered(value)}
-          renderInput={(params) => (
-            <TextField {...params} label="Enter your Guess here" />
-          )}
-        />
+
 
         {game?.remainingTime ? (
-          <Typography variant="h4" sx={{ marginLeft: "5%" }}>
+          <Typography variant="h5" sx={{ marginLeft: "5%" }}>
             Time Remaining: {game.remainingTime.toString()}{" "}
           </Typography>
         ) : (
@@ -149,32 +162,37 @@ const GuessingComponent: React.FC<Props> = (props) => {
         )}
 
         {game?.remainingRoundPoints ? (
-          <Typography variant="h4" sx={{ marginLeft: "5%" }}>
-            Current Round Points: {game.remainingRoundPoints.toString()}{" "}
+          <Typography variant="h5" sx={{ marginLeft: "5%" }}>
+            Current Round Pts: {game.remainingRoundPoints.toString()}{" "}
           </Typography>
         ) : (
           <div></div>
         )}
 
-        <Typography variant="h4" sx={{ marginLeft: "5%" }}>
-          Currently on Round:{" "}
-          {game?.numberOfRounds != null && game?.remainingRounds != null
-            ? game.numberOfRounds -
-              game.remainingRounds +
-              "/" +
-              game.numberOfRounds
-            : "undefined"}
-        </Typography>
+
+      </Box>
+      <Box sx={{ display: "flex", alignItems: "center", marginTop: "5%" }}>
+        <Autocomplete
+            disablePortal
+            id="combo-box-demo"
+            options={allCountries}
+            sx={{ width: "100%"}}
+            onChange={(event, value) => setValueEntered(value)}
+            renderInput={(params) => (
+                <TextField {...params} label="Enter your Guess here" />
+            )}
+        />
+        <Button
+            variant="outlined"
+            sx={{ marginTop: "2%" }}
+            onClick={() => submitGuess()}
+            disabled={hasPlayerGuessed()}
+        >
+          Submit your Guess
+        </Button>
       </Box>
 
-      <Button
-        variant="outlined"
-        sx={{ marginTop: "2%" }}
-        onClick={() => submitGuess()}
-        disabled={hasPlayerGuessed()}
-      >
-        Submit your Guess
-      </Button>
+
 
       <Box sx={{ height: "50%", width: "100%", marginTop: "5%" }}>
         <HintComponent currentCaregory={game?.categoryStack?.currentCategory} />
