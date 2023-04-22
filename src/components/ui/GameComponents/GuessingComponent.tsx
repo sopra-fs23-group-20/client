@@ -129,19 +129,10 @@ const GuessingComponent: React.FC<Props> = (props) => {
       </Box>
 
       <Box sx={{ display: "flex", alignItems: "center", marginTop: "5%" }}>
-        <Autocomplete
-          disablePortal
-          id="combo-box-demo"
-          options={allCountries}
-          sx={{ width: "100%"}}
-          onChange={(event, value) => setValueEntered(value)}
-          renderInput={(params) => (
-            <TextField {...params} label="Enter your Guess here" />
-          )}
-        />
+
 
         {game?.remainingTime ? (
-          <Typography variant="h4" sx={{ marginLeft: "5%" }}>
+          <Typography variant="h5" sx={{ marginLeft: "5%" }}>
             Time Remaining: {game.remainingTime.toString()}{" "}
           </Typography>
         ) : (
@@ -149,15 +140,15 @@ const GuessingComponent: React.FC<Props> = (props) => {
         )}
 
         {game?.remainingRoundPoints ? (
-          <Typography variant="h4" sx={{ marginLeft: "5%" }}>
-            Current Round Points: {game.remainingRoundPoints.toString()}{" "}
+          <Typography variant="h5" sx={{ marginLeft: "5%" }}>
+            Current Round Pts: {game.remainingRoundPoints.toString()}{" "}
           </Typography>
         ) : (
           <div></div>
         )}
 
-        <Typography variant="h4" sx={{ marginLeft: "5%" }}>
-          Currently on Round:{" "}
+        <Typography variant="h5" sx={{ marginLeft: "5%" }}>
+          Round:{" "}
           {game?.numberOfRounds != null && game?.remainingRounds != null
             ? game.numberOfRounds -
               game.remainingRounds +
@@ -165,16 +156,30 @@ const GuessingComponent: React.FC<Props> = (props) => {
               game.numberOfRounds
             : "undefined"}
         </Typography>
+
+      </Box>
+      <Box sx={{ display: "flex", alignItems: "center", marginTop: "5%" }}>
+        <Autocomplete
+            disablePortal
+            id="combo-box-demo"
+            options={allCountries}
+            sx={{ width: "100%"}}
+            onChange={(event, value) => setValueEntered(value)}
+            renderInput={(params) => (
+                <TextField {...params} label="Enter your Guess here" />
+            )}
+        />
+        <Button
+            variant="outlined"
+            sx={{ marginTop: "2%" }}
+            onClick={() => submitGuess()}
+            disabled={hasPlayerGuessed()}
+        >
+          Submit your Guess
+        </Button>
       </Box>
 
-      <Button
-        variant="outlined"
-        sx={{ marginTop: "2%" }}
-        onClick={() => submitGuess()}
-        disabled={hasPlayerGuessed()}
-      >
-        Submit your Guess
-      </Button>
+
 
       <Box sx={{ height: "50%", width: "100%", marginTop: "5%" }}>
         <HintComponent currentCaregory={game?.categoryStack?.currentCategory} />
