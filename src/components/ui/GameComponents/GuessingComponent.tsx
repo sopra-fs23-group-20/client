@@ -72,7 +72,7 @@ const GuessingComponent: React.FC<Props> = (props) => {
   };
 
   return (
-    <Container>
+    <>
       <img src={Logo} alt="Logo" width={"100%"} />
       <Box
         sx={{
@@ -80,13 +80,15 @@ const GuessingComponent: React.FC<Props> = (props) => {
           alignItems: "center",
           marginTop: "5%",
           marginBottom: "5%",
+          width: "100%",
+          height: "200%",
         }}
       >
         <Autocomplete
           disablePortal
           id="combo-box-demo"
           options={allCountries}
-          sx={{ width: "90%" }}
+          sx={{ width: "90%", height: "200%" }}
           onChange={(event, value) => setValueEntered(value)}
           renderInput={(params) => (
             <TextField {...params} label="Enter your Guess here" />
@@ -128,7 +130,7 @@ const GuessingComponent: React.FC<Props> = (props) => {
         }}
       >
         {game?.remainingTime ? (
-          <Typography variant="h5">
+          <Typography variant="h4">
             Time Left: {game.remainingTime.toString()}{" "}
           </Typography>
         ) : (
@@ -136,26 +138,18 @@ const GuessingComponent: React.FC<Props> = (props) => {
         )}
 
         {game?.remainingRoundPoints ? (
-          <Typography variant="h5">
+          <Typography variant="h4">
             Points Left: {game.remainingRoundPoints.toString()}{" "}
           </Typography>
         ) : (
           <div></div>
         )}
       </Box>
-      <Divider sx={{ marginTop: "5%" }} />
+      <Divider sx={{ marginTop: "5%" }}> Current Hint:</Divider>
       <Box sx={{ height: "50%", width: "100%", marginTop: "5%" }}>
-        <HintContainer
-          currentCaregory={game?.categoryStack?.currentCategory}
-          width={
-            window.innerWidth > 600
-              ? window.innerWidth * 0.5
-              : window.innerWidth * 0.85
-          }
-          height={window.innerHeight * 0.5}
-        />
+        <HintContainer currentCaregory={game?.categoryStack?.currentCategory} />
       </Box>
-    </Container>
+    </>
   );
 };
 export default GuessingComponent;

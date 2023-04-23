@@ -14,10 +14,7 @@ const App = () => {
         sx={{
           minHeight: "100vh",
           width: "100%",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          margin: 0,
+
           background: currentUsedTheme.palette.background.default,
         }}
       >
