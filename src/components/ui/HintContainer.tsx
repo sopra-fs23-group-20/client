@@ -14,16 +14,18 @@ import WebsocketType from "models/constant/WebsocketType";
 import WebsocketPacket from "models/WebsocketPacket";
 import MapContainer from "components/ui/MapContainer";
 import Autocomplete from "@mui/material/Autocomplete";
-import CountryOutline from "components/ui/CountryOutline";
+import OutlineContainer from "components/ui/OutlineContainer";
 import { TextField } from "@mui/material";
 import React, { useMemo } from "react";
 import Category from "models/Category";
 
 interface Props {
   currentCaregory: Category | null | undefined;
+  height: number;
+  width: number;
 }
 
-const HintComponent: React.FC<Props> = (props) => {
+const HintContainer: React.FC<Props> = (props) => {
   if (!props.currentCaregory) return <div></div>;
 
   const currentCaregory = props.currentCaregory;
@@ -43,24 +45,30 @@ const HintComponent: React.FC<Props> = (props) => {
         <div></div>
       )}
       {currentCaregory.outline ? (
-        <CountryOutline country={currentCaregory.outline.toString()} />
+        <OutlineContainer
+          country={currentCaregory.outline.toString()}
+          height={props.height}
+          width={props.width}
+        />
       ) : (
         <div></div>
       )}
       {currentCaregory.location ? (
         // Pass the properties of currentCaregory to the new Country instance
         <MapContainer
-          {...new Country(
-            null,
-            currentCaregory.population,
-            currentCaregory.capital,
-            currentCaregory.flag,
-            currentCaregory.location,
-            currentCaregory.outline
-          )}
-        >
-          {" "}
-        </MapContainer>
+          country={
+            new Country(
+              null,
+              currentCaregory.population,
+              currentCaregory.capital,
+              currentCaregory.flag,
+              currentCaregory.location,
+              currentCaregory.outline
+            )
+          }
+          width={props.width}
+          height={props.height}
+        />
       ) : (
         <div></div>
       )}
@@ -90,4 +98,4 @@ const HintComponent: React.FC<Props> = (props) => {
     </>
   );
 };
-export default HintComponent;
+export default HintContainer;
