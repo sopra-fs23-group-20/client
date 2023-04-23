@@ -1,400 +1,209 @@
-import React, { useEffect, useState } from "react";
-import { api } from "helpers/api";
-import { Typography } from "@mui/material";
-import User from "models/User";
-import GameState from "models/constant/GameState";
-import GameGetDTO from "models/GameGetDTO";
+import WinnerOverviewComponent from "./WinnerOverviewComponent";
+import User from "../../../models/User";
+import GameGetDTO from "../../../models/GameGetDTO";
+import React, {useEffect, useState} from "react";
+import {Typography} from "@mui/material";
+import {api} from "../../../helpers/api";
 import GameUser from "../../../models/GameUser";
-import Grid from "@mui/material/Unstable_Grid2";
-import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
-import "./ScoreboardComponent.css";
-import { convertToGameStateEnum } from "../../../helpers/convertTypes"; // Tell webpack that Button.js uses these styles
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import { Link } from "react-router-dom";
+import {convertToGameStateEnum} from "../../../helpers/convertTypes";
+import GameState from "../../../models/constant/GameState";
+import {Link} from "react-router-dom";
+
 
 interface Props {
-  currentUser: User | null;
-  gameId: string | undefined;
-  gameGetDTO: GameGetDTO | null;
-  isGameEnded: boolean;
+    currentUser: User | null;
+    gameId: string | undefined;
+    gameGetDTO: GameGetDTO | null;
+    isGameEnded: boolean;
 }
 
 const ScoreboardComponent: React.FC<Props> = (props) => {
-  const isGameEnded = props.isGameEnded;
-  const currentUser = props.currentUser;
-  const gameId = props.gameId;
-  const gameGetDTO = props.gameGetDTO;
-  const [currentCountry, setCurrentCountry] = useState<string | null>(null);
-  const [winnerUpdated, setWinnerUpdated] = useState(false);
+    const {isGameEnded, currentUser, gameId, gameGetDTO} = props
+    const [currentCountry, setCurrentCountry] = useState<string | null>(null);
+    const [winnerUpdated, setWinnerUpdated] = useState(false);
 
-  useEffect(() => {
-    const getCurrentCountry = async () => {
-      try {
-        const response = await api.get(`/games/${gameId}/country`);
-        const country = response.data;
-        setCurrentCountry(country);
-      } catch (error) {
-        console.error(error);
-      }
+    useEffect(() => {
+        const getCurrentCountry = async () => {
+            try {
+                const response = await api.get(`/games/${gameId}/country`);
+                const country = response.data;
+                setCurrentCountry(country);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        getCurrentCountry().then((r) => r);
+    }, [gameId]);
+
+
+    useEffect(() => {
+        if (
+            isGameEnded &&
+            gameGetDTO !== null &&
+            gameGetDTO.participants !== null
+        ) {
+            const participantsArray = Array.from(gameGetDTO.participants);
+            const sortedParticipants = sortParticipantsByScore(participantsArray);
+            const winner = sortedParticipants[0];
+            const isDraw =
+                winner &&
+                sortedParticipants[1] &&
+                winner.gamePoints === sortedParticipants[1].gamePoints;
+            const onlyLobbyCreator = participantsArray.length === 1;
+            if (
+                winner &&
+                winner.userId &&
+                !winnerUpdated &&
+                !onlyLobbyCreator &&
+                !isDraw
+            ) {
+                updateWinnerGamesWon(winner.userId);
+                setWinnerUpdated(true);
+            }
+        }
+    }, [isGameEnded, winnerUpdated, gameGetDTO]);
+
+
+    const updateWinnerGamesWon = async (userId: number) => {
+        try {
+            const response = await api.get(`/users/${userId}`, {
+                headers: {Authorization: localStorage.getItem("token")!},
+            });
+            const userData = response.data;
+            console.log(userData);
+
+            const currentGamesWon = userData.gamesWon || 0;
+            const updatedGamesWon = currentGamesWon + 1;
+
+            const requestBody = {
+                gamesWon: updatedGamesWon,
+            };
+
+            await api.put(`/users/${userId}`, requestBody, {
+                headers: {Authorization: localStorage.getItem("token")!},
+            });
+        } catch (error) {
+            console.error(error);
+        }
     };
-    getCurrentCountry().then((r) => r);
-  }, [gameId]);
 
-  const sortParticipantsByScore = (participantsArray: GameUser[]) => {
-    return participantsArray.sort((a, b) => {
-      if (
-        a.gamePoints === null ||
-        b.gamePoints === null ||
-        a.username === null ||
-        b.username === null
-      ) {
-        return 0;
-      }
-      if (Math.abs(b.gamePoints - a.gamePoints) < Math.pow(10, -6)) {
-        return a.username > b.username ? 1 : -1;
-      }
-      return b.gamePoints - a.gamePoints;
-    });
-  };
-
-  useEffect(() => {
-    if (
-      isGameEnded &&
-      gameGetDTO !== null &&
-      gameGetDTO.participants !== null
-    ) {
-      const participantsArray = Array.from(gameGetDTO.participants);
-      const sortedParticipants = sortParticipantsByScore(participantsArray);
-      const winner = sortedParticipants[0];
-      const isDraw =
-        winner &&
-        sortedParticipants[1] &&
-        winner.gamePoints === sortedParticipants[1].gamePoints;
-      const onlyLobbyCreator = participantsArray.length === 1;
-      if (
-        winner &&
-        winner.userId &&
-        !winnerUpdated &&
-        !onlyLobbyCreator &&
-        !isDraw
-      ) {
-        updateWinnerGamesWon(winner.userId);
-        setWinnerUpdated(true);
-      }
+    if(currentUser === null || gameGetDTO === null){
+        return null
     }
-  }, [isGameEnded, winnerUpdated, gameGetDTO]);
 
-  if (currentUser === null || gameGetDTO === null) {
-    return null;
-  }
+    const participants: Set<GameUser> | null = gameGetDTO.participants;
 
-  const participants: Set<GameUser> | null = gameGetDTO.participants;
-
-  if (participants === null) {
-    return null;
-  }
-  const participantsArray = Array.from(participants);
-
-  const getGameUser = (user: User) =>
-    participantsArray.find((x: GameUser) => {
-      return (
-        x.userId !== null &&
-        user?.id !== null &&
-        x["userId"].toString() === user?.id.toString()
-      );
-    });
-
-  const sortedParticipantsByScore = sortParticipantsByScore(participantsArray);
-
-  const currentGameUser = getGameUser(currentUser);
-
-  const getPlacementString: any = (placementTemp: number) => {
-    const placement = placementTemp + 1;
-    const addSuperScript = (superScript: string) => (
-      <>
-        {placement}
-        <sup>{superScript}</sup>
-      </>
-    );
-
-    if (placement === 1) {
-      return addSuperScript("st");
-    } else if (placement === 2) {
-      return addSuperScript("nd");
-    } else if (placement === 3) {
-      return addSuperScript("rd");
+    if (participants === null) {
+        return null;
     }
-    return addSuperScript("th");
-  };
 
-  const updateWinnerGamesWon = async (userId: number) => {
-    try {
-      const response = await api.get(`/users/${userId}`, {
-        headers: { Authorization: localStorage.getItem("token")! },
-      });
-      const userData = response.data;
-      console.log(userData);
+    const participantsArray = Array.from(participants);
 
-      const currentGamesWon = userData.gamesWon || 0;
-      const updatedGamesWon = currentGamesWon + 1;
+    const getGameUser = (user: User) =>
+        participantsArray.find((x: GameUser) => {
+            return (
+                x.userId !== null &&
+                user?.id !== null &&
+                x["userId"].toString() === user?.id.toString()
+            );
+        });
 
-      const requestBody = {
-        gamesWon: updatedGamesWon,
-      };
 
-      await api.put(`/users/${userId}`, requestBody, {
-        headers: { Authorization: localStorage.getItem("token")! },
-      });
-    } catch (error) {
-      console.error(error);
+    const currentGameUser = getGameUser(currentUser);
+
+    const sortParticipantsByScore = (participantsArray: GameUser[]) => {
+        return participantsArray.sort((a, b) => {
+            if (
+                a.gamePoints === null ||
+                b.gamePoints === null ||
+                a.username === null ||
+                b.username === null
+            ) {
+                return 0;
+            }
+            if (Math.abs(b.gamePoints - a.gamePoints) < Math.pow(10, -6)) {
+                return a.username > b.username ? 1 : -1;
+            }
+            return b.gamePoints - a.gamePoints;
+        });
+    };
+
+    const sortedParticipantsByScore = sortParticipantsByScore(participantsArray);
+
+
+    const renderPlayerUsernameTableCell = (player: any) => {
+        return isGameEnded ? (<Link to={`/game/profile/${player.userId}`}>{player.username}</Link>) : (
+                <>{player.username}</>
+            )
     }
-  };
+    const getPlayerGamePoints: any = (gameUser: GameUser) => {
+        if (
+            gameUser.userId === null ||
+            currentGameUser === undefined ||
+            currentGameUser.userId === null ||
+            gameGetDTO.remainingRoundPoints === null ||
+            gameUser.gamePoints === null ||
+            gameUser.currentState === null
+        ) {
+            return null;
+        }
 
-  const getCurrentUserStyling = (userId: any) => {
-    if (
-      userId === null ||
-      currentGameUser === undefined ||
-      currentGameUser.userId === null
-    ) {
-      return "";
-    }
-    return currentGameUser.userId.toString() === userId.toString()
-      ? "currentUser"
-      : "";
-  };
-
-  const getTrophies = () => {
-    const trophies = ["gold", "silver", "bronze"];
-    return sortedParticipantsByScore
-      .reduce((grouped: Array<Array<GameUser>>, player) => {
-        const el: Array<GameUser> | undefined = grouped.find(
-          (values: Array<GameUser>) =>
-            values[0].gamePoints === player.gamePoints
+        const gameUserState = convertToGameStateEnum(
+            gameUser.currentState.toString()
         );
-        if (el) {
-          el.push(player);
-        } else grouped.push([player]);
-        return grouped;
-      }, [])
-      .slice(0, 3)
-      .map((set, index) =>
-        set.map((player) => ({
-          ...player,
-          trophy: trophies[index],
-        }))
-      )
-      .reduce((a, b) => a.concat(b));
-  };
+        if (
+            gameUser.userId.toString() !== currentGameUser.userId.toString() &&
+            gameUserState === GameState.GUESSING
+        ) {
+            return gameGetDTO.remainingRoundPoints + gameUser.gamePoints;
+        }
+        return gameUser.gamePoints;
+    };
 
-  const getPlayerGamePoints: any = (gameUser: GameUser) => {
-    if (
-      gameUser.userId === null ||
-      currentGameUser === undefined ||
-      currentGameUser.userId === null ||
-      gameGetDTO.remainingRoundPoints === null ||
-      gameUser.gamePoints === null ||
-      gameUser.currentState === null
-    ) {
-      return null;
-    }
+    const renderTitle = () => (<h1 className="Title"> {isGameEnded ? "Final Scoreboard" : "Scoreboard"}</h1>)
 
-    const gameUserState = convertToGameStateEnum(
-      gameUser.currentState.toString()
-    );
-    if (
-      gameUser.userId.toString() !== currentGameUser.userId.toString() &&
-      gameUserState === GameState.GUESSING
-    ) {
-      return gameGetDTO.remainingRoundPoints + gameUser.gamePoints;
-    }
-    return gameUser.gamePoints;
-  };
-
-  return (
-    <Grid
-      container
-      direction="row"
-      justifyContent="flex-start"
-      alignItems="flex-start"
-    >
-      <Grid xs={12} className={"scoreBoardContainer"}>
-        <Grid
-          container
-          direction="row"
-          justifyContent="flex-start"
-          alignItems="flex-start"
-        >
-          <Grid xs={12}>
-            <h1 className="Title">
-              {isGameEnded ? "Final Scoreboard" : "Scoreboard"}{" "}
-            </h1>
-          </Grid>
-        </Grid>
-
-        <Grid
-          container
-          direction="row"
-          justifyContent="flex-start"
-          alignItems="flex-start"
-        >
-          <Grid xs={12}>
-            <Typography variant="h4" sx={{ marginTop: 2 }}>
-              The correct country was: {currentCountry}
-            </Typography>
-            {!isGameEnded && (
-              <Typography variant="h4" sx={{ marginTop: 2 }}>
+    const renderAdditionalInformation = () => (<><Typography variant="h4" sx={{marginTop: 2}}>
+        The correct country was: {currentCountry}
+    </Typography>
+        {!isGameEnded && (
+            <Typography variant="h4" sx={{marginTop: 2}}>
                 Next round starts in:{" "}
                 {gameGetDTO ? gameGetDTO.remainingTime : "undefined"}
-              </Typography>
-            )}
-          </Grid>
-        </Grid>
+            </Typography>
+        )}
+    </>)
 
-        <Grid
-          container
-          direction="row"
-          justifyContent="flex-start"
-          alignItems="flex-start"
-        >
-          <Grid xs className="PrizeCabinet">
-            <ul>
-              {getTrophies().map(
-                (
-                  trophy: {
-                    gamePoints: number | null;
-                    currentState: GameState | null;
-                    trophy: string;
-                    userId: number | null;
-                    username: string | null;
-                  },
-                  index: number
-                ) => (
-                  <li
-                    key={`${index}_li`}
-                    className={`Trophy ${trophy.trophy} ${getCurrentUserStyling(
-                      trophy.userId
-                    )}`}
-                  >
-                    <EmojiEventsIcon className="icon" name="trophy" />
-                    <p className={`name`}> {trophy.username}</p>
-                    <p className={`points`}>{trophy.gamePoints} points</p>
-                  </li>
-                )
-              )}
-            </ul>
-          </Grid>
-        </Grid>
-        <Grid
-          container
-          direction="row"
-          justifyContent="flex-start"
-          alignItems="flex-start"
-        >
-          <Grid xs>
-            <Grid
-              container
-              direction="row"
-              justifyContent="flex-start"
-              alignItems="flex-start"
-              className="Board"
-            >
-              <Grid xs={12}>
-                <TableContainer component={Paper}>
-                  <Table sx={{ width: "100%" }} aria-label="simple table">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell className={"tableColumnHeader"}>
-                          Rank
-                        </TableCell>
-                        <TableCell
-                          className={"tableColumnHeader"}
-                          align="right"
-                        >
-                          Username
-                        </TableCell>
-                        <TableCell
-                          className={"tableColumnHeader"}
-                          align="right"
-                        >
-                          Points
-                        </TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {sortedParticipantsByScore.map((player, index) => (
-                        <TableRow
-                          key={index}
-                          sx={{
-                            "&:last-child td, &:last-child th": { border: 0 },
-                          }}
-                          className={`Player ${getCurrentUserStyling(
-                            player.userId
-                          )}`}
-                        >
-                          <TableCell
-                            component="th"
-                            scope="row"
-                            className={"tableColumnEntries"}
-                          >
-                            {getPlacementString(index)}
-                          </TableCell>
-                          <TableCell
-                            align="right"
-                            className={"tableColumnEntries"}
-                          >
-                            {isGameEnded ? (
-                              <Link to={`/game/profile/${player.userId}`}>
-                                {player.username}
-                              </Link>
-                            ) : (
-                              <>{player.username}</>
-                            )}
-                          </TableCell>
-                          <TableCell
-                            align="right"
-                            className={"tableColumnEntries"}
-                          >
-                            {getPlayerGamePoints(player)}
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </Grid>
-            </Grid>
-          </Grid>
-        </Grid>
-
-        <Grid
-          container
-          direction="row"
-          justifyContent="flex-start"
-          alignItems="flex-start"
-        >
-          <Grid xs>
-            {!isGameEnded && (
-              <Typography variant="h4" sx={{ marginTop: 5 }}>
+    const renderInformationOnBottom = () => {
+        if (isGameEnded){
+            return undefined
+        }
+        return (<Typography variant="h4" sx={{ marginTop: 5 }}>
                 Currently on Round:{" "}
                 {gameGetDTO?.numberOfRounds != null &&
                 gameGetDTO?.remainingRounds != null
-                  ? gameGetDTO.numberOfRounds -
+                    ? gameGetDTO.numberOfRounds -
                     gameGetDTO.remainingRounds +
                     "/" +
                     gameGetDTO.numberOfRounds
-                  : "undefined"}
-              </Typography>
-            )}
-          </Grid>
-        </Grid>
-      </Grid>
-    </Grid>
-  );
-};
+                    : undefined}
+            </Typography>
+        )
+    }
+
+    return (<WinnerOverviewComponent
+        renderTitle={renderTitle}
+        currentUserId={currentUser.id}
+        renderAdditionalInformation={renderAdditionalInformation}
+        sortedParticipantsByScore={sortedParticipantsByScore}
+        attributeToConsider={'gamePoints'}
+        additionalText={'points'}
+        renderPlayerValue={getPlayerGamePoints}
+        renderPlayerUsernameTableCell={renderPlayerUsernameTableCell}
+        renderInformationOnBottom={renderInformationOnBottom}
+        idAttributeName={'userId'}
+        columnHeaderText={'Points'}
+    />)
+}
+
+
 export default ScoreboardComponent;
