@@ -30,6 +30,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import { useNavigate } from "react-router-dom";
 import { useQRCode } from "next-qrcode";
+import { Difficulty } from "models/constant/Difficulty";
 
 interface Props {
   gameGetDTO: GameGetDTO | null;
@@ -326,24 +327,30 @@ const GuessingComponent: React.FC<Props> = (props) => {
                 <Typography variant="h5">Game Settings</Typography>
               </AccordionSummary>
               <AccordionDetails>
-                <TextField
-                  id="round-seconds"
-                  label="Round Seconds"
-                  type="number"
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  value={game?.roundDuration}
-                  disabled={true}
-                />
-
                 <FormGroup>
+                  <TextField
+                    id="round-seconds"
+                    label="Round Seconds"
+                    type="number"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    value={game?.roundDuration}
+                    disabled={true}
+                  />
                   <TextField
                     id="number-of-rounds"
                     label="Number of Rounds"
                     type="number"
                     sx={{ marginTop: 3 }}
                     value={game?.numberOfRounds}
+                    disabled={true}
+                  />
+                  <TextField
+                    id="difficulty-level"
+                    label="Difficulty Level"
+                    sx={{ marginTop: 3 }}
+                    value={game?.difficulty?.toString()}
                     disabled={true}
                   />
                   <FormControlLabel

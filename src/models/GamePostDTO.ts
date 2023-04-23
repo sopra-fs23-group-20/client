@@ -1,5 +1,6 @@
 import { CategoryStack } from "./CategoryStack";
 import CategoryEnum from "./constant/CategoryEnum";
+import { Difficulty } from "./constant/Difficulty";
 import RegionEnum from "./constant/RegionEnum";
 
 class GamePostDTO {
@@ -9,6 +10,7 @@ class GamePostDTO {
   categoryStack: CategoryStack | null;
   selectedRegions: RegionEnum[] | null;
   openLobby: boolean | null;
+  difficulty: Difficulty | null;
 
   constructor(
     lobbyCreatorUserId: string | null,
@@ -16,7 +18,8 @@ class GamePostDTO {
     numberOfRounds: number | null,
     categoryStack: CategoryStack | null,
     selectedRegions: RegionEnum[],
-    openLobby: boolean | null
+    openLobby: boolean | null,
+    difficulty: Difficulty | null
   ) {
     this.lobbyCreatorUserId = lobbyCreatorUserId;
     this.roundDuration = roundDuration;
@@ -24,6 +27,7 @@ class GamePostDTO {
     this.categoryStack = categoryStack;
     this.selectedRegions = selectedRegions;
     this.openLobby = openLobby;
+    this.difficulty = difficulty;
   }
 }
 
