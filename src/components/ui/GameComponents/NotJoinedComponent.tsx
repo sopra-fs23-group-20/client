@@ -8,7 +8,7 @@ import Country from "models/Country";
 import Autocomplete from "@mui/material/Autocomplete";
 import { TextField } from "@mui/material";
 import React, { useMemo } from "react";
-import HintComponent from "../HintComponent";
+import HintContainer from "../HintContainer";
 import GameState from "models/constant/GameState";
 
 interface Props {

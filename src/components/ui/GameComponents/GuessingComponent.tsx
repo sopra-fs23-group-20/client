@@ -1,15 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { api } from "helpers/api";
-import { Box, Button, Container, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Container,
+  Divider,
+  TextField,
+  Typography,
+} from "@mui/material";
 import User from "models/User";
 import { AxiosError } from "axios";
 import Country from "models/Country";
 import Autocomplete from "@mui/material/Autocomplete";
-import HintComponent from "../HintComponent";
+import HintContainer from "../HintContainer";
 import GameGetDTO from "models/GameGetDTO";
 import Logo from "../../views/images/GTCText.png";
-import CircularProgress from '@mui/material/CircularProgress';
-
+import CircularProgress from "@mui/material/CircularProgress";
 
 interface Props {
   gameGetDTO: GameGetDTO | null;
@@ -23,59 +29,6 @@ const GuessingComponent: React.FC<Props> = (props) => {
   const currentUserId = props.currentUserId;
 
   const [valueEntered, setValueEntered] = useState<string | null>(null);
-  const [currentCountryHint, setCurrentCountryHint] = useState<Country>(
-    new Country(null, null, null, null, null, null)
-  );
-  const [currentRoundPoints, setCurrentRoundPoints] = useState<number>(100);
-  const [timeRemaining, setTimeRemaining] = useState<number>(0);
-
-  /*
-  const socket = useWebSocket();
-
-  useEffect(() => {
-    if (socket !== null) {
-      socket.addEventListener("message", handleMessage);
-      return () => {
-        socket.removeEventListener("message", handleMessage);
-      };
-    }
-  }, [socket]);
-
-  const handleMessage = (event: MessageEvent) => {
-    const websocketPackage = JSON.parse(event.data);
-    const type = websocketPackage.type;
-    const payload = websocketPackage.payload;
-    console.log("Received a Message through websocket", websocketPackage);
-    const typeTransformed = convertToWebsocketTypeEnum(type);
-    const websocketPacket = new WebsocketPacket(typeTransformed, payload);
-    console.log("The saved Packet is: ", websocketPacket);
-    switch (websocketPacket.type) {
-      case WebsocketType.CATEGORYUPDATE:
-        if (websocketPacket.payload.hasOwnProperty("location")) {
-          setCurrentCountryHint(
-            new Country(
-              null,
-              websocketPacket.payload.population,
-              websocketPacket.payload.capital,
-              websocketPacket.payload.flag,
-              websocketPacket.payload.location,
-              websocketPacket.payload.outline
-            )
-          );
-        }
-        break;
-      case WebsocketType.TIMEUPDATE:
-        console.log("Setting remaining time to: ", websocketPacket.payload);
-        setTimeRemaining(websocketPacket.payload);
-        break;
-      case WebsocketType.POINTSUPDATE:
-        setCurrentRoundPoints(payload);
-        break;
-      case WebsocketType.PLAYERUPDATE || WebsocketType.GAMESTATEUPDATE:
-        break;
-    }
-  };
-  */
 
   async function submitGuess(): Promise<void> {
     try {
@@ -120,16 +73,33 @@ const GuessingComponent: React.FC<Props> = (props) => {
 
   return (
     <Container>
+      <img src={Logo} alt="Logo" width={"100%"} />
       <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            width:"100%"
-          }}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          marginTop: "5%",
+          marginBottom: "5%",
+        }}
       >
-        <img src={Logo} alt="Logo" style={{ marginBottom: "2rem" }} width={"100%"} />
+        <Autocomplete
+          disablePortal
+          id="combo-box-demo"
+          options={allCountries}
+          sx={{ width: "90%" }}
+          onChange={(event, value) => setValueEntered(value)}
+          renderInput={(params) => (
+            <TextField {...params} label="Enter your Guess here" />
+          )}
+        />
+        <Button
+          variant="outlined"
+          sx={{ marginLeft: "2%", height: "100%" }}
+          onClick={() => submitGuess()}
+          disabled={hasPlayerGuessed()}
+        >
+          Submit
+        </Button>
       </Box>
       <Box
         sx={{
@@ -139,63 +109,51 @@ const GuessingComponent: React.FC<Props> = (props) => {
           alignItems: "center",
         }}
       >
-        <Typography variant="h3">Game Round:{" "}
+        <Typography variant="h3">
+          Round:{" "}
           {game?.numberOfRounds != null && game?.remainingRounds != null
-              ? game.numberOfRounds -
+            ? game.numberOfRounds -
               game.remainingRounds +
               "/" +
               game.numberOfRounds
-              : "undefined"}
+            : "undefined"}
         </Typography>
-        <CircularProgress color="success" />
       </Box>
-
-      <Box sx={{ display: "flex", alignItems: "center", marginTop: "5%" }}>
-
-
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          marginTop: "5%",
+          justifyContent: "space-between",
+        }}
+      >
         {game?.remainingTime ? (
-          <Typography variant="h5" sx={{ marginLeft: "5%" }}>
-            Time Remaining: {game.remainingTime.toString()}{" "}
+          <Typography variant="h5">
+            Time Left: {game.remainingTime.toString()}{" "}
           </Typography>
         ) : (
           <div></div>
         )}
 
         {game?.remainingRoundPoints ? (
-          <Typography variant="h5" sx={{ marginLeft: "5%" }}>
-            Current Round Pts: {game.remainingRoundPoints.toString()}{" "}
+          <Typography variant="h5">
+            Points Left: {game.remainingRoundPoints.toString()}{" "}
           </Typography>
         ) : (
           <div></div>
         )}
-
-
       </Box>
-      <Box sx={{ display: "flex", alignItems: "center", marginTop: "5%" }}>
-        <Autocomplete
-            disablePortal
-            id="combo-box-demo"
-            options={allCountries}
-            sx={{ width: "100%"}}
-            onChange={(event, value) => setValueEntered(value)}
-            renderInput={(params) => (
-                <TextField {...params} label="Enter your Guess here" />
-            )}
-        />
-        <Button
-            variant="outlined"
-            sx={{ marginTop: "2%" }}
-            onClick={() => submitGuess()}
-            disabled={hasPlayerGuessed()}
-        >
-          Submit your Guess
-        </Button>
-      </Box>
-
-
-
+      <Divider sx={{ marginTop: "5%" }} />
       <Box sx={{ height: "50%", width: "100%", marginTop: "5%" }}>
-        <HintComponent currentCaregory={game?.categoryStack?.currentCategory} />
+        <HintContainer
+          currentCaregory={game?.categoryStack?.currentCategory}
+          width={
+            window.innerWidth > 600
+              ? window.innerWidth * 0.5
+              : window.innerWidth * 0.85
+          }
+          height={window.innerHeight * 0.5}
+        />
       </Box>
     </Container>
   );

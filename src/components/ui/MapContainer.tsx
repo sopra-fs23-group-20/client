@@ -3,14 +3,24 @@ import * as React from "react";
 import Country from "models/Country";
 import Category from "models/Category";
 
-const MapContainer: React.FC<Country> = (category: Country) => {
+interface MapContainerProps {
+  country: Country;
+  width: number;
+  height: number;
+}
+
+const MapContainer: React.FC<MapContainerProps> = ({
+  country,
+  width,
+  height,
+}) => {
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY || "",
   });
 
   const mapContainerStyle = {
-    width: 500,
-    height: 350,
+    width: width,
+    height: height,
   };
 
   const mapOptions = {
@@ -72,10 +82,10 @@ const MapContainer: React.FC<Country> = (category: Country) => {
     lng: 0,
   };
 
-  if (category.location) {
+  if (country.location) {
     center = {
-      lat: category.location.latitude.valueOf(),
-      lng: category.location.longitude.valueOf(),
+      lat: country.location.latitude.valueOf(),
+      lng: country.location.longitude.valueOf(),
     };
   }
   if (loadError) return <div>Error loading maps</div>;
