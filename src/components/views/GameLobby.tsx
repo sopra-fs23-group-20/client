@@ -244,7 +244,16 @@ const GameLobby: React.FC = () => {
       break;
   }
 
-  return <Container sx={{ marginTop: 5 }}>{content}</Container>;
+  return (
+    <Container
+      fixed
+      sx={{
+        marginTop: "2%",
+      }}
+    >
+      {content}
+    </Container>
+  );
 };
 
 export default GameLobby;

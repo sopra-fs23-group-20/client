@@ -1,43 +1,48 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { api, handleError } from "helpers/api";
 import { Button, Container, Typography, Box, Grid } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import User from "models/User";
-import { AxiosError } from "axios";
-import { Client } from "@stomp/stompjs";
-import { useRef } from "react";
-import SockJS from "sockjs-client";
-import GameState from "models/constant/GameState";
+
 import Country from "models/Country";
-import { getDomain } from "helpers/getDomain";
-import WebsocketType from "models/constant/WebsocketType";
-import WebsocketPacket from "models/WebsocketPacket";
+
 import MapContainer from "components/ui/MapContainer";
-import Autocomplete from "@mui/material/Autocomplete";
+
 import OutlineContainer from "components/ui/OutlineContainer";
-import { TextField } from "@mui/material";
+
 import React, { useMemo } from "react";
 import Category from "models/Category";
 
 interface Props {
   currentCaregory: Category | null | undefined;
-  height: number;
-  width: number;
 }
 
 const HintContainer: React.FC<Props> = (props) => {
-  if (!props.currentCaregory) return <div></div>;
-
+  const hintRef = useRef<HTMLDivElement>(null);
+  const [width, setWidth] = useState<number>(0);
   const currentCaregory = props.currentCaregory;
+
+  useEffect(() => {
+    const hintWidth = hintRef.current?.getBoundingClientRect().width;
+    if (hintWidth) {
+      setWidth(hintWidth);
+    }
+  }, [hintRef]);
 
   const formatNumber = (number: number): string => {
     const formattedNumber = new Intl.NumberFormat("en-US").format(number);
     return formattedNumber.replace(/,/g, "'");
   };
+
+  if (!currentCaregory) {
+    return <div></div>;
+  }
+
   return (
-    <>
+    <div ref={hintRef}>
       {currentCaregory.population ? (
-        <Typography variant="h3">
+        <Typography align="center" variant="h3">
+          {" "}
           Population:{" "}
           {formatNumber(currentCaregory.population.valueOf()).toString()}{" "}
         </Typography>
@@ -47,8 +52,8 @@ const HintContainer: React.FC<Props> = (props) => {
       {currentCaregory.outline ? (
         <OutlineContainer
           country={currentCaregory.outline.toString()}
-          height={props.height}
-          width={props.width}
+          height={width * 0.6}
+          width={width}
         />
       ) : (
         <div></div>
@@ -66,8 +71,8 @@ const HintContainer: React.FC<Props> = (props) => {
               currentCaregory.outline
             )
           }
-          width={props.width}
-          height={props.height}
+          width={width}
+          height={width * 0.6}
         />
       ) : (
         <div></div>
@@ -78,8 +83,7 @@ const HintContainer: React.FC<Props> = (props) => {
           <img
             src={currentCaregory.flag.toString()}
             style={{
-              maxWidth: "100%",
-              marginBottom: "10px",
+              width: "100%",
             }}
           />
         </div>
@@ -88,14 +92,14 @@ const HintContainer: React.FC<Props> = (props) => {
       )}
 
       {currentCaregory.capital ? (
-        <Typography variant="h3">
+        <Typography align="center" variant="h3">
           {" "}
           Capital: {currentCaregory.capital.toString()}{" "}
         </Typography>
       ) : (
         <div></div>
       )}
-    </>
+    </div>
   );
 };
 export default HintContainer;
