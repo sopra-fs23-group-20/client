@@ -206,6 +206,7 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
             <MenuItem onClick={() => navigate("/game/countries")}>
               All Countries
             </MenuItem>
+              <MenuItem onClick={() => navigate("/game/leaderboard")}>Leaderboard</MenuItem>
             <MenuItem onClick={() => logout()}>Logout</MenuItem>
           </Menu>
 
