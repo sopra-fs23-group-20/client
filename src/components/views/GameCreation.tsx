@@ -11,8 +11,10 @@ import {
   Grid,
   IconButton,
   Tooltip,
+  InputLabel,
+  MenuItem,
 } from "@mui/material";
-import { SelectChangeEvent } from "@mui/material/Select";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
 import * as React from "react";
 import { Switch } from "@mui/material";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
@@ -33,6 +35,7 @@ import useTypewriter from "react-typewriter-hook/build/useTypewriter";
 import { AxiosError } from "axios";
 import { CategoryStack } from "models/CategoryStack";
 import Category from "models/Category";
+import { Difficulty, stringToDifficulty } from "models/constant/Difficulty";
 
 interface Props {
   gameId: string | undefined;
@@ -46,6 +49,9 @@ const GameCreation: React.FC<Props> = (props) => {
 
   const [numberOfRounds, setNumberOfRounds] = useState(3);
   const [openLobby, setOpenLobby] = useState(true);
+  const [difficulty, setDifficulty] = useState<Difficulty | null>(
+    Difficulty.EASY
+  );
 
   const [selectedRegions, setSelectedRegions] = useState<RegionEnum[]>([
     RegionEnum.EUROPE,
@@ -165,7 +171,8 @@ const GameCreation: React.FC<Props> = (props) => {
               randomizedHints
             ),
             selectedRegions,
-            openLobby
+            openLobby,
+            difficulty
           );
           console.log("Game Post DTO: ", gamePostDTO);
           const response = await api.post("/games", gamePostDTO);
@@ -557,27 +564,63 @@ const GameCreation: React.FC<Props> = (props) => {
             </Grid>
 
             <div>
-              <FormControlLabel
-                sx={{ mt: 2 }}
-                control={
-                  <Switch
-                    checked={openLobby}
-                    onChange={(event) => handleOpenLobbyChange(event)}
-                    color="primary"
-                  />
-                }
-                label="Open Lobby"
-              />
-              <Tooltip
-                sx={{ mt: 2 }}
-                title="Open lobbies can be found by everyone in the lobby browser"
-                placement="right"
+              <Grid
+                sx={{ marginTop: "1%" }}
+                container
+                spacing={2}
+                alignItems="center"
               >
-                <IconButton>
-                  <InfoIcon />
-                </IconButton>
-              </Tooltip>
+                <Grid item>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={openLobby}
+                        onChange={(event) => handleOpenLobbyChange(event)}
+                        color="primary"
+                      />
+                    }
+                    label="Open Lobby"
+                  />
+                </Grid>
+                <Grid item>
+                  <Tooltip
+                    title="Open lobbies can be found by everyone in the lobby browser"
+                    placement="right"
+                  >
+                    <IconButton>
+                      <InfoIcon />
+                    </IconButton>
+                  </Tooltip>
+                </Grid>
+                <Grid item xs>
+                  <FormControl variant="outlined" fullWidth>
+                    <InputLabel id="difficulty-select-label">
+                      Difficulty
+                    </InputLabel>
+                    <Select
+                      labelId="difficulty-select-label"
+                      id="difficulty-select"
+                      value={difficulty}
+                      onChange={(event) => {
+                        setDifficulty(stringToDifficulty(event.target.value));
+                      }}
+                      label="Difficulty"
+                    >
+                      <MenuItem value={Difficulty.EASY}>
+                        {Difficulty.EASY}
+                      </MenuItem>
+                      <MenuItem value={Difficulty.MEDIUM}>
+                        {Difficulty.MEDIUM}
+                      </MenuItem>
+                      <MenuItem value={Difficulty.HARD}>
+                        {Difficulty.HARD}
+                      </MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+              </Grid>
             </div>
+
             <DialogActions
               sx={{
                 display: "flex",
