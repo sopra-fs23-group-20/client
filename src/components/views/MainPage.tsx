@@ -143,6 +143,8 @@ const MainPage: React.FC<Props> = ({onTokenChange}) => {
                     variant="h1"
                     sx={{
                         textShadow: "2px 2px 4px rgba(0, 0, 0, 0.25)",
+                        minHeight: "56px"
+
                     }}
                 >
                     {typewriterText}
