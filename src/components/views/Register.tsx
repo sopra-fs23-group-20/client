@@ -176,22 +176,14 @@ const Register: React.FC = () => {
           backgroundColor: "background.paper",
         }}
       >
-        <Typography
-          variant="h1"
-          style={{ fontFamily: "'Roboto Slab', serif", marginBottom: "25px" }}
-        >
+        <Typography variant="h1" style={{ marginBottom: "25px" }}>
           Register a new account
         </Typography>
 
         <form onSubmit={formik.handleSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <Typography
-                variant="h3"
-                style={{ fontFamily: "'Roboto Slab', serif" }}
-              >
-                Username
-              </Typography>
+              <Typography variant="h3">Username</Typography>
               <TextField
                 fullWidth
                 id="username"
@@ -205,12 +197,7 @@ const Register: React.FC = () => {
               />
             </Grid>
             <Grid item xs={12}>
-              <Typography
-                variant="h3"
-                style={{ fontFamily: "'Roboto Slab', serif" }}
-              >
-                Password
-              </Typography>
+              <Typography variant="h3">Password</Typography>
 
               <TextField
                 fullWidth
@@ -289,12 +276,7 @@ const Register: React.FC = () => {
             marginTop: 2,
           }}
         >
-          <Typography
-            variant="h5"
-            style={{ fontFamily: "'Roboto Slab', serif" }}
-          >
-            Already Registered?{" "}
-          </Typography>
+          <Typography variant="h5">Already Registered? </Typography>
           <Button
             sx={{ marginLeft: 2, backgroundColor: "#D5E5F5", color: "#333" }}
             variant="contained"

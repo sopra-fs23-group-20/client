@@ -127,7 +127,6 @@ const Login: React.FC = () => {
         <Typography
           variant="h1"
           sx={{
-            fontFamily: "'Roboto Slab', serif",
             marginBottom: "25px",
           }}
         >
@@ -136,12 +135,7 @@ const Login: React.FC = () => {
         <form onSubmit={formik.handleSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <Typography
-                variant="h3"
-                sx={{ fontFamily: "'Roboto Slab', serif" }}
-              >
-                Username
-              </Typography>
+              <Typography variant="h3">Username</Typography>
               <TextField
                 fullWidth
                 id="username"
@@ -155,12 +149,7 @@ const Login: React.FC = () => {
               />
             </Grid>
             <Grid item xs={12}>
-              <Typography
-                variant="h3"
-                sx={{ fontFamily: "'Roboto Slab', serif" }}
-              >
-                Password
-              </Typography>
+              <Typography variant="h3">Password</Typography>
               <TextField
                 fullWidth
                 id="password"
@@ -218,9 +207,7 @@ const Login: React.FC = () => {
             marginTop: 2,
           }}
         >
-          <Typography variant="h5" sx={{ fontFamily: "'Roboto Slab', serif" }}>
-            Not yet a User?{" "}
-          </Typography>
+          <Typography variant="h5">Not yet a User? </Typography>
           <Button
             sx={{
               marginLeft: 2,
