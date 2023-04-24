@@ -269,9 +269,12 @@ const Register: React.FC = () => {
             <Button
               fullWidth
               variant="contained"
-              type="submit"
+              type="button"
               id="guest-register"
-              onClick={doGuestRegister}
+              onClick={() => {
+                formik.setErrors({});
+                doGuestRegister();
+              }}
               sx={{ backgroundColor: "#D5E5F5", color: "#333" }}
             >
               {loading ? <CircularProgress size={24} /> : "Guest Register"}
