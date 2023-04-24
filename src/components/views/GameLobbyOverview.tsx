@@ -88,20 +88,44 @@ const GameLobbyOverview: React.FC = () => {
     }, [fetchLobbies]);
 
     return (
-        <Container>
+        <Container
+            sx={{
+                marginTop: "10vh",
+            }}>
             <Typography
                 variant="h1"
                 sx={{
+                    textAlign: "center",
                     minHeight: "56px",
                     textShadow: "2px 2px 4px rgba(0, 0, 0, 0.25)",
-                    marginBottom: "2rem",
                 }}
             >
                 {typewriterText}
             </Typography>
 
+            <DialogActions
+                sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                }}
+            >
+                <Button
+                    sx={{ mb: 4 }}
+                    variant="outlined"
+                    size="small"
+                    color="error"
+                    startIcon={<KeyboardArrowLeftIcon />}
+                    onClick={() => navigate("/game/")}
+                >
+                    Back to Dashboard
+                </Button>
+            </DialogActions>
+
             <Typography
-                sx={{mb: 6}}
+                sx={{mb: 6,
+                    textAlign: "center",
+                }}
                 variant="h5"
 
             >
@@ -217,17 +241,6 @@ const GameLobbyOverview: React.FC = () => {
                     Refresh!
                 </Button>
             </TableContainer>
-            <DialogActions>
-                <Button
-                    variant="outlined"
-                    size="small"
-                    color="error"
-                    startIcon={<KeyboardArrowLeftIcon/>}
-                    onClick={() => navigate("/game/")}
-                >
-                    Back to Dashboard
-                </Button>
-            </DialogActions>
         </Container>
     );
 };
