@@ -73,7 +73,7 @@ const GameLobbyOverview: React.FC = () => {
     const fetchLobbies = useCallback(async () => {
         try {
             console.log("started fetching all games");
-            const response = await api.get("/games");
+            const response = await api.get("/gamesplayable");
             setAllLobbies(response.data);
             console.log("response:");
             console.log(response);
