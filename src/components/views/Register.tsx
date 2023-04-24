@@ -277,7 +277,7 @@ const Register: React.FC = () => {
               }}
               sx={{ backgroundColor: "#D5E5F5", color: "#333" }}
             >
-              {loading ? <CircularProgress size={24} /> : "Guest Register"}
+              {loading ? <CircularProgress size={24} /> : "Register as Guest"}
             </Button>
           </Box>
         </form>
