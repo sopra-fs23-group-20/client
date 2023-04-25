@@ -4,16 +4,19 @@ h1.Title {
 }
 
 .Trophy {
+  height: 100%;
   flex: 1;
   list-style: none;
   padding: 12px;
   text-align: center;
+  word-wrap: break-word;
   align-self: flex-end;
   border: 1px solid #eee;
-  font-size: 110%;
+  font-size: 40%;
   margin: 0 5px;
   transition: transform 0.5s ease, box-shadow 0.5s ease;
   transform-origin: bottom;
+  max-width: 45%;
 }
 
 .scoreBoardContainer {
