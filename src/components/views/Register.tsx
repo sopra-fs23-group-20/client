@@ -45,10 +45,11 @@ const Register: React.FC = () => {
   const searchParams = new URLSearchParams(currentLocation.search);
   const redirectUrl = searchParams.get("redirect") || "/";
 
-  const [loading, setLoading] = useState(false);
   const [username, setUsername] = useState<string | null>(null);
   const [password, setPassword] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [loadingRegular, setLoadingRegular] = useState(false);
+  const [loadingGuest, setLoadingGuest] = useState(false);
 
   const handlePasswordToggle = () => {
     setShowPassword(!showPassword);
@@ -68,7 +69,7 @@ const Register: React.FC = () => {
   });
 
   const doRegister = useCallback(async () => {
-    setLoading(true);
+    setLoadingRegular(true);
     try {
       const requestBody = JSON.stringify({
         username: formik.values.username,
@@ -95,7 +96,7 @@ const Register: React.FC = () => {
 
       navigate(decodeURIComponent(redirectUrl));
     } catch (error: AxiosError | any) {
-      setLoading(false);
+      setLoadingRegular(false);
       alert(
         `Something went wrong during the registration phase: \n${handleError(
           error
@@ -105,7 +106,7 @@ const Register: React.FC = () => {
   }, [formik.values.username, formik.values.password, navigate]);
 
   const doGuestRegister = async () => {
-    setLoading(true);
+    setLoadingGuest(true);
     const usernameGuest = "Guest_" + Math.floor(Math.random() * 1000000);
     const passwordGuest = "Guest_" + Math.floor(Math.random() * 1000000);
     try {
@@ -134,7 +135,7 @@ const Register: React.FC = () => {
 
       navigate(decodeURIComponent(redirectUrl));
     } catch (error: AxiosError | any) {
-      setLoading(false);
+      setLoadingGuest(false);
       alert(
         `Something went wrong during the registration phase: \n${handleError(
           error
@@ -238,11 +239,11 @@ const Register: React.FC = () => {
               fullWidth
               id="regular-register"
               variant="contained"
-              disabled={!(formik.isValid && formik.dirty) || loading}
+              disabled={!(formik.isValid && formik.dirty) || loadingRegular}
               type="submit"
               sx={{ backgroundColor: "#D5E5F5", color: "#333" }}
             >
-              {loading ? <CircularProgress size={24} /> : "Register"}
+              {loadingRegular ? <CircularProgress size={24} /> : "Register"}
             </Button>
           </Box>
           <Box
@@ -264,7 +265,11 @@ const Register: React.FC = () => {
               }}
               sx={{ backgroundColor: "#D5E5F5", color: "#333" }}
             >
-              {loading ? <CircularProgress size={24} /> : "Register as Guest"}
+              {loadingGuest ? (
+                <CircularProgress size={24} />
+              ) : (
+                "Register as Guest"
+              )}
             </Button>
           </Box>
         </form>
