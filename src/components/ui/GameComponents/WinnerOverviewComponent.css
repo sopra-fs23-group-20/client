@@ -114,7 +114,7 @@ div.Player div.score {
 .PrizeCabinet ul {
   padding: 0;
   margin: 24px auto;
-  width: 100%;
+  width: 99%;
   display: flex;
   align-content: space-around;
 }
