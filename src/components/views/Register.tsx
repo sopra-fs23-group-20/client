@@ -2,8 +2,9 @@ import React, { useState, useEffect, useCallback } from "react";
 import { api, handleError } from "helpers/api";
 import User from "models/User";
 import { useLocation, useNavigate } from "react-router-dom";
-import InfoIcon from "@mui/icons-material/Info";
+import "../../styles/appNameEffect.css";
 import {
+  Box,
   Button,
   Typography,
   InputAdornment,
@@ -11,27 +12,41 @@ import {
   Grid,
   CircularProgress,
   TextField,
-  Tooltip,
 } from "@mui/material";
 import { AxiosError } from "axios";
-import { Container } from "@mui/system";
-import Box from "@mui/material/Box";
 import { FiEye, FiEyeOff } from "react-icons/fi";
-import Logo from "./images/GTCText.png";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { styled } from "@mui/system";
 
-const StyledContainer = styled(Container)(() => ({
+const StyledContainer = styled(Box)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
   justifyContent: "center",
-  height: "100vh",
-  width: "100vw",
-  backgroundPosition: "center",
-  backgroundRepeat: "no-repeat",
-  backgroundSize: "cover",
+  minHeight: "100vh",
+  padding: theme.spacing(2),
+  backgroundColor: theme.palette.background.default,
+}));
+
+const AppName = styled("h1")({
+  fontFamily: "'Roboto', sans-serif",
+  fontSize: "3.5rem",
+  fontWeight: 900,
+  backgroundClip: "text",
+  WebkitBackgroundClip: "text",
+  color: "transparent",
+  backgroundImage:
+    "linear-gradient(90deg, #F4D03F 0%, #58D68D 15%, #48C9B0 30%, #5DADE2 45%, #8E44AD 60%, #C0392B 75%, #F1C40F 90%)",
+  backgroundSize: "200% 200%",
+  animation: "textShimmer 6s linear infinite",
+});
+
+const RegisterForm = styled(Box)(({ theme }) => ({
+  padding: theme.spacing(4),
+  borderRadius: theme.shape.borderRadius,
+  boxShadow: (theme.shadows as any)[4],
+  backgroundColor: theme.palette.background.paper,
 }));
 
 const validationSchema = Yup.object({
@@ -166,29 +181,21 @@ const Register: React.FC = () => {
 
   return (
     <StyledContainer>
-      <img src={Logo} alt="Logo" style={{ marginBottom: "2rem" }} />
-      <Box
-        component="span"
-        sx={{
-          p: 2,
-          border: 1,
-          borderColor: "divider",
-          borderRadius: 2,
-          backgroundColor: "background.paper",
-        }}
-      >
-        <Typography variant="h1" style={{ marginBottom: "25px" }}>
+      <Box className="appNameEffect">
+        <AppName style={{}}>Guess The Country</AppName>
+      </Box>
+      <RegisterForm>
+        <Typography variant="h4" gutterBottom>
           Register a new account
         </Typography>
-
         <form onSubmit={formik.handleSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <Typography variant="h3">Username</Typography>
               <TextField
                 fullWidth
                 id="username"
                 name="username"
+                label="Username"
                 variant="outlined"
                 value={formik.values.username}
                 onChange={formik.handleChange}
@@ -198,12 +205,11 @@ const Register: React.FC = () => {
               />
             </Grid>
             <Grid item xs={12}>
-              <Typography variant="h3">Password</Typography>
-
               <TextField
                 fullWidth
                 id="password"
                 name="password"
+                label="Password"
                 type={showPassword ? "text" : "password"}
                 variant="outlined"
                 value={formik.values.password}
@@ -227,33 +233,23 @@ const Register: React.FC = () => {
               />
             </Grid>
           </Grid>
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              marginTop: 2,
-            }}
-          >
+          <Box sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}>
             <Button
               fullWidth
               id="regular-register"
               variant="contained"
               disabled={!(formik.isValid && formik.dirty) || loadingRegular}
               type="submit"
-              sx={{ backgroundColor: "#D5E5F5", color: "#333" }}
+              sx={{
+                backgroundColor: "primary.main",
+                color: "primary.contrastText",
+                marginTop: 2,
+              }}
             >
               {loadingRegular ? <CircularProgress size={24} /> : "Register"}
             </Button>
           </Box>
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              marginTop: 2,
-            }}
-          >
+          <Box sx={{ display: "flex", justifyContent: "center" }}>
             <Button
               fullWidth
               variant="contained"
@@ -263,7 +259,11 @@ const Register: React.FC = () => {
                 formik.setErrors({});
                 doGuestRegister();
               }}
-              sx={{ backgroundColor: "#D5E5F5", color: "#333" }}
+              sx={{
+                backgroundColor: "primary.light",
+                color: "primary.contrastText",
+                marginTop: 2,
+              }}
             >
               {loadingGuest ? (
                 <CircularProgress size={24} />
@@ -278,19 +278,23 @@ const Register: React.FC = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            marginTop: 2,
+            marginTop: 3,
           }}
         >
           <Typography variant="h5">Already Registered? </Typography>
           <Button
-            sx={{ marginLeft: 2, backgroundColor: "#D5E5F5", color: "#333" }}
+            sx={{
+              marginLeft: 2,
+              backgroundColor: "primary.main",
+              color: "primary.contrastText",
+            }}
             variant="contained"
             onClick={() => navigate("/login")}
           >
             Login
           </Button>
         </Box>
-      </Box>
+      </RegisterForm>
     </StyledContainer>
   );
 };

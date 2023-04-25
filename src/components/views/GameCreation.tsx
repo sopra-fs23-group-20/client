@@ -629,7 +629,7 @@ const GameCreation: React.FC<Props> = (props) => {
               }}
             >
               <Button
-                sx={{ mt: 2 }}
+                sx={{ mt: 2, mb: 2 }}
                 variant="outlined"
                 onClick={() => startGame()}
                 disabled={!isFormValid()}

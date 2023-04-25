@@ -11,7 +11,7 @@ import {
   Switch,
   Stack,
   Chip,
-  Avatar,
+  Avatar, DialogActions,
 } from "@mui/material";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { AxiosError } from "axios";
@@ -115,15 +115,24 @@ const GuessingComponent: React.FC<Props> = (props) => {
       }}
     >
       <Typography variant="h2">Game Lobby</Typography>
-      <Button
-        variant="outlined"
-        size="small"
-        color="error"
-        startIcon={<KeyboardArrowLeftIcon />}
-        onClick={() => navigate("/game/")}
+      <DialogActions
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
       >
-        Back to Dashboard
-      </Button>
+        <Button
+            sx={{ mb: 4 }}
+            variant="outlined"
+            size="small"
+            color="error"
+            startIcon={<KeyboardArrowLeftIcon />}
+            onClick={() => navigate("/game/")}
+        >
+          Back to Dashboard
+        </Button>
+      </DialogActions>
       <Typography align="left">
         Here you can see an overview of the game you just joined and you can
         invite your friends.
@@ -441,7 +450,9 @@ const GuessingComponent: React.FC<Props> = (props) => {
         </DialogContent>
       </FormControl>
       {parseInt(userId ?? "0") === game?.lobbyCreator?.userId ? (
-        <Button variant="outlined" onClick={() => startGame()}>
+        <Button
+            sx={{ mb: 4 }}
+            variant="outlined" onClick={() => startGame()}>
           Start Game
         </Button>
       ) : (
