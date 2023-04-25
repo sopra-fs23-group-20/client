@@ -98,6 +98,9 @@ const WinnerOverviewComponent: React.FC<Props> = (props) => {
                 value: player.value
             }))
         ).reduce((a: any, b: any) => a.concat(b));
+        const topThreeSliced = topThree.slice(0,3)
+        console.log(topThree);
+
 
         return (
             <Grid
@@ -136,7 +139,7 @@ const WinnerOverviewComponent: React.FC<Props> = (props) => {
                     >
                         <Grid xs className="PrizeCabinet">
                             <ul>
-                                {topThree.map(
+                                {topThreeSliced.map(
                                     (
                                         trophy: any,
                                         index: number

@@ -98,6 +98,11 @@ const LeaderboardComponent: React.FC<Props> = (props) => {
         <Container
             sx={{
                 marginTop: "10vh",
+                maxwidth: "100%",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
             }}>
             <Typography
                 variant="h1"
