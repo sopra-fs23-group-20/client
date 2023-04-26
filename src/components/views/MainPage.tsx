@@ -16,6 +16,7 @@ import MenuItem from "@mui/material/MenuItem";
 import CardContent from "@mui/material/CardContent";
 // @ts-ignore
 import earth_small from "./gif/earth_small.gif";
+import Popover from '@mui/material/Popover';
 
 
 interface Props {
@@ -23,6 +24,19 @@ interface Props {
 }
 
 const MainPage: React.FC<Props> = ({onTokenChange}) => {
+    const [anchorElPopover, setAnchorElPopover] = React.useState<HTMLButtonElement | null>(null);
+
+    const handleClickPopover = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorElPopover(event.currentTarget);
+    };
+
+    const handleClosePopover = () => {
+        setAnchorElPopover(null);
+    };
+
+    const openPopover = Boolean(anchorElPopover);
+    const id = openPopover ? 'simple-popover' : undefined;
+
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -166,6 +180,21 @@ const MainPage: React.FC<Props> = ({onTokenChange}) => {
                     <img src={earth_small} alt="earth-gif" style={{width: "100px"}}/>
                 </div>
             </Box>
+            <Button aria-describedby={id} variant="contained" color="success" onClick={handleClickPopover}>
+                Quick Tutorial
+            </Button>
+            <Popover
+                id={id}
+                open={openPopover}
+                anchorEl={anchorElPopover}
+                onClose={handleClosePopover}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                }}
+            >
+                <Typography sx={{ p: 2 }}>Tutorial.</Typography>
+            </Popover>
             <Box
                 sx={{
                     display: "flex",
