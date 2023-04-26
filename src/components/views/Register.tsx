@@ -12,12 +12,15 @@ import {
   Grid,
   CircularProgress,
   TextField,
+  Alert,
 } from "@mui/material";
 import { AxiosError } from "axios";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { styled } from "@mui/system";
+import { Snackbar } from "@mui/material";
+import { useAlert } from "helpers/AlertContext";
 
 const StyledContainer = styled(Box)(({ theme }) => ({
   display: "flex",
@@ -65,6 +68,10 @@ const Register: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loadingRegular, setLoadingRegular] = useState(false);
   const [loadingGuest, setLoadingGuest] = useState(false);
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+
+  const { showAlert } = useAlert();
 
   const handlePasswordToggle = () => {
     setShowPassword(!showPassword);
@@ -112,10 +119,11 @@ const Register: React.FC = () => {
       navigate(decodeURIComponent(redirectUrl));
     } catch (error: AxiosError | any) {
       setLoadingRegular(false);
-      alert(
+      showAlert(
         `Something went wrong during the registration phase: \n${handleError(
           error
-        )}`
+        )}`,
+        "error"
       );
     }
   }, [formik.values.username, formik.values.password, navigate]);
@@ -295,6 +303,20 @@ const Register: React.FC = () => {
           </Button>
         </Box>
       </RegisterForm>
+      <Snackbar
+        open={alertOpen}
+        autoHideDuration={6000}
+        onClose={() => setAlertOpen(false)}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          severity="error"
+          onClose={() => setAlertOpen(false)}
+          sx={{ width: "100%" }}
+        >
+          {alertMessage}
+        </Alert>
+      </Snackbar>
     </StyledContainer>
   );
 };
