@@ -68,8 +68,6 @@ const Register: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loadingRegular, setLoadingRegular] = useState(false);
   const [loadingGuest, setLoadingGuest] = useState(false);
-  const [alertOpen, setAlertOpen] = useState(false);
-  const [alertMessage, setAlertMessage] = useState("");
 
   const { showAlert } = useAlert();
 
@@ -159,10 +157,11 @@ const Register: React.FC = () => {
       navigate(decodeURIComponent(redirectUrl));
     } catch (error: AxiosError | any) {
       setLoadingGuest(false);
-      alert(
+      showAlert(
         `Something went wrong during the registration phase: \n${handleError(
           error
-        )}`
+        )}`,
+        "error"
       );
     }
   };
@@ -303,20 +302,6 @@ const Register: React.FC = () => {
           </Button>
         </Box>
       </RegisterForm>
-      <Snackbar
-        open={alertOpen}
-        autoHideDuration={6000}
-        onClose={() => setAlertOpen(false)}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      >
-        <Alert
-          severity="error"
-          onClose={() => setAlertOpen(false)}
-          sx={{ width: "100%" }}
-        >
-          {alertMessage}
-        </Alert>
-      </Snackbar>
     </StyledContainer>
   );
 };

@@ -12,7 +12,7 @@ import { AxiosError } from "axios";
 import Autocomplete from "@mui/material/Autocomplete";
 import HintContainer from "../HintContainer";
 import GameGetDTO from "models/GameGetDTO";
-
+import { useAlert } from "helpers/AlertContext";
 interface Props {
   gameGetDTO: GameGetDTO | null;
   allCountries: Array<string>;
@@ -23,6 +23,7 @@ const GuessingComponent: React.FC<Props> = (props) => {
   const allCountries = props.allCountries;
   const game = props.gameGetDTO;
   const currentUserId = props.currentUserId;
+  const { showAlert } = useAlert();
 
   const [valueEntered, setValueEntered] = useState<string | null>(null);
 
@@ -34,9 +35,13 @@ const GuessingComponent: React.FC<Props> = (props) => {
         guess: valueEntered,
       });
       const requestBody = request.data;
-      //alert(requestBody);
+      if (requestBody.includes("wrong")) {
+        showAlert(requestBody, "error");
+      } else {
+        showAlert(requestBody, "success");
+      }
     } catch (error: AxiosError | any) {
-      // alert(error.response.data.message);
+      showAlert(error.response.data.message, "error");
     }
   }
 
