@@ -18,7 +18,7 @@ import Select, { SelectChangeEvent } from "@mui/material/Select";
 import * as React from "react";
 import { Switch } from "@mui/material";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
-
+import { useAlert } from "helpers/AlertContext";
 import {
   TextField,
   DialogContent,
@@ -52,6 +52,8 @@ const GameCreation: React.FC<Props> = (props) => {
   const [difficulty, setDifficulty] = useState<Difficulty | null>(
     Difficulty.EASY
   );
+
+  const { showAlert } = useAlert();
 
   const [selectedRegions, setSelectedRegions] = useState<RegionEnum[]>([
     RegionEnum.EUROPE,
@@ -179,7 +181,7 @@ const GameCreation: React.FC<Props> = (props) => {
           console.log("Game Post Response: ", response.data);
           navigate(`/game/lobby/${response.data.gameId}`);
         } else {
-          alert("Please select at least one category.");
+          showAlert("Please select at least one category", "warning");
         }
         <TextField
           id="number-of-rounds"
@@ -203,10 +205,11 @@ const GameCreation: React.FC<Props> = (props) => {
       }
     } catch (error: AxiosError | any) {
       console.log(error);
-      alert(
+      showAlert(
         `Something went wrong while updating game settings: \n${handleError(
           error
-        )}`
+        )}`,
+        "error"
       );
     }
   }

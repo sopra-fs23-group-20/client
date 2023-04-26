@@ -12,12 +12,15 @@ import {
   Grid,
   CircularProgress,
   TextField,
+  Alert,
 } from "@mui/material";
 import { AxiosError } from "axios";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { styled } from "@mui/system";
+import { Snackbar } from "@mui/material";
+import { useAlert } from "helpers/AlertContext";
 
 const StyledContainer = styled(Box)(({ theme }) => ({
   display: "flex",
@@ -66,6 +69,8 @@ const Register: React.FC = () => {
   const [loadingRegular, setLoadingRegular] = useState(false);
   const [loadingGuest, setLoadingGuest] = useState(false);
 
+  const { showAlert } = useAlert();
+
   const handlePasswordToggle = () => {
     setShowPassword(!showPassword);
   };
@@ -112,10 +117,11 @@ const Register: React.FC = () => {
       navigate(decodeURIComponent(redirectUrl));
     } catch (error: AxiosError | any) {
       setLoadingRegular(false);
-      alert(
+      showAlert(
         `Something went wrong during the registration phase: \n${handleError(
           error
-        )}`
+        )}`,
+        "error"
       );
     }
   }, [formik.values.username, formik.values.password, navigate]);
@@ -151,10 +157,11 @@ const Register: React.FC = () => {
       navigate(decodeURIComponent(redirectUrl));
     } catch (error: AxiosError | any) {
       setLoadingGuest(false);
-      alert(
+      showAlert(
         `Something went wrong during the registration phase: \n${handleError(
           error
-        )}`
+        )}`,
+        "error"
       );
     }
   };
