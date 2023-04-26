@@ -74,11 +74,7 @@ const GuessingComponent: React.FC<Props> = (props) => {
   };
 
   return (
-    <Container
-      sx={{
-        marginTop: "10vh",
-      }}
-    >
+    <Container>
       <Box
         sx={{
           display: "flex",

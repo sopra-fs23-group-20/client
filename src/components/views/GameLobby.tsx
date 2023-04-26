@@ -251,7 +251,7 @@ const GameLobby: React.FC = () => {
     <Container
       fixed
       sx={{
-        marginTop: "2%",
+        marginTop: "1%",
       }}
     >
       {content}
