@@ -44,10 +44,10 @@ interface Props {
 const GameCreation: React.FC<Props> = (props) => {
   const navigate = useNavigate();
 
-  const [roundSeconds, setRoundSeconds] = useState(30);
+  const [roundSeconds, setRoundSeconds] = useState(45);
   const [randomizedHints, setRandomizedHints] = useState(false);
 
-  const [numberOfRounds, setNumberOfRounds] = useState(3);
+  const [numberOfRounds, setNumberOfRounds] = useState(5);
   const [openLobby, setOpenLobby] = useState(true);
   const [difficulty, setDifficulty] = useState<Difficulty | null>(
     Difficulty.EASY
