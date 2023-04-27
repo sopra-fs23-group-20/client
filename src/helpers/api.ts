@@ -1,13 +1,9 @@
-import axios, { AxiosError, AxiosInstance } from "axios";
-import { getDomain } from "helpers/getDomain";
+import axios, { AxiosError, AxiosInstance } from 'axios';
+import { getDomain } from 'helpers/getDomain';
 
 export const api: AxiosInstance = axios.create({
   baseURL: getDomain(),
-  headers: {
-    "Content-Type": "application/json",
-    "Access-Control-Allow-Origin": "*",
-    Authorization: "*",
-  },
+  headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', "Authorization": "*" }
 });
 
 export const handleError = (error: AxiosError): string => {
@@ -26,17 +22,15 @@ export const handleError = (error: AxiosError): string => {
       info += `\nerror message:\n${response.data}`;
     }
 
-    console.log(
-      "The request was made and answered but was unsuccessful.",
-      error.response
-    );
+    console.log('The request was made and answered but was unsuccessful.', error.response);
     return info;
   } else {
     if (error.message.match(/Network Error/)) {
-      alert("The server cannot be reached.\nDid you start it?");
+      alert('The server cannot be reached.\nDid you start it?');
     }
 
-    console.log("Something else happened.", error);
+    console.log('Something else happened.', error);
     return error.message;
   }
 };
+

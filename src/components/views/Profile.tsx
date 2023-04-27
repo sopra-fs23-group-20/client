@@ -22,7 +22,6 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 import Autocomplete from "@mui/material/Autocomplete";
-import { useAlert } from "helpers/AlertContext";
 
 const Profile: React.FC = () => {
   const id = window.location.pathname.split("/").pop();
@@ -37,7 +36,6 @@ const Profile: React.FC = () => {
   const [nationality, setNationality] = useState<string | null>(null);
   const [gamesWon, setGamesWon] = useState<number | null>(null);
   const [allCountries, setAllCountries] = useState<Array<string>>([]);
-  const { showAlert } = useAlert();
 
   // Save user changes
   const saveChanges = async () => {
@@ -67,7 +65,7 @@ const Profile: React.FC = () => {
       copyCurrentUser.gamesWon = gamesWon!;
       setCurrentUser(copyCurrentUser);
     } catch (error: AxiosError | any) {
-      showAlert(error.response.data.message, "error");
+      alert(error.response.data.message);
       currentUser ? setUsername(currentUser.username) : setUsername(null);
       currentUser ? setPassword(currentUser.password) : setPassword(null);
       currentUser ? setBirthday(currentUser.birthday) : setBirthday(null);
@@ -156,10 +154,10 @@ const Profile: React.FC = () => {
         setGamesWon(response.data.gamesWon);
       } catch (error: AxiosError | any) {
         if (error.response.status === 404) {
-          showAlert(error.response.data.message, "error");
+          alert(error.response.data.message);
           navigate("/game");
         } else {
-          showAlert(error.response.data.message, "error");
+          alert(error.response.data.message);
           localStorage.removeItem("token");
           localStorage.removeItem("id");
           navigate("/register");

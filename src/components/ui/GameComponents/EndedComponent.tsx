@@ -1,10 +1,9 @@
-import {Button, Container, DialogActions, Typography} from "@mui/material";
+import { Button, Container, Typography } from "@mui/material";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import ScoreboardComponent from "./ScoreboardComponent";
 import User from "../../../models/User";
 import GameGetDTO from "../../../models/GameGetDTO";
-import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 
 interface Props {
     currentUser: User | null;
@@ -22,35 +21,24 @@ const EndedComponent: React.FC<Props> = (props) => {
         return null
     }
 
-    return (
-        <Container>
-            <Typography variant="h2" sx={{marginBottom: "2rem"}}>
-                Game Over!
-            </Typography>
-            <Typography variant="h4" sx={{marginBottom: "2rem"}}>
-                Thank you for playing.
-            </Typography>
-            <DialogActions
-                sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                }}
-            >
-                <Button
-                    variant="outlined"
-                    size="small"
-                    color="error"
-                    startIcon={<KeyboardArrowLeftIcon/>}
-                    onClick={() => navigate("/game/")}
-                >
-                    Back to Dashboard
-                </Button>
-            </DialogActions>
-            <ScoreboardComponent currentUser={currentUser} gameId={gameId} gameGetDTO={gameGetDTO} isGameEnded={true}/>
-        </Container>
-    );
+  return (
+    <Container>
+      <Typography variant="h2" sx={{ marginBottom: "2rem" }}>
+        Game Over!
+      </Typography>
+      <Typography variant="h4" sx={{ marginBottom: "2rem" }}>
+        Thank you for playing.
+      </Typography>
+        <ScoreboardComponent currentUser={currentUser} gameId={gameId} gameGetDTO={gameGetDTO} isGameEnded={true}/>
+      <Button
+        variant="contained"
+        onClick={(e) => navigate("/game")}
+        sx={{ marginTop: "2rem" }}
+      >
+        Back to Mainpage
+      </Button>
+    </Container>
+  );
 };
-
 
 export default EndedComponent;
