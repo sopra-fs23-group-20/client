@@ -17,12 +17,66 @@ import CardContent from "@mui/material/CardContent";
 // @ts-ignore
 import earth_small from "./gif/earth_small.gif";
 import { useAlert } from "helpers/AlertContext";
+import Chip from '@mui/material/Chip';
+import Popover from '@mui/material/Popover';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
 
 interface Props {
   onTokenChange: (token: string | null) => void;
 }
+interface TabPanelProps {
+    children?: React.ReactNode;
+    index: number;
+    value: number;
+}
+
+function TabPanel(props: TabPanelProps) {
+    const { children, value, index, ...other } = props;
+
+    return (
+        <div
+            role="tabpanel"
+            hidden={value !== index}
+            id={`simple-tabpanel-${index}`}
+            aria-labelledby={`simple-tab-${index}`}
+            {...other}
+        >
+            {value === index && (
+                <Box sx={{ p: 3 }}>
+                    <Typography>{children}</Typography>
+                </Box>
+            )}
+        </div>
+    );
+}
+function a11yProps(index: number) {
+    return {
+        id: `simple-tab-${index}`,
+        'aria-controls': `simple-tabpanel-${index}`,
+    };
+}
+
 
 const MainPage: React.FC<Props> = ({ onTokenChange }) => {
+    const [value, setValue] = React.useState(0);
+
+    const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+        setValue(newValue);
+    };
+
+    const [anchorElPopover, setAnchorElPopover] = React.useState<HTMLButtonElement | null>(null);
+
+    const handleClickPopover = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorElPopover(event.currentTarget);
+    };
+
+    const handleClosePopover = () => {
+        setAnchorElPopover(null);
+    };
+
+    const openPopover = Boolean(anchorElPopover);
+    const id = openPopover ? 'simple-popover' : undefined;
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -166,6 +220,51 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
           <img src={earth_small} alt="earth-gif" style={{ width: "100px" }} />
         </div>
       </Box>
+        <Button aria-describedby={id} variant="contained" color="success" onClick={handleClickPopover}>
+            Quick Tutorial
+        </Button>
+        <Popover
+            id={id}
+            open={openPopover}
+            anchorEl={anchorElPopover}
+            onClose={handleClosePopover}
+            anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+            }}
+        >
+            <Box sx={{ width: '100%' }}>
+                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                    <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+                        <Tab label="How it works?" {...a11yProps(0)} />
+                        <Tab label="Create a new game" {...a11yProps(1)} />
+                        <Tab label="Join a lobby" {...a11yProps(2)} />
+                    </Tabs>
+                </Box>
+                <TabPanel value={value} index={0}>
+                    If the game starts, your goal is to correctly guess the searched country based on the given
+                    hints. If the Capital "Paris"
+                    is displayed, you should enter "France".
+                    The faster you submit the answer, the more points you will get.
+
+                </TabPanel>
+                <TabPanel value={value} index={1}>
+                    You can create a new game lobby by clicking on the Create Game button.
+                    You can define, which hints should
+                    appear. If your game is public, other people can join or you can make the
+                    lobby private and invite your friends.
+                    <Chip label="Create Game"  color="primary" onClick={() => navigate("/game/lobbyCreation")} />
+                </TabPanel>
+                <TabPanel value={value} index={2}>
+                    You can join open lobbies by accessing them in the lobby browser. You can only join private lobbies by using the link
+                    or by entering the GameID and click on the "Join game!" button.
+                    <Chip label="Lobbies"  color="primary" onClick={() => navigate("/game/lobbies")} />
+                </TabPanel>
+            </Box>
+            <Typography align="center" sx={{ p: 2 }}>Need more help?
+                <Chip label="Guide"  variant="outlined" color="success" onClick={() => navigate("/game/rules")} />
+            </Typography>
+        </Popover>
       <Box
         sx={{
           display: "flex",
