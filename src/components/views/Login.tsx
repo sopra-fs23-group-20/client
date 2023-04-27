@@ -52,7 +52,7 @@ const AppName = styled("h1")({
   WebkitBackgroundClip: "text",
   color: "transparent",
   backgroundImage:
-    "linear-gradient(90deg, #F4D03F 0%, #58D68D 15%, #48C9B0 30%, #5DADE2 45%, #8E44AD 60%, #C0392B 75%, #F1C40F 90%)",
+      "linear-gradient(90deg, #3498DB 0%, #21618C 10%, #186A3B 25%, #239B56 40%, #B3B6B7 55%, #F4F6F7 70%, #C39BD3 85%, #3498DB 100%)",
   backgroundSize: "200% 200%",
   animation: "textShimmer 6s linear infinite",
 });
