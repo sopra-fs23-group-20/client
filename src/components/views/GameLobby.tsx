@@ -20,6 +20,7 @@ import {
 } from "helpers/handleWebsocketUpdate";
 import WebsocketPacket from "models/WebsocketPacket";
 import { getDomain } from "helpers/getDomain";
+import { useAlert } from "helpers/AlertContext";
 
 const GameLobby: React.FC = () => {
   const navigate = useNavigate();
@@ -35,6 +36,8 @@ const GameLobby: React.FC = () => {
   const gameId = window.location.pathname.split("/").pop();
   const currentUserId = localStorage.getItem("userId");
 
+  const { showAlert } = useAlert();
+
   useEffect(() => {
     usePollingRef.current = usePolling;
   }, [usePolling]);
@@ -47,7 +50,7 @@ const GameLobby: React.FC = () => {
         console.log("Fetched Game : ", newGameGetDTO);
         setGameGetDTO(newGameGetDTO);
       } catch (error: AxiosError | any) {
-        alert(error.response.data.message);
+        showAlert(error.response.data.message, error);
         console.error(error);
       }
     }
@@ -83,7 +86,7 @@ const GameLobby: React.FC = () => {
         console.log("The response is: ", response);
         setAllCountries(response.data);
       } catch (error: AxiosError | any) {
-        alert(error.response.data.message);
+        showAlert(error.response.data.message, "error");
         localStorage.removeItem("token");
         localStorage.removeItem("id");
         navigate("/register");
@@ -98,7 +101,7 @@ const GameLobby: React.FC = () => {
         console.log("Fetched Game : ", newGameGetDTO);
         setGameGetDTO(newGameGetDTO);
       } catch (error: AxiosError | any) {
-        alert(error.response.data.message);
+        showAlert(error.response.data.message, "error");
         console.error(error);
       }
     }
@@ -248,7 +251,7 @@ const GameLobby: React.FC = () => {
     <Container
       fixed
       sx={{
-        marginTop: "2%",
+        marginTop: "1%",
       }}
     >
       {content}

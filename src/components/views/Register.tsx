@@ -12,12 +12,15 @@ import {
   Grid,
   CircularProgress,
   TextField,
+  Alert,
 } from "@mui/material";
 import { AxiosError } from "axios";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { styled } from "@mui/system";
+import { Snackbar } from "@mui/material";
+import { useAlert } from "helpers/AlertContext";
 
 const StyledContainer = styled(Box)(({ theme }) => ({
   display: "flex",
@@ -37,7 +40,7 @@ const AppName = styled("h1")({
   WebkitBackgroundClip: "text",
   color: "transparent",
   backgroundImage:
-    "linear-gradient(90deg, #F4D03F 0%, #58D68D 15%, #48C9B0 30%, #5DADE2 45%, #8E44AD 60%, #C0392B 75%, #F1C40F 90%)",
+      "linear-gradient(90deg, #3498DB 0%, #21618C 10%, #186A3B 25%, #239B56 40%, #B3B6B7 55%, #F4F6F7 70%, #C39BD3 85%, #3498DB 100%)",
   backgroundSize: "200% 200%",
   animation: "textShimmer 6s linear infinite",
 });
@@ -65,6 +68,8 @@ const Register: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loadingRegular, setLoadingRegular] = useState(false);
   const [loadingGuest, setLoadingGuest] = useState(false);
+
+  const { showAlert } = useAlert();
 
   const handlePasswordToggle = () => {
     setShowPassword(!showPassword);
@@ -112,10 +117,11 @@ const Register: React.FC = () => {
       navigate(decodeURIComponent(redirectUrl));
     } catch (error: AxiosError | any) {
       setLoadingRegular(false);
-      alert(
+      showAlert(
         `Something went wrong during the registration phase: \n${handleError(
           error
-        )}`
+        )}`,
+        "error"
       );
     }
   }, [formik.values.username, formik.values.password, navigate]);
@@ -151,10 +157,11 @@ const Register: React.FC = () => {
       navigate(decodeURIComponent(redirectUrl));
     } catch (error: AxiosError | any) {
       setLoadingGuest(false);
-      alert(
+      showAlert(
         `Something went wrong during the registration phase: \n${handleError(
           error
-        )}`
+        )}`,
+        "error"
       );
     }
   };
