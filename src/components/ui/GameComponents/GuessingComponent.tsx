@@ -18,6 +18,7 @@ interface Props {
   gameGetDTO: GameGetDTO | null;
   allCountries: Array<string>;
   currentUserId: string | null;
+  setLastGuess: Function
 }
 
 const GuessingComponent: React.FC<Props> = (props) => {
@@ -25,17 +26,21 @@ const GuessingComponent: React.FC<Props> = (props) => {
   const game = props.gameGetDTO;
   const currentUserId = props.currentUserId;
   const { showAlert } = useAlert();
+  const setLastGuess = props.setLastGuess;
 
   const [valueEntered, setValueEntered] = useState<string | null>(null);
 
   async function submitGuess(): Promise<void> {
     try {
       console.log("Submitting guess", valueEntered);
-      const request = await api.post(`/games/${game?.gameId}/guesses`, {
-        userId: currentUserId,
-        guess: valueEntered,
-      });
+      const guess ={
+          userId: currentUserId,
+          guess: valueEntered,
+      };
+      setLastGuess(guess)
+      const request = await api.post(`/games/${game?.gameId}/guesses`, guess);
       const requestBody = request.data;
+
       if (requestBody.includes("wrong")) {
         showAlert(requestBody, "error");
       } else {

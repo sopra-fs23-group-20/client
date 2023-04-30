@@ -8,16 +8,18 @@ import GameUser from "../../../models/GameUser";
 import { convertToGameStateEnum } from "../../../helpers/convertTypes";
 import GameState from "../../../models/constant/GameState";
 import { Link } from "react-router-dom";
+import Guess from "../../../models/Guess";
 
 interface Props {
   currentUser: User | null;
   gameId: string | undefined;
   gameGetDTO: GameGetDTO | null;
   isGameEnded: boolean;
+  lastGuess: Guess | null;
 }
 
 const ScoreboardComponent: React.FC<Props> = (props) => {
-  const { isGameEnded, currentUser, gameId, gameGetDTO } = props;
+  const { isGameEnded, currentUser, gameId, gameGetDTO, lastGuess } = props;
   const [currentCountry, setCurrentCountry] = useState<string | null>(null);
   const [winnerUpdated, setWinnerUpdated] = useState(false);
 
@@ -157,6 +159,12 @@ const ScoreboardComponent: React.FC<Props> = (props) => {
 
   const renderAdditionalInformation = () => (
     <>
+      <Typography variant="h4" sx={{ marginTop: 2 }}>
+        The correct country was: {currentCountry}
+      </Typography>
+      {lastGuess !== null && (<Typography variant="h4" sx={{marginTop: 2}}>
+        Your last guess was: {lastGuess.guess}
+      </Typography>)}
       <Typography variant="h4" sx={{ marginTop: 2 }}>
         The correct country was: {currentCountry}
       </Typography>

@@ -21,6 +21,7 @@ import {
 import WebsocketPacket from "models/WebsocketPacket";
 import { getDomain } from "helpers/getDomain";
 import { useAlert } from "helpers/AlertContext";
+import Guess from "../../models/Guess";
 
 const GameLobby: React.FC = () => {
   const navigate = useNavigate();
@@ -28,6 +29,7 @@ const GameLobby: React.FC = () => {
   const [gameGetDTO, setGameGetDTO] = useState<GameGetDTO | null>(null);
   const [allCountries, setAllCountries] = useState<Array<string>>([]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [lastGuess, setLastGuess] = useState<Guess | null>(null);
 
   const [usePolling, setUsePolling] = useState(true);
   const usePollingRef = useRef(usePolling);
@@ -211,6 +213,7 @@ const GameLobby: React.FC = () => {
             gameGetDTO: gameGetDTO,
             allCountries: allCountries,
             currentUserId: currentUserId,
+            setLastGuess: setLastGuess
           }}
         />
       );
@@ -223,6 +226,7 @@ const GameLobby: React.FC = () => {
             gameId: gameId,
             gameGetDTO: gameGetDTO,
             isGameEnded: false,
+            lastGuess: lastGuess
           }}
         />
       );
@@ -234,6 +238,7 @@ const GameLobby: React.FC = () => {
             currentUser: currentUser,
             gameId: gameId,
             gameGetDTO: gameGetDTO,
+            lastGuess: lastGuess
           }}
         />
       );
