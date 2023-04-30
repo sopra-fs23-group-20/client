@@ -71,7 +71,6 @@ const CountriesOverview: React.FC = () => {
                                     backgroundColor: index % 2 ? "#232323" : "#181818",
                                     borderRadius: "20px",
                                     marginBottom: "15px"
-
                                 }}
                             >
                                 <CountryContainer {...country} />
@@ -90,7 +89,7 @@ const CountriesOverview: React.FC = () => {
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
-                marginTop: 4,
+                marginTop: "10vh",
             }}
         >
             <Typography variant="h1">Countries Overview</Typography>

@@ -3,6 +3,7 @@ import { api, handleError } from "helpers/api";
 import User from "models/User";
 import { useNavigate } from "react-router-dom";
 import {
+  Box,
   Button,
   Typography,
   InputAdornment,
@@ -12,15 +13,15 @@ import {
   TextField,
 } from "@mui/material";
 import { AxiosError } from "axios";
-import { Container } from "@mui/system";
-import Box from "@mui/material/Box";
 import { FiEye, FiEyeOff } from "react-icons/fi";
-import Logo from "./images/GTCText.png";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { styled } from "@mui/system";
+import "../../styles/appNameEffect.css";
+import { useAlert } from "helpers/AlertContext";
 
-const StyledContainer = styled(Container)(() => ({
+/**
+ const StyledContainer = styled(Container)(() => ({
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
@@ -30,6 +31,37 @@ const StyledContainer = styled(Container)(() => ({
   backgroundPosition: "center",
   backgroundRepeat: "no-repeat",
   backgroundSize: "cover",
+}));
+ */
+
+const StyledContainer = styled(Box)(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+  minHeight: "100vh",
+  padding: theme.spacing(2),
+  backgroundColor: theme.palette.background.default,
+}));
+
+const AppName = styled("h1")({
+  fontFamily: "'Roboto', sans-serif",
+  fontSize: "3.5rem",
+  fontWeight: 900,
+  backgroundClip: "text",
+  WebkitBackgroundClip: "text",
+  color: "transparent",
+  backgroundImage:
+      "linear-gradient(90deg, #3498DB 0%, #21618C 10%, #186A3B 25%, #239B56 40%, #B3B6B7 55%, #F4F6F7 70%, #C39BD3 85%, #3498DB 100%)",
+  backgroundSize: "200% 200%",
+  animation: "textShimmer 6s linear infinite",
+});
+
+const LoginForm = styled(Box)(({ theme }) => ({
+  padding: theme.spacing(4),
+  borderRadius: theme.shape.borderRadius,
+  boxShadow: (theme.shadows as any)[4],
+  backgroundColor: theme.palette.background.paper,
 }));
 
 const validationSchema = Yup.object({
@@ -44,6 +76,7 @@ const Login: React.FC = () => {
   const [username, setUsername] = useState<string | null>(null);
   const [password, setPassword] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
+  const { showAlert } = useAlert();
 
   const handlePasswordToggle = () => {
     setShowPassword(!showPassword);
@@ -88,7 +121,10 @@ const Login: React.FC = () => {
       navigate(`/game`);
     } catch (error: AxiosError | any) {
       setLoading(false);
-      alert(`Something went wrong during the login: \n${handleError(error)}`);
+      showAlert(
+        `Something went wrong during the login: \n${handleError(error)}`,
+        "error"
+      );
     }
   }, [formik.values.username, formik.values.password, navigate]);
 
@@ -113,39 +149,21 @@ const Login: React.FC = () => {
   }, [password, username, doLogin]);
   return (
     <StyledContainer>
-      <img src={Logo} alt="Logo" style={{ marginBottom: "2rem" }} />
-      <Box
-        component="span"
-        sx={{
-          p: 2,
-          border: 1,
-          borderColor: "divider",
-          borderRadius: 2,
-          backgroundColor: "background.paper",
-        }}
-      >
-        <Typography
-          variant="h1"
-          sx={{
-            fontFamily: "'Roboto Slab', serif",
-            marginBottom: "25px",
-          }}
-        >
+      <Box className="appNameEffect">
+        <AppName style={{}}>Guess The Country</AppName>
+      </Box>
+      <LoginForm>
+        <Typography variant="h4" gutterBottom>
           Login to your account
         </Typography>
         <form onSubmit={formik.handleSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <Typography
-                variant="h3"
-                sx={{ fontFamily: "'Roboto Slab', serif" }}
-              >
-                Username
-              </Typography>
               <TextField
                 fullWidth
                 id="username"
                 name="username"
+                label="Username"
                 variant="outlined"
                 value={formik.values.username}
                 onChange={formik.handleChange}
@@ -155,16 +173,11 @@ const Login: React.FC = () => {
               />
             </Grid>
             <Grid item xs={12}>
-              <Typography
-                variant="h3"
-                sx={{ fontFamily: "'Roboto Slab', serif" }}
-              >
-                Password
-              </Typography>
               <TextField
                 fullWidth
                 id="password"
                 name="password"
+                label="Password"
                 type={showPassword ? "text" : "password"}
                 variant="outlined"
                 value={formik.values.password}
@@ -188,14 +201,7 @@ const Login: React.FC = () => {
               />
             </Grid>
           </Grid>
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              marginTop: 2,
-            }}
-          >
+          <Box sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}>
             <Button
               fullWidth
               variant="contained"
@@ -204,6 +210,7 @@ const Login: React.FC = () => {
               sx={{
                 backgroundColor: "primary.main",
                 color: "primary.contrastText",
+                marginTop: 2,
               }}
             >
               {loading ? <CircularProgress size={24} /> : "Login"}
@@ -215,12 +222,10 @@ const Login: React.FC = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            marginTop: 2,
+            marginTop: 3,
           }}
         >
-          <Typography variant="h5" sx={{ fontFamily: "'Roboto Slab', serif" }}>
-            Not yet a User?{" "}
-          </Typography>
+          <Typography variant="h5">New User? </Typography>
           <Button
             sx={{
               marginLeft: 2,
@@ -233,7 +238,7 @@ const Login: React.FC = () => {
             Register
           </Button>
         </Box>
-      </Box>
+      </LoginForm>
     </StyledContainer>
   );
 };

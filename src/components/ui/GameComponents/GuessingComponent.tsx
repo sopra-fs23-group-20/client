@@ -8,14 +8,11 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import User from "models/User";
 import { AxiosError } from "axios";
-import Country from "models/Country";
 import Autocomplete from "@mui/material/Autocomplete";
 import HintContainer from "../HintContainer";
 import GameGetDTO from "models/GameGetDTO";
-import Logo from "../../views/images/GTCText.png";
-import CircularProgress from "@mui/material/CircularProgress";
+import { useAlert } from "helpers/AlertContext";
 
 interface Props {
   gameGetDTO: GameGetDTO | null;
@@ -27,6 +24,7 @@ const GuessingComponent: React.FC<Props> = (props) => {
   const allCountries = props.allCountries;
   const game = props.gameGetDTO;
   const currentUserId = props.currentUserId;
+  const { showAlert } = useAlert();
 
   const [valueEntered, setValueEntered] = useState<string | null>(null);
 
@@ -38,9 +36,13 @@ const GuessingComponent: React.FC<Props> = (props) => {
         guess: valueEntered,
       });
       const requestBody = request.data;
-      alert(requestBody);
+      if (requestBody.includes("wrong")) {
+        showAlert(requestBody, "error");
+      } else {
+        showAlert(requestBody, "success");
+      }
     } catch (error: AxiosError | any) {
-      alert(error.response.data.message);
+      showAlert(error.response.data.message, "error");
     }
   }
 
@@ -72,8 +74,7 @@ const GuessingComponent: React.FC<Props> = (props) => {
   };
 
   return (
-    <>
-      <img src={Logo} alt="Logo" width={"100%"} />
+    <Container>
       <Box
         sx={{
           display: "flex",
@@ -139,7 +140,7 @@ const GuessingComponent: React.FC<Props> = (props) => {
 
         {game?.remainingRoundPoints ? (
           <Typography variant="h4">
-            Points Left: {game.remainingRoundPoints.toString()}{" "}
+            Achievable Points: {game.remainingRoundPoints.toString()}{" "}
           </Typography>
         ) : (
           <div></div>
@@ -149,7 +150,7 @@ const GuessingComponent: React.FC<Props> = (props) => {
       <Box sx={{ height: "50%", width: "100%", marginTop: "5%" }}>
         <HintContainer currentCaregory={game?.categoryStack?.currentCategory} />
       </Box>
-    </>
+    </Container>
   );
 };
 export default GuessingComponent;

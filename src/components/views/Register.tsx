@@ -2,8 +2,9 @@ import React, { useState, useEffect, useCallback } from "react";
 import { api, handleError } from "helpers/api";
 import User from "models/User";
 import { useLocation, useNavigate } from "react-router-dom";
-import InfoIcon from "@mui/icons-material/Info";
+import "../../styles/appNameEffect.css";
 import {
+  Box,
   Button,
   Typography,
   InputAdornment,
@@ -11,27 +12,44 @@ import {
   Grid,
   CircularProgress,
   TextField,
-  Tooltip,
+  Alert,
 } from "@mui/material";
 import { AxiosError } from "axios";
-import { Container } from "@mui/system";
-import Box from "@mui/material/Box";
 import { FiEye, FiEyeOff } from "react-icons/fi";
-import Logo from "./images/GTCText.png";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { styled } from "@mui/system";
+import { Snackbar } from "@mui/material";
+import { useAlert } from "helpers/AlertContext";
 
-const StyledContainer = styled(Container)(() => ({
+const StyledContainer = styled(Box)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
   justifyContent: "center",
-  height: "100vh",
-  width: "100vw",
-  backgroundPosition: "center",
-  backgroundRepeat: "no-repeat",
-  backgroundSize: "cover",
+  minHeight: "100vh",
+  padding: theme.spacing(2),
+  backgroundColor: theme.palette.background.default,
+}));
+
+const AppName = styled("h1")({
+  fontFamily: "'Roboto', sans-serif",
+  fontSize: "3.5rem",
+  fontWeight: 900,
+  backgroundClip: "text",
+  WebkitBackgroundClip: "text",
+  color: "transparent",
+  backgroundImage:
+      "linear-gradient(90deg, #3498DB 0%, #21618C 10%, #186A3B 25%, #239B56 40%, #B3B6B7 55%, #F4F6F7 70%, #C39BD3 85%, #3498DB 100%)",
+  backgroundSize: "200% 200%",
+  animation: "textShimmer 6s linear infinite",
+});
+
+const RegisterForm = styled(Box)(({ theme }) => ({
+  padding: theme.spacing(4),
+  borderRadius: theme.shape.borderRadius,
+  boxShadow: (theme.shadows as any)[4],
+  backgroundColor: theme.palette.background.paper,
 }));
 
 const validationSchema = Yup.object({
@@ -45,10 +63,13 @@ const Register: React.FC = () => {
   const searchParams = new URLSearchParams(currentLocation.search);
   const redirectUrl = searchParams.get("redirect") || "/";
 
-  const [loading, setLoading] = useState(false);
   const [username, setUsername] = useState<string | null>(null);
   const [password, setPassword] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [loadingRegular, setLoadingRegular] = useState(false);
+  const [loadingGuest, setLoadingGuest] = useState(false);
+
+  const { showAlert } = useAlert();
 
   const handlePasswordToggle = () => {
     setShowPassword(!showPassword);
@@ -68,7 +89,7 @@ const Register: React.FC = () => {
   });
 
   const doRegister = useCallback(async () => {
-    setLoading(true);
+    setLoadingRegular(true);
     try {
       const requestBody = JSON.stringify({
         username: formik.values.username,
@@ -95,17 +116,18 @@ const Register: React.FC = () => {
 
       navigate(decodeURIComponent(redirectUrl));
     } catch (error: AxiosError | any) {
-      setLoading(false);
-      alert(
+      setLoadingRegular(false);
+      showAlert(
         `Something went wrong during the registration phase: \n${handleError(
           error
-        )}`
+        )}`,
+        "error"
       );
     }
   }, [formik.values.username, formik.values.password, navigate]);
 
   const doGuestRegister = async () => {
-    setLoading(true);
+    setLoadingGuest(true);
     const usernameGuest = "Guest_" + Math.floor(Math.random() * 1000000);
     const passwordGuest = "Guest_" + Math.floor(Math.random() * 1000000);
     try {
@@ -134,11 +156,12 @@ const Register: React.FC = () => {
 
       navigate(decodeURIComponent(redirectUrl));
     } catch (error: AxiosError | any) {
-      setLoading(false);
-      alert(
+      setLoadingGuest(false);
+      showAlert(
         `Something went wrong during the registration phase: \n${handleError(
           error
-        )}`
+        )}`,
+        "error"
       );
     }
   };
@@ -165,37 +188,21 @@ const Register: React.FC = () => {
 
   return (
     <StyledContainer>
-      <img src={Logo} alt="Logo" style={{ marginBottom: "2rem" }} />
-      <Box
-        component="span"
-        sx={{
-          p: 2,
-          border: 1,
-          borderColor: "divider",
-          borderRadius: 2,
-          backgroundColor: "background.paper",
-        }}
-      >
-        <Typography
-          variant="h1"
-          style={{ fontFamily: "'Roboto Slab', serif", marginBottom: "25px" }}
-        >
+      <Box className="appNameEffect">
+        <AppName style={{}}>Guess The Country</AppName>
+      </Box>
+      <RegisterForm>
+        <Typography variant="h4" gutterBottom>
           Register a new account
         </Typography>
-
         <form onSubmit={formik.handleSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <Typography
-                variant="h3"
-                style={{ fontFamily: "'Roboto Slab', serif" }}
-              >
-                Username
-              </Typography>
               <TextField
                 fullWidth
                 id="username"
                 name="username"
+                label="Username"
                 variant="outlined"
                 value={formik.values.username}
                 onChange={formik.handleChange}
@@ -205,17 +212,11 @@ const Register: React.FC = () => {
               />
             </Grid>
             <Grid item xs={12}>
-              <Typography
-                variant="h3"
-                style={{ fontFamily: "'Roboto Slab', serif" }}
-              >
-                Password
-              </Typography>
-
               <TextField
                 fullWidth
                 id="password"
                 name="password"
+                label="Password"
                 type={showPassword ? "text" : "password"}
                 variant="outlined"
                 value={formik.values.password}
@@ -239,42 +240,43 @@ const Register: React.FC = () => {
               />
             </Grid>
           </Grid>
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              marginTop: 2,
-            }}
-          >
+          <Box sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}>
             <Button
               fullWidth
               id="regular-register"
               variant="contained"
-              disabled={!(formik.isValid && formik.dirty) || loading}
+              disabled={!(formik.isValid && formik.dirty) || loadingRegular}
               type="submit"
-              sx={{ backgroundColor: "#D5E5F5", color: "#333" }}
+              sx={{
+                backgroundColor: "primary.main",
+                color: "primary.contrastText",
+                marginTop: 2,
+              }}
             >
-              {loading ? <CircularProgress size={24} /> : "Register"}
+              {loadingRegular ? <CircularProgress size={24} /> : "Register"}
             </Button>
           </Box>
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              marginTop: 2,
-            }}
-          >
+          <Box sx={{ display: "flex", justifyContent: "center" }}>
             <Button
               fullWidth
               variant="contained"
-              type="submit"
+              type="button"
               id="guest-register"
-              onClick={doGuestRegister}
-              sx={{ backgroundColor: "#D5E5F5", color: "#333" }}
+              onClick={() => {
+                formik.setErrors({});
+                doGuestRegister();
+              }}
+              sx={{
+                backgroundColor: "primary.light",
+                color: "primary.contrastText",
+                marginTop: 2,
+              }}
             >
-              {loading ? <CircularProgress size={24} /> : "Guest Register"}
+              {loadingGuest ? (
+                <CircularProgress size={24} />
+              ) : (
+                "Register as Guest"
+              )}
             </Button>
           </Box>
         </form>
@@ -283,24 +285,23 @@ const Register: React.FC = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            marginTop: 2,
+            marginTop: 3,
           }}
         >
-          <Typography
-            variant="h5"
-            style={{ fontFamily: "'Roboto Slab', serif" }}
-          >
-            Already Registered?{" "}
-          </Typography>
+          <Typography variant="h5">Already Registered? </Typography>
           <Button
-            sx={{ marginLeft: 2, backgroundColor: "#D5E5F5", color: "#333" }}
+            sx={{
+              marginLeft: 2,
+              backgroundColor: "primary.main",
+              color: "primary.contrastText",
+            }}
             variant="contained"
             onClick={() => navigate("/login")}
           >
             Login
           </Button>
         </Box>
-      </Box>
+      </RegisterForm>
     </StyledContainer>
   );
 };

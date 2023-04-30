@@ -1,13 +1,12 @@
 import {api} from "../../../helpers/api";
 import WinnerOverviewComponent from "./WinnerOverviewComponent";
 import React, {useEffect, useState} from "react";
-import GameUser from "../../../models/GameUser";
 import User from "../../../models/User";
-import {convertToGameStateEnum} from "../../../helpers/convertTypes";
-import GameState from "../../../models/constant/GameState";
 import {Link} from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import {Button, Container} from "@mui/material";
+import {useNavigate} from "react-router-dom";
+import {Button, Container, DialogActions, Typography} from "@mui/material";
+import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import useTypewriter from "react-typewriter-hook/build/useTypewriter";
 
 interface Props {
 }
@@ -16,6 +15,8 @@ const LeaderboardComponent: React.FC<Props> = (props) => {
     const navigate = useNavigate();
     const [users, setUsers] = useState<Array<User> | null>(null);
     const [currentUser, setCurrentUser] = useState<User | null>(null);
+    const typewriterText = useTypewriter("Leaderboard");
+
 
     useEffect(() => {
         const getUsers = async () => {
@@ -26,6 +27,7 @@ const LeaderboardComponent: React.FC<Props> = (props) => {
                 console.error(error);
             }
         };
+
         async function fetchUser(): Promise<void> {
             try {
                 let id = localStorage.getItem("id");
@@ -48,7 +50,7 @@ const LeaderboardComponent: React.FC<Props> = (props) => {
         fetchUser().then((r) => r);
     }, []);
 
-    if(users === null || currentUser === null){
+    if (users === null || currentUser === null) {
         return null
     }
 
@@ -73,7 +75,8 @@ const LeaderboardComponent: React.FC<Props> = (props) => {
 
     const sortedParticipantsByScore = sortParticipantsByScore(participantsArray);
 
-    const renderTitle = () => (<h1 className="Title">Leaderboard</h1>)
+    //needs to be here because of WinnerOverviewComponent weird requirements
+    const renderTitle = () => (<></>)
 
     const getPlayerWins: any = (user: User) => {
         if (
@@ -92,30 +95,57 @@ const LeaderboardComponent: React.FC<Props> = (props) => {
     }
 
     return (
-        <Container>
-            <WinnerOverviewComponent
-        renderTitle={renderTitle}
-        currentUserId={currentUser.id}
-        renderAdditionalInformation={undefined}
-        sortedParticipantsByScore={sortedParticipantsByScore}
-        attributeToConsider={'gamesWon'}
-        additionalText={'Wins'}
-        columnHeaderText={'Total Games won'}
-        renderPlayerValue={getPlayerWins}
-        renderPlayerUsernameTableCell={renderPlayerUsernameTableCell}
-        renderInformationOnBottom={undefined}
-        idAttributeName={'id'}/>
-            <Button
-                variant="contained"
-                onClick={(e) => navigate("/game")}
-                sx={{ marginTop: "2rem" }}
+        <Container
+            sx={{
+                marginTop: "10vh",
+                maxwidth: "100%",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+            }}>
+            <Typography
+                variant="h1"
+                sx={{
+                    textAlign: "center",
+                    minHeight: "56px",
+                    textShadow: "2px 2px 4px rgba(0, 0, 0, 0.25)",
+                }}
             >
-                Back to Mainpage
-            </Button>
+                {typewriterText}
+            </Typography>
+
+            <DialogActions
+                sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                }}
+            >
+                <Button
+                    sx={{mb: 4}}
+                    variant="outlined"
+                    size="small"
+                    color="error"
+                    startIcon={<KeyboardArrowLeftIcon/>}
+                    onClick={() => navigate("/game/")}
+                >
+                    Back to Dashboard
+                </Button>
+            </DialogActions>
+            <WinnerOverviewComponent
+                renderTitle={renderTitle}
+                currentUserId={currentUser.id}
+                renderAdditionalInformation={undefined}
+                sortedParticipantsByScore={sortedParticipantsByScore}
+                attributeToConsider={'gamesWon'}
+                additionalText={'Wins'}
+                columnHeaderText={'Total Games won'}
+                renderPlayerValue={getPlayerWins}
+                renderPlayerUsernameTableCell={renderPlayerUsernameTableCell}
+                renderInformationOnBottom={undefined}
+                idAttributeName={'id'}/>
         </Container>)
-
-
 }
 
-
-    export default LeaderboardComponent
+export default LeaderboardComponent
