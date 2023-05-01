@@ -31,6 +31,7 @@ const GameLobby: React.FC = () => {
   const [allCountries, setAllCountries] = useState<Array<string>>([]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [lastGuess, setLastGuess] = useState<Guess | null>(null);
+  const [gameNotFoundError, setGameNotFoundError] = useState(false);
 
   const [usePolling, setUsePolling] = useState(true);
   const usePollingRef = useRef(usePolling);
@@ -68,7 +69,17 @@ const GameLobby: React.FC = () => {
         console.log("Fetched Game : ", newGameGetDTO);
         setGameGetDTO(newGameGetDTO);
       } catch (error: AxiosError | any) {
-        showAlert(error.response.data.message, error);
+        if (
+          error.response &&
+          error.response.data.message.includes("Game not found")
+        ) {
+          setGameNotFoundError(true);
+        } else {
+          showAlert(
+            error.response ? error.response.data.message : "An error occurred",
+            "error"
+          );
+        }
         console.error(error);
       }
     }
@@ -105,9 +116,7 @@ const GameLobby: React.FC = () => {
         setAllCountries(response.data);
       } catch (error: AxiosError | any) {
         showAlert(error.response.data.message, "error");
-        localStorage.removeItem("token");
-        localStorage.removeItem("id");
-        navigate("/register");
+        navigate("/game");
         console.error(error);
       }
     }
