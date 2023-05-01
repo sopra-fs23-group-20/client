@@ -16,18 +16,13 @@ import HintContainer from "../HintContainer";
 import GameGetDTO from "models/GameGetDTO";
 import { useAlert } from "helpers/AlertContext";
 import CircularProgressWithLabel from "helpers/CircularProgressWithLabel";
+import getColorByTimeLeft from "helpers/getColorByTimeLeft";
 
 interface Props {
   gameGetDTO: GameGetDTO | null;
   allCountries: Array<string>;
   currentUserId: string | null;
   setLastGuess: Function;
-}
-
-function getColorForProgress(progress: number) {
-  const red = Math.round(255 * (1 - progress));
-  const green = Math.round(255 * progress);
-  return `rgb(${red}, ${green}, 0)`;
 }
 
 const normalise = (
@@ -44,10 +39,6 @@ const GuessingComponent: React.FC<Props> = (props) => {
   const currentUserId = props.currentUserId;
   const { showAlert } = useAlert();
   const setLastGuess = props.setLastGuess;
-
-  const progressBarGradient = getColorForProgress(
-    normalise(game?.remainingTime, game?.roundDuration) / 100
-  );
 
   const [valueEntered, setValueEntered] = useState<string | null>(null);
   let currentRound = 0;
@@ -175,12 +166,10 @@ const GuessingComponent: React.FC<Props> = (props) => {
           <LinearProgress
             variant="determinate"
             value={normalise(game?.remainingTime, game?.roundDuration)}
+            color={getColorByTimeLeft(game?.remainingTime, game?.roundDuration)}
             sx={{
               flexGrow: 1,
               marginLeft: "2%",
-            }}
-            style={{
-              background: progressBarGradient,
             }}
           />
         </Box>

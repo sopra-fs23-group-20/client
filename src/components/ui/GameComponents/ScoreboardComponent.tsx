@@ -10,12 +10,7 @@ import GameState from "../../../models/constant/GameState";
 import { Link } from "react-router-dom";
 import Guess from "../../../models/Guess";
 import CircularProgressWithLabel from "helpers/CircularProgressWithLabel";
-
-function getColorForProgress(progress: number) {
-  const red = Math.round(255 * (1 - progress));
-  const green = Math.round(255 * progress);
-  return `rgb(${red}, ${green}, 0)`;
-}
+import getColorByTimeLeft from "helpers/getColorByTimeLeft";
 
 const normalise = (
   value: number | null | undefined,
@@ -38,7 +33,7 @@ const ScoreboardComponent: React.FC<Props> = (props) => {
   const [winnerUpdated, setWinnerUpdated] = useState(false);
   const timeProgress =
     normalise(gameGetDTO?.remainingTime, gameGetDTO?.timeBetweenRounds) / 100;
-  const progressBarGradient = getColorForProgress(timeProgress);
+
   let currentRound = 0;
   if (
     gameGetDTO?.numberOfRounds != null &&
@@ -234,12 +229,13 @@ const ScoreboardComponent: React.FC<Props> = (props) => {
             <LinearProgress
               variant="determinate"
               value={timeProgress * 100}
+              color={getColorByTimeLeft(
+                gameGetDTO.remainingTime,
+                gameGetDTO.timeBetweenRounds
+              )}
               sx={{
                 flexGrow: 1,
                 marginLeft: "2%",
-              }}
-              style={{
-                background: progressBarGradient,
               }}
             />
           </Box>

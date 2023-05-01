@@ -18,7 +18,11 @@ const CircularProgressWithLabel: React.FC<CircularProgressWithLabelProps> = (
         Round:
       </Typography>
       <Box position="relative" display="inline-flex">
-        <CircularProgress variant="determinate" value={value} />
+        <CircularProgress
+          variant="determinate"
+          value={value}
+          color={"primary"}
+        />
         <Box
           sx={{
             position: "absolute",
