@@ -19,6 +19,7 @@ class GameGetDTO {
   categoryStack: CategoryStack | null;
   openLobby: boolean | null;
   difficulty: Difficulty | null;
+  timeBetweenRounds: number | null;
 
   constructor(
     gameId: number | null,
@@ -34,7 +35,8 @@ class GameGetDTO {
     selectedRegions: RegionEnum[] | null,
     categoryStack: CategoryStack | null,
     openLobby: boolean | null,
-    difficulty: Difficulty | null
+    difficulty: Difficulty | null,
+    timeBetweenRounds: number | null
   ) {
     this.gameId = gameId;
     this.lobbyCreator = lobbyCreator;
@@ -50,6 +52,7 @@ class GameGetDTO {
     this.categoryStack = categoryStack;
     this.openLobby = openLobby;
     this.difficulty = difficulty;
+    this.timeBetweenRounds = timeBetweenRounds;
   }
 }
 

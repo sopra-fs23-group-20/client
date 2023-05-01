@@ -52,6 +52,7 @@ const GameCreation: React.FC<Props> = (props) => {
   const [difficulty, setDifficulty] = useState<Difficulty | null>(
     Difficulty.EASY
   );
+  const [timeBetweenRounds, setTimeBetweenRounds] = useState(7);
 
   const { showAlert } = useAlert();
 
@@ -174,7 +175,8 @@ const GameCreation: React.FC<Props> = (props) => {
             ),
             selectedRegions,
             openLobby,
-            difficulty
+            difficulty,
+            timeBetweenRounds
           );
           console.log("Game Post DTO: ", gamePostDTO);
           const response = await api.post("/games", gamePostDTO);
@@ -261,6 +263,12 @@ const GameCreation: React.FC<Props> = (props) => {
     }
 
     setNumberOfRounds(newValue);
+  };
+
+  const handleTimeBetweenRoundsChange = (event: { target: { value: any } }) => {
+    let newValue = event.target.value;
+
+    setTimeBetweenRounds(newValue);
   };
 
   const handleOpenLobbyChange = (
@@ -378,6 +386,56 @@ const GameCreation: React.FC<Props> = (props) => {
                           : 10,
                     }}
                   />
+                </FormControl>
+              </Grid>
+
+              <Grid item xs={6}>
+                <FormControl sx={{ width: "100%" }}>
+                  <TextField
+                    id="time-between-rounds"
+                    label="Time Between Rounds"
+                    type="number"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    value={timeBetweenRounds}
+                    onChange={handleTimeBetweenRoundsChange}
+                    inputProps={{
+                      min: 1,
+                      max:
+                        selectedRegions.length === 1 &&
+                        selectedRegions.includes(RegionEnum.ANTARCTICA)
+                          ? 2
+                          : 10,
+                    }}
+                  />
+                </FormControl>
+              </Grid>
+
+              <Grid item xs={6}>
+                <FormControl variant="outlined" fullWidth>
+                  <InputLabel id="difficulty-select-label">
+                    Difficulty
+                  </InputLabel>
+                  <Select
+                    labelId="difficulty-select-label"
+                    id="difficulty-select"
+                    value={difficulty}
+                    onChange={(event) => {
+                      setDifficulty(stringToDifficulty(event.target.value));
+                    }}
+                    label="Difficulty"
+                  >
+                    <MenuItem value={Difficulty.EASY}>
+                      {Difficulty.EASY}
+                    </MenuItem>
+                    <MenuItem value={Difficulty.MEDIUM}>
+                      {Difficulty.MEDIUM}
+                    </MenuItem>
+                    <MenuItem value={Difficulty.HARD}>
+                      {Difficulty.HARD}
+                    </MenuItem>
+                  </Select>
                 </FormControl>
               </Grid>
             </Grid>
@@ -594,32 +652,6 @@ const GameCreation: React.FC<Props> = (props) => {
                       <InfoIcon />
                     </IconButton>
                   </Tooltip>
-                </Grid>
-                <Grid item xs>
-                  <FormControl variant="outlined" fullWidth>
-                    <InputLabel id="difficulty-select-label">
-                      Difficulty
-                    </InputLabel>
-                    <Select
-                      labelId="difficulty-select-label"
-                      id="difficulty-select"
-                      value={difficulty}
-                      onChange={(event) => {
-                        setDifficulty(stringToDifficulty(event.target.value));
-                      }}
-                      label="Difficulty"
-                    >
-                      <MenuItem value={Difficulty.EASY}>
-                        {Difficulty.EASY}
-                      </MenuItem>
-                      <MenuItem value={Difficulty.MEDIUM}>
-                        {Difficulty.MEDIUM}
-                      </MenuItem>
-                      <MenuItem value={Difficulty.HARD}>
-                        {Difficulty.HARD}
-                      </MenuItem>
-                    </Select>
-                  </FormControl>
                 </Grid>
               </Grid>
             </div>

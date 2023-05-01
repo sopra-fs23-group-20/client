@@ -208,7 +208,7 @@ const GameLobby: React.FC = () => {
       showAlert("Game cannot be joined since it has already started.", "error");
       navigate("/");
     }
-  }, [gameGetDTO]);
+  }, []);
 
   useEffect(() => {
     const websocketUrl = `${getDomain()}/socket`;

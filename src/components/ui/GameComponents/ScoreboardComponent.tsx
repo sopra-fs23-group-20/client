@@ -2,14 +2,28 @@ import WinnerOverviewComponent from "./WinnerOverviewComponent";
 import User from "../../../models/User";
 import GameGetDTO from "../../../models/GameGetDTO";
 import React, { useEffect, useState } from "react";
-import { Typography } from "@mui/material";
+import { Box, LinearProgress, Typography } from "@mui/material";
 import { api } from "../../../helpers/api";
 import GameUser from "../../../models/GameUser";
 import { convertToGameStateEnum } from "../../../helpers/convertTypes";
 import GameState from "../../../models/constant/GameState";
 import { Link } from "react-router-dom";
 import Guess from "../../../models/Guess";
+import CircularProgressWithLabel from "helpers/CircularProgressWithLabel";
 
+function getColorForProgress(progress: number) {
+  const red = Math.round(255 * (1 - progress));
+  const green = Math.round(255 * progress);
+  return `rgb(${red}, ${green}, 0)`;
+}
+
+const normalise = (
+  value: number | null | undefined,
+  max: number | null | undefined
+) => {
+  if (value == null || max == null) return 0;
+  return (value * 100) / max;
+};
 interface Props {
   currentUser: User | null;
   gameId: string | undefined;
@@ -22,6 +36,16 @@ const ScoreboardComponent: React.FC<Props> = (props) => {
   const { isGameEnded, currentUser, gameId, gameGetDTO, lastGuess } = props;
   const [currentCountry, setCurrentCountry] = useState<string | null>(null);
   const [winnerUpdated, setWinnerUpdated] = useState(false);
+  const timeProgress =
+    normalise(gameGetDTO?.remainingTime, gameGetDTO?.timeBetweenRounds) / 100;
+  const progressBarGradient = getColorForProgress(timeProgress);
+  let currentRound = 0;
+  if (
+    gameGetDTO?.numberOfRounds != null &&
+    gameGetDTO.remainingRounds != null
+  ) {
+    currentRound = gameGetDTO?.numberOfRounds - gameGetDTO?.remainingRounds;
+  }
 
   useEffect(() => {
     const getCurrentCountry = async () => {
@@ -170,10 +194,66 @@ const ScoreboardComponent: React.FC<Props> = (props) => {
         </Typography>
       )}
       {!isGameEnded && (
-        <Typography variant="h4" sx={{ marginTop: 2 }}>
-          Next round starts in:{" "}
-          {gameGetDTO ? gameGetDTO.remainingTime : "undefined"}
-        </Typography>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "stretch",
+            width: "100%",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end",
+              alignItems: "flex-end",
+              width: "100%",
+            }}
+          >
+            {gameGetDTO?.remainingTime != null ? (
+              <Typography variant="h4">
+                Time until next Round: {gameGetDTO.remainingTime.toString()}
+              </Typography>
+            ) : (
+              <div></div>
+            )}
+          </Box>
+
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              width: "100%",
+            }}
+          >
+            <CircularProgressWithLabel
+              value={normalise(currentRound, gameGetDTO?.numberOfRounds)}
+              currentRound={currentRound}
+              numberOfRounds={gameGetDTO?.numberOfRounds}
+            />
+            <LinearProgress
+              variant="determinate"
+              value={timeProgress * 100}
+              sx={{
+                flexGrow: 1,
+                marginLeft: "2%",
+              }}
+              style={{
+                background: progressBarGradient,
+              }}
+            />
+          </Box>
+
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "flex-end",
+              alignItems: "flex-end",
+              width: "100%",
+            }}
+          ></Box>
+        </Box>
       )}
     </>
   );
@@ -182,18 +262,7 @@ const ScoreboardComponent: React.FC<Props> = (props) => {
     if (isGameEnded) {
       return undefined;
     }
-    return (
-      <Typography variant="h4" sx={{ marginTop: 5 }}>
-        Currently on Round:{" "}
-        {gameGetDTO?.numberOfRounds != null &&
-        gameGetDTO?.remainingRounds != null
-          ? gameGetDTO.numberOfRounds -
-            gameGetDTO.remainingRounds +
-            "/" +
-            gameGetDTO.numberOfRounds
-          : undefined}
-      </Typography>
-    );
+    return undefined;
   };
 
   return (

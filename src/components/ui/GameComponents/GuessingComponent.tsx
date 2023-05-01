@@ -30,15 +30,6 @@ function getColorForProgress(progress: number) {
   return `rgb(${red}, ${green}, 0)`;
 }
 
-function getGradientForProgress(progress: number) {
-  const red = Math.round(255 * (1 - progress));
-  const green = Math.round(255 * progress);
-  const remaining = 1 - progress;
-  return `linear-gradient(to right, rgb(${red}, ${green}, 0) ${
-    progress * 100
-  }%, rgba(${red}, ${green}, 0, 0) ${remaining * 100}%)`;
-}
-
 const normalise = (
   value: number | null | undefined,
   max: number | null | undefined
@@ -53,9 +44,7 @@ const GuessingComponent: React.FC<Props> = (props) => {
   const currentUserId = props.currentUserId;
   const { showAlert } = useAlert();
   const setLastGuess = props.setLastGuess;
-  const progressBarColor = getColorForProgress(
-    normalise(game?.remainingTime, game?.roundDuration) / 100
-  );
+
   const progressBarGradient = getColorForProgress(
     normalise(game?.remainingTime, game?.roundDuration) / 100
   );
@@ -162,7 +151,7 @@ const GuessingComponent: React.FC<Props> = (props) => {
             width: "100%",
           }}
         >
-          {game?.remainingTime ? (
+          {game?.remainingTime != null ? (
             <Typography variant="h4">
               Remaining Time: {game.remainingTime.toString()}
             </Typography>
@@ -205,7 +194,7 @@ const GuessingComponent: React.FC<Props> = (props) => {
             width: "100%",
           }}
         >
-          {game?.remainingRoundPoints ? (
+          {game?.remainingRoundPoints != null ? (
             <Typography variant="h4">
               Achievable Points: {game.remainingRoundPoints.toString()}
             </Typography>

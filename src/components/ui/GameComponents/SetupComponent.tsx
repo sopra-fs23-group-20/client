@@ -11,7 +11,9 @@ import {
   Switch,
   Stack,
   Chip,
-  Avatar, DialogActions,
+  Avatar,
+  DialogActions,
+  Grid,
 } from "@mui/material";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { AxiosError } from "axios";
@@ -116,19 +118,19 @@ const GuessingComponent: React.FC<Props> = (props) => {
     >
       <Typography variant="h2">Game Lobby</Typography>
       <DialogActions
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
       >
         <Button
-            sx={{ mb: 4 }}
-            variant="outlined"
-            size="small"
-            color="error"
-            startIcon={<KeyboardArrowLeftIcon />}
-            onClick={() => navigate("/game/")}
+          sx={{ mb: 4 }}
+          variant="outlined"
+          size="small"
+          color="error"
+          startIcon={<KeyboardArrowLeftIcon />}
+          onClick={() => navigate("/game/")}
         >
           Back to Dashboard
         </Button>
@@ -336,57 +338,86 @@ const GuessingComponent: React.FC<Props> = (props) => {
                 <Typography variant="h5">Game Settings</Typography>
               </AccordionSummary>
               <AccordionDetails>
-                <FormGroup>
-                  <TextField
-                    id="round-seconds"
-                    label="Round Seconds"
-                    type="number"
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    value={game?.roundDuration}
-                    disabled={true}
-                  />
-                  <TextField
-                    id="number-of-rounds"
-                    label="Number of Rounds"
-                    type="number"
-                    sx={{ marginTop: 3 }}
-                    value={game?.numberOfRounds}
-                    disabled={true}
-                  />
-                  <TextField
-                    id="difficulty-level"
-                    label="Difficulty Level"
-                    sx={{ marginTop: 3 }}
-                    value={game?.difficulty?.toString()}
-                    disabled={true}
-                  />
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={game?.openLobby ?? false}
+                <Grid item container xs={12} spacing={2} sx={{ width: "50%" }}>
+                  <Grid item xs={6}>
+                    <FormControl>
+                      <TextField
+                        id="round-seconds"
+                        label="Round Seconds"
+                        type="number"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        value={game?.roundDuration}
                         disabled={true}
-                        color="primary"
                       />
-                    }
-                    label="Open Lobby"
-                  />
-                  <FormGroup>
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={
-                            game?.categoryStack?.randomizedHints ?? false
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <FormControl>
+                      <TextField
+                        id="number-of-rounds"
+                        label="Number of Rounds"
+                        type="number"
+                        value={game?.numberOfRounds}
+                        disabled={true}
+                      />
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <FormControl>
+                      <TextField
+                        id="time-between-rounds"
+                        label="Time Between Rounds"
+                        type="number"
+                        value={game?.timeBetweenRounds}
+                        disabled={true}
+                      />
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <FormControl>
+                      <TextField
+                        id="difficulty-level"
+                        label="Difficulty Level"
+                        value={game?.difficulty?.toString()}
+                        disabled={true}
+                      />
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <FormControl>
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            checked={game?.openLobby ?? false}
+                            disabled={true}
+                            color="primary"
+                          />
+                        }
+                        label="Open Lobby"
+                      />
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <FormControl>
+                      <FormGroup>
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              checked={
+                                game?.categoryStack?.randomizedHints ?? false
+                              }
+                              disabled={true}
+                              color="primary"
+                            />
                           }
-                          disabled={true}
-                          color="primary"
+                          label="Randomized Hints"
                         />
-                      }
-                      label="Randomized Hints"
-                    />
-                  </FormGroup>
-                </FormGroup>
+                      </FormGroup>
+                    </FormControl>
+                  </Grid>
+                </Grid>
 
                 <FormControl component="fieldset" sx={{ marginTop: "1rem" }}>
                   <Typography sx={{ marginBottom: 2 }} variant="h4">
@@ -450,9 +481,7 @@ const GuessingComponent: React.FC<Props> = (props) => {
         </DialogContent>
       </FormControl>
       {parseInt(userId ?? "0") === game?.lobbyCreator?.userId ? (
-        <Button
-            sx={{ mb: 4 }}
-            variant="outlined" onClick={() => startGame()}>
+        <Button sx={{ mb: 4 }} variant="outlined" onClick={() => startGame()}>
           Start Game
         </Button>
       ) : (
