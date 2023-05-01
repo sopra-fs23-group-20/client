@@ -50,7 +50,7 @@ const GameCreation: React.FC<Props> = (props) => {
   const [numberOfRounds, setNumberOfRounds] = useState(5);
   const [openLobby, setOpenLobby] = useState(true);
   const [difficulty, setDifficulty] = useState<Difficulty | null>(
-    Difficulty.EASY
+    Difficulty.MEDIUM
   );
   const [timeBetweenRounds, setTimeBetweenRounds] = useState(7);
 
