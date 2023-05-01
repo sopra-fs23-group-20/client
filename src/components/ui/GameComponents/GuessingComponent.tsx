@@ -3,8 +3,10 @@ import { api } from "helpers/api";
 import {
   Box,
   Button,
+  CircularProgress,
   Container,
   Divider,
+  LinearProgress,
   TextField,
   Typography,
 } from "@mui/material";
@@ -13,13 +15,37 @@ import Autocomplete from "@mui/material/Autocomplete";
 import HintContainer from "../HintContainer";
 import GameGetDTO from "models/GameGetDTO";
 import { useAlert } from "helpers/AlertContext";
+import CircularProgressWithLabel from "helpers/CircularProgressWithLabel";
 
 interface Props {
   gameGetDTO: GameGetDTO | null;
   allCountries: Array<string>;
   currentUserId: string | null;
-  setLastGuess: Function
+  setLastGuess: Function;
 }
+
+function getColorForProgress(progress: number) {
+  const red = Math.round(255 * (1 - progress));
+  const green = Math.round(255 * progress);
+  return `rgb(${red}, ${green}, 0)`;
+}
+
+function getGradientForProgress(progress: number) {
+  const red = Math.round(255 * (1 - progress));
+  const green = Math.round(255 * progress);
+  const remaining = 1 - progress;
+  return `linear-gradient(to right, rgb(${red}, ${green}, 0) ${
+    progress * 100
+  }%, rgba(${red}, ${green}, 0, 0) ${remaining * 100}%)`;
+}
+
+const normalise = (
+  value: number | null | undefined,
+  max: number | null | undefined
+) => {
+  if (value == null || max == null) return 0;
+  return (value * 100) / max;
+};
 
 const GuessingComponent: React.FC<Props> = (props) => {
   const allCountries = props.allCountries;
@@ -27,17 +53,27 @@ const GuessingComponent: React.FC<Props> = (props) => {
   const currentUserId = props.currentUserId;
   const { showAlert } = useAlert();
   const setLastGuess = props.setLastGuess;
+  const progressBarColor = getColorForProgress(
+    normalise(game?.remainingTime, game?.roundDuration) / 100
+  );
+  const progressBarGradient = getColorForProgress(
+    normalise(game?.remainingTime, game?.roundDuration) / 100
+  );
 
   const [valueEntered, setValueEntered] = useState<string | null>(null);
+  let currentRound = 0;
+  if (game?.numberOfRounds != null && game.remainingRounds != null) {
+    currentRound = game?.numberOfRounds - game?.remainingRounds;
+  }
 
   async function submitGuess(): Promise<void> {
     try {
       console.log("Submitting guess", valueEntered);
-      const guess ={
-          userId: currentUserId,
-          guess: valueEntered,
+      const guess = {
+        userId: currentUserId,
+        guess: valueEntered,
       };
-      setLastGuess(guess)
+      setLastGuess(guess);
       const request = await api.post(`/games/${game?.gameId}/guesses`, guess);
       const requestBody = request.data;
 
@@ -109,47 +145,74 @@ const GuessingComponent: React.FC<Props> = (props) => {
           Submit
         </Button>
       </Box>
+
       <Box
         sx={{
           display: "flex",
           flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
+          alignItems: "stretch",
+          width: "100%",
         }}
       >
-        <Typography variant="h3">
-          Round:{" "}
-          {game?.numberOfRounds != null && game?.remainingRounds != null
-            ? game.numberOfRounds -
-              game.remainingRounds +
-              "/" +
-              game.numberOfRounds
-            : "undefined"}
-        </Typography>
-      </Box>
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          marginTop: "5%",
-          justifyContent: "space-between",
-        }}
-      >
-        {game?.remainingTime ? (
-          <Typography variant="h4">
-            Time Left: {game.remainingTime.toString()}{" "}
-          </Typography>
-        ) : (
-          <div></div>
-        )}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "flex-end",
+            alignItems: "flex-end",
+            width: "100%",
+          }}
+        >
+          {game?.remainingTime ? (
+            <Typography variant="h4">
+              Remaining Time: {game.remainingTime.toString()}
+            </Typography>
+          ) : (
+            <div></div>
+          )}
+        </Box>
 
-        {game?.remainingRoundPoints ? (
-          <Typography variant="h4">
-            Achievable Points: {game.remainingRoundPoints.toString()}{" "}
-          </Typography>
-        ) : (
-          <div></div>
-        )}
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            width: "100%",
+          }}
+        >
+          <CircularProgressWithLabel
+            value={normalise(currentRound, game?.numberOfRounds)}
+            currentRound={currentRound}
+            numberOfRounds={game?.numberOfRounds}
+          />
+          <LinearProgress
+            variant="determinate"
+            value={normalise(game?.remainingTime, game?.roundDuration)}
+            sx={{
+              flexGrow: 1,
+              marginLeft: "2%",
+            }}
+            style={{
+              background: progressBarGradient,
+            }}
+          />
+        </Box>
+
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "flex-end",
+            alignItems: "flex-end",
+            width: "100%",
+          }}
+        >
+          {game?.remainingRoundPoints ? (
+            <Typography variant="h4">
+              Achievable Points: {game.remainingRoundPoints.toString()}
+            </Typography>
+          ) : (
+            <div></div>
+          )}
+        </Box>
       </Box>
       <Divider sx={{ marginTop: "5%" }}> Current Hint:</Divider>
       <Box sx={{ height: "50%", width: "100%", marginTop: "5%" }}>
