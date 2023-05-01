@@ -159,15 +159,16 @@ const ScoreboardComponent: React.FC<Props> = (props) => {
 
   const renderAdditionalInformation = () => (
     <>
-      <Typography variant="h4" sx={{ marginTop: 2 }}>
-        The correct country was: {currentCountry}
-      </Typography>
-      {lastGuess !== null && (<Typography variant="h4" sx={{marginTop: 2}}>
-        Your last guess was: {lastGuess.guess}
-      </Typography>)}
-      <Typography variant="h4" sx={{ marginTop: 2 }}>
-        The correct country was: {currentCountry}
-      </Typography>
+      {isGameEnded && (
+        <Typography variant="h4" sx={{ marginTop: 2 }}>
+          The correct country was: {currentCountry}
+        </Typography>
+      )}
+      {lastGuess !== null && (
+        <Typography variant="h4" sx={{ marginTop: 2 }}>
+          Your last guess was: {lastGuess.guess}
+        </Typography>
+      )}
       {!isGameEnded && (
         <Typography variant="h4" sx={{ marginTop: 2 }}>
           Next round starts in:{" "}

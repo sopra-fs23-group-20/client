@@ -22,6 +22,7 @@ import WebsocketPacket from "models/WebsocketPacket";
 import { getDomain } from "helpers/getDomain";
 import { useAlert } from "helpers/AlertContext";
 import Guess from "../../models/Guess";
+import GameUser from "models/GameUser";
 
 const GameLobby: React.FC = () => {
   const navigate = useNavigate();
@@ -43,6 +44,21 @@ const GameLobby: React.FC = () => {
   useEffect(() => {
     usePollingRef.current = usePolling;
   }, [usePolling]);
+
+  function isUserInGame(
+    userId: string | null,
+    players: Set<GameUser> | null
+  ): boolean {
+    if (!userId || !players) return false;
+    const parsedUserId = parseInt(userId, 10);
+
+    for (const player of players) {
+      if (player.userId === parsedUserId) {
+        return true;
+      }
+    }
+    return false;
+  }
 
   useEffect(() => {
     async function PollingfetchGame(): Promise<void> {
@@ -125,13 +141,26 @@ const GameLobby: React.FC = () => {
         console.error(error);
       }
     }
-
     async function joinLobby(): Promise<void> {
       try {
-        let id = localStorage.getItem("userId");
-        console.log("Joining lobby");
-        const response = await api.post(`/games/${gameId}/join`, currentUserId);
-        console.log("Joined Lobby");
+        if (
+          gameGetDTO?.currentState === GameState.GUESSING &&
+          !isUserInGame(currentUserId, gameGetDTO.participants)
+        ) {
+          showAlert(
+            "Game cannot be joined since it has already started.",
+            "error"
+          );
+          navigate("/");
+        } else {
+          let id = localStorage.getItem("userId");
+          console.log("Joining lobby");
+          const response = await api.post(
+            `/games/${gameId}/join`,
+            currentUserId
+          );
+          console.log("Joined Lobby");
+        }
       } catch (error) {
         console.error(error);
       }
@@ -140,8 +169,46 @@ const GameLobby: React.FC = () => {
     fetchGame();
     fetchCountries();
     fetchUser();
-    joinLobby();
   }, []);
+
+  useEffect(() => {
+    // (rest of the useEffect code)
+    async function joinLobby(): Promise<void> {
+      try {
+        if (
+          gameGetDTO?.currentState === GameState.GUESSING &&
+          !isUserInGame(currentUserId, gameGetDTO.participants)
+        ) {
+          showAlert(
+            "Game cannot be joined since it has already started.",
+            "error"
+          );
+          navigate("/");
+        } else {
+          let id = localStorage.getItem("userId");
+          console.log("Joining lobby");
+          const response = await api.post(
+            `/games/${gameId}/join`,
+            currentUserId
+          );
+          console.log("Joined Lobby");
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    if (gameGetDTO && gameGetDTO.currentState !== GameState.GUESSING) {
+      joinLobby();
+    } else if (
+      gameGetDTO &&
+      gameGetDTO.currentState === GameState.GUESSING &&
+      !isUserInGame(currentUserId, gameGetDTO.participants)
+    ) {
+      showAlert("Game cannot be joined since it has already started.", "error");
+      navigate("/");
+    }
+  }, [gameGetDTO]);
 
   useEffect(() => {
     const websocketUrl = `${getDomain()}/socket`;
@@ -213,7 +280,7 @@ const GameLobby: React.FC = () => {
             gameGetDTO: gameGetDTO,
             allCountries: allCountries,
             currentUserId: currentUserId,
-            setLastGuess: setLastGuess
+            setLastGuess: setLastGuess,
           }}
         />
       );
@@ -226,7 +293,7 @@ const GameLobby: React.FC = () => {
             gameId: gameId,
             gameGetDTO: gameGetDTO,
             isGameEnded: false,
-            lastGuess: lastGuess
+            lastGuess: lastGuess,
           }}
         />
       );
@@ -238,7 +305,7 @@ const GameLobby: React.FC = () => {
             currentUser: currentUser,
             gameId: gameId,
             gameGetDTO: gameGetDTO,
-            lastGuess: lastGuess
+            lastGuess: lastGuess,
           }}
         />
       );
