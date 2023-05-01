@@ -12,9 +12,10 @@ const currentUsedTheme = createTheme({
       contrastText: '#000',
     },
     background: {
-      default: 'linear-gradient(180deg, #0d0d0d 0%, #2e2e2e 100%)',
+      default: `linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(${require('../components/views/images/wallpaper1.png')})`,
       paper: '#1f1f1f',
     },
+
     text: {
       primary: '#e0e0e0',
       secondary: '#b3b3b3',
