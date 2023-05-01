@@ -9,6 +9,7 @@ import GameCreation from "components/views/GameCreation";
 import CountriesOverview from "components/views/CountriesOverview";
 import Rules from "components/views/Rules";
 import LeaderboardComponent from "../../ui/GameComponents/LeaderboardComponent";
+import Friends from "components/views/Friends";
 
 interface GameRouterProps {
   base: string;
@@ -34,6 +35,7 @@ const GameRouter: FC<GameRouterProps> = ({ base, onTokenChange }) => {
         <Route path="countries" element={<CountriesOverview />} />
         <Route path="leaderboard" element={<LeaderboardComponent />} />
         <Route path="rules" element={<Rules />} />
+        <Route path=":userId/friends" element={<Friends />} />
       </Routes>
     </div>
   );
