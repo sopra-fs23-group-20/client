@@ -178,6 +178,7 @@ const GameLobby: React.FC = () => {
     fetchGame();
     fetchCountries();
     fetchUser();
+    //joinLobby();
   }, []);
 
   useEffect(() => {
@@ -217,7 +218,7 @@ const GameLobby: React.FC = () => {
       showAlert("Game cannot be joined since it has already started.", "error");
       navigate("/");
     }
-  }, []);
+  }, [gameGetDTO]);
 
   useEffect(() => {
     const websocketUrl = `${getDomain()}/socket`;
