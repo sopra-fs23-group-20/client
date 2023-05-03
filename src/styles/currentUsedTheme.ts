@@ -1,12 +1,6 @@
-import { createTheme } from "@mui/material/styles";
+import { createTheme, responsiveFontSizes } from "@mui/material/styles";
 
-const randomPosition = () => {
-  const x = Math.floor(Math.random() * 100);
-  const y = Math.floor(Math.random() * 100);
-  return `${x}% ${y}%`;
-};
-
-const currentUsedTheme = createTheme({
+let currentUsedTheme = createTheme({
   palette: {
     mode: "dark",
     primary: {
@@ -18,10 +12,9 @@ const currentUsedTheme = createTheme({
       contrastText: "#000",
     },
     background: {
-      default: `linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(${require("../components/views/images/wallpaper1.png")}) fixed ${randomPosition()}`,
+      default: "linear-gradient(180deg, #0d0d0d 0%, #2e2e2e 100%)",
       paper: "#1f1f1f",
     },
-
     text: {
       primary: "#e0e0e0",
       secondary: "#b3b3b3",
@@ -107,5 +100,7 @@ const currentUsedTheme = createTheme({
     },
   },
 });
+
+currentUsedTheme = responsiveFontSizes(currentUsedTheme);
 
 export default currentUsedTheme;

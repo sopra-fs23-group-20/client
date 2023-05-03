@@ -41,6 +41,7 @@ const GameLobby: React.FC = () => {
   const currentUserId = localStorage.getItem("userId");
 
   const { showAlert } = useAlert();
+  console.log("GameGetDTO: ", gameGetDTO);
 
   useEffect(() => {
     usePollingRef.current = usePolling;
@@ -238,13 +239,50 @@ const GameLobby: React.FC = () => {
     };
   }, []);
 
+  useEffect(() => {
+    function playAgain(): void {
+      if (!currentUserId || gameGetDTO?.participants == null) {
+        return;
+      }
+      const userIdAsNumber = parseInt(currentUserId, 10);
+      console.log("userIdAsNumber: ", userIdAsNumber);
+      let userWantsToPlayAgain = false;
+
+      gameGetDTO.participants.forEach((participant: GameUser) => {
+        console.log("participant: ", participant.userPlayingAgain);
+        if (participant.userPlayingAgain) {
+          console.log("participant is playing again");
+        }
+        if (
+          participant.userId === userIdAsNumber &&
+          participant.userPlayingAgain
+        ) {
+          userWantsToPlayAgain = true;
+        }
+      });
+
+      if (userWantsToPlayAgain) {
+        console.log("In function playAgain");
+        navigate(`/game/lobby/${gameGetDTO.nextGameId}`);
+        window.location.reload();
+      } else {
+        console.log("User does not want to play again");
+      }
+    }
+    if (
+      gameGetDTO?.currentState == GameState.ENDED &&
+      gameGetDTO?.nextGameId != null
+    ) {
+      playAgain();
+    }
+  }, [gameGetDTO]);
+
   function handleGameUpdate(message: IMessage): void {
     const messageObject = JSON.parse(message.body);
     const websocketPacket = new WebsocketPacket(
       messageObject.type,
       messageObject.payload
     );
-
     setGameGetDTO((prevGameGetDTO) => {
       const newGameGetDTO = updateGameGetDTO(prevGameGetDTO, websocketPacket);
       return newGameGetDTO;
