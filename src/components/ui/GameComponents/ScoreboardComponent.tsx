@@ -1,13 +1,11 @@
 import WinnerOverviewComponent from "./WinnerOverviewComponent";
 import User from "../../../models/User";
 import GameGetDTO from "../../../models/GameGetDTO";
-import React, { useEffect, useState } from "react";
-import { Typography } from "@mui/material";
+import React, { useEffect, useState, ReactNode } from "react";
+import { Button, Typography } from "@mui/material";
 import { api } from "../../../helpers/api";
 import GameUser from "../../../models/GameUser";
-import { convertToGameStateEnum } from "../../../helpers/convertTypes";
-import GameState from "../../../models/constant/GameState";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Guess from "../../../models/Guess";
 
 interface Props {
@@ -16,12 +14,80 @@ interface Props {
   gameGetDTO: GameGetDTO | null;
   isGameEnded: boolean;
   lastGuess: Guess | null;
+  children?: ReactNode;
 }
 
 const ScoreboardComponent: React.FC<Props> = (props) => {
   const { isGameEnded, currentUser, gameId, gameGetDTO, lastGuess } = props;
   const [currentCountry, setCurrentCountry] = useState<string | null>(null);
   const [winnerUpdated, setWinnerUpdated] = useState(false);
+  const navigate = useNavigate();
+
+  const informServerLeave = async (isLobbyCreator: boolean) => {
+    try {
+      const response = await api.put(
+        `/games/${gameId}/action?action=leave`,
+        { isLobbyCreator },
+        {
+          headers: { Authorization: localStorage.getItem("token")! },
+        }
+      );
+
+      if (response.data.gameDeleted) {
+        navigate("/");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handlePlayAgain = async () => {
+    try {
+      if (
+        currentUser &&
+        gameGetDTO &&
+        gameGetDTO.lobbyCreator &&
+        gameGetDTO.lobbyCreator.userId &&
+        currentUser.id === gameGetDTO.lobbyCreator.userId
+      ) {
+        await api.put(
+          `/games/${gameId}/action?action=restart&userId=${currentUser.id}`,
+          { userId: currentUser.id },
+          {
+            headers: { Authorization: localStorage.getItem("token")! },
+          }
+        );
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const renderButtons = () => {
+    if (isGameEnded) {
+      return (
+        <div className="ButtonContainer">
+          <Button onClick={handlePlayAgain}>Play Again</Button>
+          <Button onClick={handleLeave}>Leave</Button>
+        </div>
+      );
+    }
+  };
+
+  const handleLeave = async () => {
+    try {
+      const isLobbyCreator = !!(
+        currentUser &&
+        gameGetDTO &&
+        gameGetDTO.lobbyCreator &&
+        currentUser.id === gameGetDTO.lobbyCreator.userId
+      );
+      await informServerLeave(isLobbyCreator);
+      navigate("/");
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
     const getCurrentCountry = async () => {
@@ -209,7 +275,9 @@ const ScoreboardComponent: React.FC<Props> = (props) => {
       renderInformationOnBottom={renderInformationOnBottom}
       idAttributeName={"userId"}
       columnHeaderText={"Points"}
-    />
+    >
+      {renderButtons()}
+    </WinnerOverviewComponent>
   );
 };
 
