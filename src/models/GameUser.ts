@@ -8,7 +8,11 @@ interface UserData {
   hasAlreadyGuessed: boolean | null;
 }
 
-class GameUser {
+interface GameUserIndexable {
+  [key: string]: number | string | GameState | boolean | null;
+}
+
+class GameUser implements GameUserIndexable {
   userId: number | null;
   username: string | null;
   gamePoints: number | null;
@@ -30,6 +34,7 @@ class GameUser {
     this.currentState = data.currentState ?? null;
     this.hasAlreadyGuessed = data.hasAlreadyGuessed ?? null;
   }
+  [key: string]: string | number | boolean | null;
 }
 
 export default GameUser;
