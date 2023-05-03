@@ -68,7 +68,6 @@ const GameLobby: React.FC = () => {
         console.log("The response is: ", response);
         setAllCountries(response.data);
       } catch (error: AxiosError | any) {
-        //showAlert(error.response.data.message, "error");
         navigate("/game");
         console.error(error);
       }
@@ -111,7 +110,6 @@ const GameLobby: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    // (rest of the useEffect code)
     async function joinLobby(): Promise<void> {
       try {
         if (
