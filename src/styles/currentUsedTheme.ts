@@ -1,5 +1,11 @@
 import { createTheme, responsiveFontSizes } from "@mui/material/styles";
 
+const randomPosition = () => {
+  const x = Math.floor(Math.random() * 100);
+  const y = Math.floor(Math.random() * 100);
+  return `${x}% ${y}%`;
+};
+
 let currentUsedTheme = createTheme({
   palette: {
     mode: "dark",
@@ -12,7 +18,7 @@ let currentUsedTheme = createTheme({
       contrastText: "#000",
     },
     background: {
-      default: "linear-gradient(180deg, #0d0d0d 0%, #2e2e2e 100%)",
+      default: `linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(${require("../components/views/images/wallpaper1.png")}) fixed ${randomPosition()}`,
       paper: "#1f1f1f",
     },
     text: {

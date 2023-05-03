@@ -1,4 +1,7 @@
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   Avatar,
   Box,
   Button,
@@ -8,7 +11,7 @@ import {
   LinearProgress,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ScoreboardComponent from "./ScoreboardComponent";
 import User from "../../../models/User";
@@ -21,6 +24,7 @@ import getColorByTimeLeft from "helpers/getColorByTimeLeft";
 import GameUser from "models/GameUser";
 import GameState from "models/constant/GameState";
 import { useAlert } from "helpers/AlertContext";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 interface Props {
   currentUser: User | null;
@@ -46,6 +50,10 @@ const EndedComponent: React.FC<Props> = (props) => {
   const userId = localStorage.getItem("userId");
   const timeProgress = normalise(gameGetDTO?.remainingTime, 10) / 100;
   const { showAlert } = useAlert();
+  const [accordion1Expanded, setAccordion1Expanded] = useState(true);
+  const [accordion2Expanded, setAccordion2Expanded] = useState(true);
+  const [accordion3Expanded, setAccordion3Expanded] = useState(true);
+
   let currentRound = 0;
   if (
     gameGetDTO?.numberOfRounds != null &&
@@ -140,135 +148,149 @@ const EndedComponent: React.FC<Props> = (props) => {
       >
         <Button
           variant="outlined"
-          size="small"
+          size="large"
           color="error"
           startIcon={<KeyboardArrowLeftIcon />}
           onClick={() => navigate("/game/")}
         >
           Back to Dashboard
         </Button>
-      </Box>
 
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "stretch",
-          width: "100%",
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "flex-end",
-            alignItems: "flex-end",
-            width: "100%",
-            marginTop: "2%",
-          }}
-        >
-          {gameGetDTO?.remainingTime != null ? (
-            <Typography variant="h4">
-              Time left to restart game: {gameGetDTO.remainingTime.toString()}
-            </Typography>
-          ) : (
-            <div></div>
-          )}
-        </Box>
-
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            width: "100%",
-          }}
-        >
-          <LinearProgress
-            variant="determinate"
-            value={timeProgress * 100}
-            color={getColorByTimeLeft(
-              gameGetDTO.remainingTime,
-              gameGetDTO.timeBetweenRounds
-            )}
-            sx={{
-              flexGrow: 1,
-              marginLeft: "2%",
-            }}
-          />
-        </Box>
-      </Box>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100%",
-        }}
-      >
         <Button
-          sx={{ marginTop: "3%", alignContent: "center" }}
+          size="large"
+          sx={{ marginLeft: "3%", alignContent: "center" }}
           variant="outlined"
           onClick={playAgain}
         >
           Restart Game
         </Button>
       </Box>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100%",
-          marginTop: "2%",
-        }}
+      <Accordion
+        sx={{ marginTop: "2%", borderRadius: "15px" }}
+        expanded={accordion1Expanded}
+        onChange={() => setAccordion1Expanded(!accordion1Expanded)}
       >
-        <Typography variant="h4">Players playing again:</Typography>
-        <ul>
-          {playersPlayingAgain.map((data, index) => (
-            <Chip
-              avatar={
-                <Avatar
-                  alt="Natacha"
-                  src={
-                    "https://api.dicebear.com/6.x/pixel-art/svg?seed=" +
-                    data.username
-                  }
-                />
-              }
-              key={data.userId}
-              label={data.username}
-            />
-          ))}
-        </ul>
-      </Box>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1a-content"
+          id="panel1a-header"
+        >
+          <Typography variant="h5">Time Left to Restart Game</Typography>{" "}
+        </AccordionSummary>
+        <AccordionDetails>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "stretch",
+              width: "100%",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "flex-end",
+                alignItems: "flex-end",
+                width: "100%",
+              }}
+            >
+              {gameGetDTO?.remainingTime != null ? (
+                <Typography variant="h4">
+                  Time left to restart game:{" "}
+                  {gameGetDTO.remainingTime.toString()}
+                </Typography>
+              ) : (
+                <div></div>
+              )}
+            </Box>
 
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100%",
-          marginTop: "2%",
-        }}
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                width: "100%",
+              }}
+            >
+              <LinearProgress
+                variant="determinate"
+                value={timeProgress * 100}
+                color={getColorByTimeLeft(
+                  gameGetDTO.remainingTime,
+                  gameGetDTO.timeBetweenRounds
+                )}
+                sx={{
+                  flexGrow: 1,
+                  marginLeft: "2%",
+                }}
+              />
+            </Box>
+          </Box>
+        </AccordionDetails>
+      </Accordion>
+      <Accordion
+        sx={{ borderRadius: "15px" }}
+        expanded={accordion2Expanded}
+        onChange={() => setAccordion2Expanded(!accordion2Expanded)}
       >
-        <Typography variant="h4">Players not playing again:</Typography>
-        <ul>
-          {playersNotPlayingAgain.map((data, index) => (
-            <Chip
-              avatar={
-                <Avatar
-                  alt="Natacha"
-                  src={
-                    "https://api.dicebear.com/6.x/pixel-art/svg?seed=" +
-                    data.username
-                  }
-                />
-              }
-              key={data.userId}
-              label={data.username}
-            />
-          ))}
-        </ul>
-      </Box>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1a-content"
+          id="panel1a-header"
+        >
+          <Typography variant="h5">Players playing another Game</Typography>{" "}
+        </AccordionSummary>
+        <AccordionDetails>
+          <ul>
+            {playersPlayingAgain.map((data, index) => (
+              <Chip
+                avatar={
+                  <Avatar
+                    alt="Natacha"
+                    src={
+                      "https://api.dicebear.com/6.x/pixel-art/svg?seed=" +
+                      data.username
+                    }
+                  />
+                }
+                key={data.userId}
+                label={data.username}
+              />
+            ))}
+          </ul>
+        </AccordionDetails>
+      </Accordion>
+      <Accordion
+        sx={{ borderRadius: "15px" }}
+        expanded={accordion3Expanded}
+        onChange={() => setAccordion3Expanded(!accordion3Expanded)}
+      >
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1a-content"
+          id="panel1a-header"
+        >
+          <Typography variant="h5">Players not playing another Game</Typography>{" "}
+        </AccordionSummary>
+        <AccordionDetails>
+          <ul>
+            {playersNotPlayingAgain.map((data, index) => (
+              <Chip
+                avatar={
+                  <Avatar
+                    alt="Natacha"
+                    src={
+                      "https://api.dicebear.com/6.x/pixel-art/svg?seed=" +
+                      data.username
+                    }
+                  />
+                }
+                key={data.userId}
+                label={data.username}
+              />
+            ))}
+          </ul>
+        </AccordionDetails>
+      </Accordion>
 
       <ScoreboardComponent
         currentUser={currentUser}
