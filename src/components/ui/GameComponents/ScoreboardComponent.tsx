@@ -2,12 +2,21 @@ import WinnerOverviewComponent from "./WinnerOverviewComponent";
 import User from "../../../models/User";
 import GameGetDTO from "../../../models/GameGetDTO";
 import React, { useEffect, useState, ReactNode } from "react";
-import { Button, Typography } from "@mui/material";
+import { Box, Button, LinearProgress, Typography } from "@mui/material";
 import { api } from "../../../helpers/api";
 import GameUser from "../../../models/GameUser";
 import { Link, useNavigate } from "react-router-dom";
 import Guess from "../../../models/Guess";
+import CircularProgressWithLabel from "helpers/CircularProgressWithLabel";
+import getColorByTimeLeft from "helpers/getColorByTimeLeft";
 
+const normalise = (
+  value: number | null | undefined,
+  max: number | null | undefined
+) => {
+  if (value == null || max == null) return 0;
+  return (value * 100) / max;
+};
 interface Props {
   currentUser: User | null;
   gameId: string | undefined;
@@ -22,7 +31,15 @@ const ScoreboardComponent: React.FC<Props> = (props) => {
   const [currentCountry, setCurrentCountry] = useState<string | null>(null);
   const [winnerUpdated, setWinnerUpdated] = useState(false);
   const navigate = useNavigate();
-
+  const timeProgress =
+    normalise(gameGetDTO?.remainingTime, gameGetDTO?.timeBetweenRounds) / 100;
+  let currentRound = 0;
+  if (
+    gameGetDTO?.numberOfRounds != null &&
+    gameGetDTO.remainingRounds != null
+  ) {
+    currentRound = gameGetDTO?.numberOfRounds - gameGetDTO?.remainingRounds;
+  }
   const informServerLeave = async (isLobbyCreator: boolean) => {
     try {
       const response = await api.put(
@@ -236,10 +253,67 @@ const ScoreboardComponent: React.FC<Props> = (props) => {
         </Typography>
       )}
       {!isGameEnded && (
-        <Typography variant="h4" sx={{ marginTop: 2 }}>
-          Next round starts in:{" "}
-          {gameGetDTO ? gameGetDTO.remainingTime : "undefined"}
-        </Typography>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "stretch",
+            width: "100%",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end",
+              alignItems: "flex-end",
+              width: "100%",
+            }}
+          >
+            {gameGetDTO?.remainingTime != null ? (
+              <Typography variant="h4">
+                Time until next Round: {gameGetDTO.remainingTime.toString()}
+              </Typography>
+            ) : (
+              <div></div>
+            )}
+          </Box>
+
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              width: "100%",
+            }}
+          >
+            <CircularProgressWithLabel
+              value={normalise(currentRound, gameGetDTO?.numberOfRounds)}
+              currentRound={currentRound}
+              numberOfRounds={gameGetDTO?.numberOfRounds}
+            />
+            <LinearProgress
+              variant="determinate"
+              value={timeProgress * 100}
+              color={getColorByTimeLeft(
+                gameGetDTO.remainingTime,
+                gameGetDTO.timeBetweenRounds
+              )}
+              sx={{
+                flexGrow: 1,
+                marginLeft: "2%",
+              }}
+            />
+          </Box>
+
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "flex-end",
+              alignItems: "flex-end",
+              width: "100%",
+            }}
+          ></Box>
+        </Box>
       )}
     </>
   );
@@ -248,18 +322,7 @@ const ScoreboardComponent: React.FC<Props> = (props) => {
     if (isGameEnded) {
       return undefined;
     }
-    return (
-      <Typography variant="h4" sx={{ marginTop: 5 }}>
-        Currently on Round:{" "}
-        {gameGetDTO?.numberOfRounds != null &&
-        gameGetDTO?.remainingRounds != null
-          ? gameGetDTO.numberOfRounds -
-            gameGetDTO.remainingRounds +
-            "/" +
-            gameGetDTO.numberOfRounds
-          : undefined}
-      </Typography>
-    );
+    return undefined;
   };
 
   return (

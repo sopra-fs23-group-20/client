@@ -62,60 +62,13 @@ const GameLobby: React.FC = () => {
   }
 
   useEffect(() => {
-    async function PollingfetchGame(): Promise<void> {
-      try {
-        const response = await api.get(`/games/${gameId}`);
-        const newGameGetDTO: GameGetDTO = { ...response.data };
-        console.log("Fetched Game : ", newGameGetDTO);
-        setGameGetDTO(newGameGetDTO);
-      } catch (error: AxiosError | any) {
-        if (
-          error.response &&
-          error.response.data.message.includes("Game not found")
-        ) {
-          setGameNotFoundError(true);
-        } else {
-          showAlert(
-            error.response ? error.response.data.message : "An error occurred",
-            "error"
-          );
-        }
-        console.error(error);
-      }
-    }
-
-    let timeoutId: NodeJS.Timeout | undefined;
-
-    const startPolling = async () => {
-      if (!isFetching.current) {
-        isFetching.current = true;
-        await PollingfetchGame();
-        isFetching.current = false;
-      }
-      if (usePollingRef.current) {
-        timeoutId = setTimeout(startPolling, 200);
-      }
-    };
-
-    if (usePolling) {
-      startPolling();
-    }
-
-    return () => {
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
-    };
-  }, []);
-
-  useEffect(() => {
     async function fetchCountries(): Promise<void> {
       try {
         const response = await api.get("/games/" + gameId + "/countries");
         console.log("The response is: ", response);
         setAllCountries(response.data);
       } catch (error: AxiosError | any) {
-        showAlert(error.response.data.message, "error");
+        //showAlert(error.response.data.message, "error");
         navigate("/game");
         console.error(error);
       }
@@ -128,7 +81,8 @@ const GameLobby: React.FC = () => {
         console.log("Fetched Game : ", newGameGetDTO);
         setGameGetDTO(newGameGetDTO);
       } catch (error: AxiosError | any) {
-        showAlert(error.response.data.message, "error");
+        showAlert("Lobby doesn't exist", "error");
+        navigate("/game");
         console.error(error);
       }
     }
@@ -150,30 +104,6 @@ const GameLobby: React.FC = () => {
         console.error(error);
       }
     }
-    async function joinLobby(): Promise<void> {
-      try {
-        if (
-          gameGetDTO?.currentState === GameState.GUESSING &&
-          !isUserInGame(currentUserId, gameGetDTO.participants)
-        ) {
-          showAlert(
-            "Game cannot be joined since it has already started.",
-            "error"
-          );
-          navigate("/");
-        } else {
-          let id = localStorage.getItem("userId");
-          console.log("Joining lobby");
-          const response = await api.post(
-            `/games/${gameId}/join`,
-            currentUserId
-          );
-          console.log("Joined Lobby");
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    }
 
     fetchGame();
     fetchCountries();
@@ -185,7 +115,8 @@ const GameLobby: React.FC = () => {
     async function joinLobby(): Promise<void> {
       try {
         if (
-          gameGetDTO?.currentState === GameState.GUESSING &&
+          gameGetDTO &&
+          gameGetDTO?.currentState != GameState.SETUP &&
           !isUserInGame(currentUserId, gameGetDTO.participants)
         ) {
           showAlert(
@@ -200,6 +131,9 @@ const GameLobby: React.FC = () => {
             `/games/${gameId}/join`,
             currentUserId
           );
+          const newGameGetDTO: GameGetDTO = { ...response.data };
+          console.log("Fetched Game : ", newGameGetDTO);
+          setGameGetDTO(newGameGetDTO);
           console.log("Joined Lobby");
         }
       } catch (error) {
@@ -207,17 +141,70 @@ const GameLobby: React.FC = () => {
       }
     }
 
-    if (gameGetDTO && gameGetDTO.currentState !== GameState.GUESSING) {
+    if (
+      gameGetDTO &&
+      gameGetDTO?.currentState === GameState.SETUP &&
+      !isUserInGame(currentUserId, gameGetDTO.participants)
+    ) {
       joinLobby();
     } else if (
       gameGetDTO &&
-      gameGetDTO.currentState === GameState.GUESSING &&
+      gameGetDTO.currentState != GameState.SETUP &&
       !isUserInGame(currentUserId, gameGetDTO.participants)
     ) {
       showAlert("Game cannot be joined since it has already started.", "error");
       navigate("/");
     }
-  }, [gameGetDTO]);
+  }, [gameGetDTO, gameId]);
+
+  //Polling for game updates -> isnt needed anymore because websockets work
+
+  // useEffect(() => {
+  //   async function PollingfetchGame(): Promise<void> {
+  //     try {
+  //       const response = await api.get(`/games/${gameId}`);
+  //       const newGameGetDTO: GameGetDTO = { ...response.data };
+  //       console.log("Fetched Game : ", newGameGetDTO);
+  //       setGameGetDTO(newGameGetDTO);
+  //     } catch (error: AxiosError | any) {
+  //       if (
+  //         error.response &&
+  //         error.response.data.message.includes("Game not found")
+  //       ) {
+  //         setGameNotFoundError(true);
+  //       } else {
+  //         showAlert(
+  //           error.response ? error.response.data.message : "An error occurred",
+  //           "error"
+  //         );
+  //       }
+  //       console.error(error);
+  //     }
+  //   }
+
+  //   let timeoutId: NodeJS.Timeout | undefined;
+
+  //   const startPolling = async () => {
+  //     if (!isFetching.current) {
+  //       isFetching.current = true;
+  //       await PollingfetchGame();
+  //       isFetching.current = false;
+  //     }
+  //     if (usePollingRef.current) {
+  //       timeoutId = setTimeout(startPolling, 200);
+  //     }
+  //   };
+
+  //   if (usePolling) {
+  //     startPolling();
+  //   }
+
+  //   return () => {
+  //     if (timeoutId) {
+  //       clearTimeout(timeoutId);
+  //     }
+  //   };
+  // }, [gameNotFoundError]);
 
   useEffect(() => {
     const websocketUrl = `${getDomain()}/socket`;

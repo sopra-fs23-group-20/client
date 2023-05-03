@@ -11,6 +11,7 @@ class GamePostDTO {
   selectedRegions: RegionEnum[] | null;
   openLobby: boolean | null;
   difficulty: Difficulty | null;
+  timeBetweenRounds: number | null;
 
   constructor(
     lobbyCreatorUserId: string | null,
@@ -19,7 +20,8 @@ class GamePostDTO {
     categoryStack: CategoryStack | null,
     selectedRegions: RegionEnum[],
     openLobby: boolean | null,
-    difficulty: Difficulty | null
+    difficulty: Difficulty | null,
+    timeBetweenRounds: number | null
   ) {
     this.lobbyCreatorUserId = lobbyCreatorUserId;
     this.roundDuration = roundDuration;
@@ -28,6 +30,7 @@ class GamePostDTO {
     this.selectedRegions = selectedRegions;
     this.openLobby = openLobby;
     this.difficulty = difficulty;
+    this.timeBetweenRounds = timeBetweenRounds;
   }
 }
 
