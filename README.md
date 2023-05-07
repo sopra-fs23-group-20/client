@@ -1,6 +1,25 @@
-# SoPra FS23 - Client Template with build pack
+<p align="center">
+  <img src="https://readme-typing-svg.demolab.com/?lines=Sopra+Group+20+!;Guess+The+Country!&font=Fira%20Code&center=true&width=600&height=80&duration=4000&pause=1000" alt="Example Usage - README Typing SVG">
+</p>
 
-## Getting started
+
+## Introduction
+The project’s goal and motivation.
+
+
+## Technologies
+- Gradle
+- Spring Boot
+- Java
+
+## High-level components
+dentify your project’s 3-5 main components. What is their role?
+How are they correlated? Reference the main class, file, or function in the README text
+with a link
+
+
+
+## Launch & Deployment
 
 Read and go through these Tutorials. It will make your life easier:)
 
@@ -43,4 +62,10 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 To learn React, check out the [React documentation](https://reactjs.org/).
 
 
-> Thanks to Lucas Pelloni and Kyrill Hux for working on the template.
+## Roadmap
+
+
+## Authors and acknowledgment
+
+
+## License
