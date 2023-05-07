@@ -1,6 +1,6 @@
-<p align="left">
-  <img src="https://readme-typing-svg.demolab.com/?lines=Sopra+Group+20+!;Guess+The+Country!&font=Fira%20Code&center=true&width=600&height=80&duration=4000&pause=1000" alt="Example Usage - README Typing SVG">
-</p>
+
+<img src="https://readme-typing-svg.demolab.com/?lines=Sopra+Group+20+!;Guess+The+Country!&font=Fira%20Code&center=true&width=600&height=80&duration=4000&pause=1000" alt="Example Usage - README Typing SVG">
+
 
 
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=sopra-fs23-group-20_client&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=sopra-fs23-group-20_client)
