@@ -42,6 +42,7 @@ const GameLobbyOverview: React.FC = () => {
 
   const [gameId, setGameId] = useState<string | null>(null);
   const [allLobbies, setAllLobbies] = useState<[GameGetDTO] | null>(null);
+  const [quickGame, setQuickGame] = useState<[GameGetDTO] | null>(null);
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
@@ -90,11 +91,22 @@ const GameLobbyOverview: React.FC = () => {
       console.error("Error fetching countries:", error);
     }
   }, [setAllLobbies]);
+  const fetchquickjoin = useCallback(async () => {
+    try {
+      console.log("started fetching quic k game");
+      const response = await api.get("/bestgameavailable");
+      //setAllLobbies(response.data);
+      navigate(`/game/lobby/` +response.data)
+      console.log("response:");
+      console.log(response);
+    } catch (error) {
+      console.error("Error fetching countries:", error);
+    }
+  }, [setQuickGame]);
 
   useEffect(() => {
     void fetchLobbies();
   }, [fetchLobbies]);
-
   return (
     <Container
       sx={{
@@ -165,6 +177,26 @@ const GameLobbyOverview: React.FC = () => {
         startIcon={<LoginIcon />}
         disabled={isButtonDisabled}
         onClick={() => (handleClick(), navigate(`/game/lobby/${gameId}`))}
+      >
+        Join game!
+      </Button>
+      <Typography sx={{ mb: 2 }} variant="h2">
+        Quickjoin
+        <Tooltip
+            title="You need a three digit code to join a specific game"
+            placement="right"
+        >
+          <IconButton>
+            <InfoIcon />
+          </IconButton>
+        </Tooltip>
+      </Typography>
+      <Button
+          sx={{ mt: 1.5, ml: 2 }}
+          variant="contained"
+          size="small"
+          startIcon={<LoginIcon />}
+          onClick={() => (fetchquickjoin(),navigate(`/game/lobby/`))}
       >
         Join game!
       </Button>
