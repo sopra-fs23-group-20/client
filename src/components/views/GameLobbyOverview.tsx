@@ -96,9 +96,12 @@ const GameLobbyOverview: React.FC = () => {
       console.log("started fetching quic k game");
       const response = await api.get("/bestgameavailable");
       //setAllLobbies(response.data);
-      navigate(`/game/lobby/` +response.data)
-      console.log("response:");
-      console.log(response);
+
+      console.log("response data:");
+      console.log(response.data);
+      console.log("response data game ID:");
+      console.log(response.data.gameId);
+      navigate(`/game/lobby/` +response.data.gameId)
     } catch (error) {
       console.error("Error fetching countries:", error);
     }
