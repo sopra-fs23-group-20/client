@@ -2,10 +2,13 @@
   <img src="https://readme-typing-svg.demolab.com/?lines=Sopra+Group+20+!;Guess+The+Country!;Client&font=Fira%20Code&center=true&width=600&height=80&duration=4000&pause=1000" alt="Example Usage - README Typing SVG">
 </p>
 
+<div align="center">
 
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=sopra-fs23-group-20_client&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=sopra-fs23-group-20_client)
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=sopra-fs23-group-20_client&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=sopra-fs23-group-20_client)
 
+</div>  
+  
 ## Introduction
 The project’s goal and motivation.
 
