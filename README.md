@@ -9,13 +9,22 @@
 
 </div>  
   
+
 ## Introduction
-The project’s goal and motivation.
+Our project aims to create an interactive platform that makes learning geography fun, engaging, and accessible. By challenging users to identify countries based on various clues, we hope to enhance their geographic knowledge across multiple domains. With this goal in mind, we designed the project to be user-friendly, visually appealing, and easy to navigate. Hope you enjoy...
 
 
 ## Technologies
-- React
-- Typescript
+* [Springboot](https://spring.io/) - Java framework to create a micro service
+* [Gradle](https://gradle.org/) - Automated building and management tool
+* [H2](https://www.h2database.com/html/main.html) - Database
+* [React](https://reactjs.org/docs/getting-started.html) - Javascript library for the whole frontend
+* [MUI](https://mui.com/) - CSS Component library
+* [Github Projects](https://github.com/explore) - Project Management
+* [Figma](https://figma.com/) - Mockups
+* [Google Cloud](https://cloud.google.com/) - Deployment
+* [SonarCloud](https://sonarcloud.io/ ) - Testing & Feedback of code quality
+
 
 ## High-level components
 dentify your project’s 3-5 main components. What is their role?
@@ -73,10 +82,26 @@ of your interface. How does it work (without going into too much detail)? Feel f
 include a few screenshots of your application.
 
 ## Roadmap
-The top 2-3 features that new developers who want to contribute to your project
-could add.
+* Our web application is mostly mobile-friendly, but some pages may still require improvements in scaling for optimal viewing on different devices. Or another idea in this area would be to implement everything in an app.
+* An extension of the amount and type of hints available to guess the country. 
 
 ## Authors and acknowledgment
 
+### Contributors
+
+* **Jonas Blum** - [Github](https://github.com/robonder)
+* **Jonathan Contreras Urzua** - [Github](https://github.com/JonathanContrerasM)
+* **Louis Huber** - [Github](https://github.com/L-Huber)
+* **Dario Monopoli** - [Github](https://github.com/dariomonopoli-dev)
+* **Jamo Sharif** - [Github](https://github.com/JSha91)
+
+
+### Supervision
+
+* **Mete Polat** - [Github](https://github.com/polatmete)
+
+
 
 ## License
+[Apache license 2.0](https://github.com/sopra-fs23-group-20/server/blob/6dc8281b0a876fa1d310626a704e0e4bfa08b86d/LICENSE)
+
