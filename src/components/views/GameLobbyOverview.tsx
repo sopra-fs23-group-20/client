@@ -68,6 +68,9 @@ const GameLobbyOverview: React.FC = () => {
   const handleClick = () => {
     setOpen(true);
   };
+  function timeout(delay: number) {
+    return new Promise( res => setTimeout(res, delay) );
+  }
 
   const handleClose = (
     event?: React.SyntheticEvent | Event,
@@ -104,6 +107,15 @@ const GameLobbyOverview: React.FC = () => {
       navigate(`/game/lobby/` +response.data.gameId)
     } catch (error) {
       console.error("Error fetching countries:", error);
+      <Alert
+          onClose={handleClose}
+          severity="error"
+          sx={{ width: "100%" }}
+      >
+        No game available!
+      </Alert>
+      //await timeout(1000); //for 1 sec delay
+      navigate(`/game/lobbies/`)
     }
   }, [setQuickGame]);
 
@@ -186,7 +198,7 @@ const GameLobbyOverview: React.FC = () => {
       <Typography sx={{ mb: 2 }} variant="h2">
         Quickjoin
         <Tooltip
-            title="You need a three digit code to join a specific game"
+            title="You can direclty join to an available game by clicking on the button"
             placement="right"
         >
           <IconButton>
