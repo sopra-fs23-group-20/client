@@ -8,9 +8,8 @@ The project’s goal and motivation.
 
 
 ## Technologies
-- Gradle
-- Spring Boot
-- Java
+- React
+- Typescript
 
 ## High-level components
 dentify your project’s 3-5 main components. What is their role?
