@@ -62,7 +62,7 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 To learn React, check out the [React documentation](https://reactjs.org/).
 
 
-##Illustrations
+## Illustrations
 In your client repository, briefly describe and illustrate the main user flow(s)
 of your interface. How does it work (without going into too much detail)? Feel free to
 include a few screenshots of your application.
