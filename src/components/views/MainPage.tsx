@@ -2,7 +2,17 @@ import { useEffect, useState } from "react";
 import { api } from "helpers/api";
 import useTypewriter from "react-typewriter-hook";
 
-import {Button, Typography, Container, Box, Card, Divider, Tabs, Tab, Popover} from "@mui/material";
+import {
+  Button,
+  Typography,
+  Container,
+  Box,
+  Card,
+  Divider,
+  Tabs,
+  Tab,
+  Popover,
+} from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import User from "models/User";
 import React from "react";
@@ -182,27 +192,31 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
   }, [navigate, userId]);
 
   return (
-      <Container
-          sx={{
-            marginTop: 'calc(32vh - 64px)', // Adjust the margin top here
-            width: '100%',
-            height: '100%',
-            justifyContent: 'center',
-            alignItems: 'center',
-            display: 'flex',
-            flexDirection: 'column',
-          }}
+    <Container
+      sx={{
+        marginTop: "calc(32vh - 64px)", // Adjust the margin top here
+        width: "100%",
+        height: "100%",
+        justifyContent: "center",
+        alignItems: "center",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
       >
-        <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-            >
         <div style={{ display: "flex", alignItems: "center" }}>
-          <img src={earth} alt="earth-gif" style={{ width: "50px", marginBottom: "5px", marginRight: "5px" }} />
+          <img
+            src={earth}
+            alt="earth-gif"
+            style={{ width: "50px", marginBottom: "5px", marginRight: "5px" }}
+          />
           <Typography
             variant="h1"
             sx={{
@@ -213,7 +227,11 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
           >
             {typewriterText}
           </Typography>
-          <img src={earth} alt="earth-gif" style={{ width: "50px", marginBottom: "5px", marginLeft: "5px" }} />
+          <img
+            src={earth}
+            alt="earth-gif"
+            style={{ width: "50px", marginBottom: "5px", marginLeft: "5px" }}
+          />
         </div>
       </Box>
       <Button
@@ -224,81 +242,89 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
       >
         Quick Tutorial
       </Button>
-        <Popover
-            sx={{ mt: 2 }}
-            id={id}
-            open={openPopover}
-            anchorEl={anchorElPopover}
-            onClose={handleClosePopover}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "left",
-            }}
-        >
-          <Box sx={{ width: "500px", p: 2 }}>
-            <Typography variant="h5" sx={{ mb: 2 }}>
-              Quick Tutorial
+      <Popover
+        sx={{ mt: 2 }}
+        id={id}
+        open={openPopover}
+        anchorEl={anchorElPopover}
+        onClose={handleClosePopover}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "left",
+        }}
+      >
+        <Box sx={{ width: "500px", p: 2 }}>
+          <Typography variant="h5" sx={{ mb: 2 }}>
+            Quick Tutorial
+          </Typography>
+          <Divider sx={{ mb: 2 }} />
+          <Tabs
+            value={value}
+            onChange={handleChange}
+            aria-label="basic tabs example"
+            sx={{ mb: 2 }}
+          >
+            <Tab label="How it works?" {...a11yProps(0)} />
+            <Tab label="Create a new game" {...a11yProps(1)} />
+            <Tab label="Join a lobby" {...a11yProps(2)} />
+          </Tabs>
+          <TabPanel value={value} index={0}>
+            <Typography variant="body1">
+              If the game starts, your goal is to correctly guess the searched
+              country based on the given hints. If the Capital "Paris" is
+              displayed, you should enter "France". The faster you submit the
+              answer, the more points you will get.
             </Typography>
-            <Divider sx={{ mb: 2 }} />
-            <Tabs
-                value={value}
-                onChange={handleChange}
-                aria-label="basic tabs example"
-                sx={{ mb: 2 }}
-            >
-              <Tab label="How it works?" {...a11yProps(0)} />
-              <Tab label="Create a new game" {...a11yProps(1)} />
-              <Tab label="Join a lobby" {...a11yProps(2)} />
-            </Tabs>
-            <TabPanel value={value} index={0}>
-              <Typography variant="body1">
-                If the game starts, your goal is to correctly guess the searched country based on the given hints. If the Capital "Paris" is displayed, you should enter "France". The faster you submit the answer, the more points you will get.
-              </Typography>
-            </TabPanel>
-            <TabPanel value={value} index={1}>
-              <Typography variant="body1">
-                You can create a new game lobby by clicking on the Create Game button. You can define, which hints should appear. If your game is public, other people can join or you can make the lobby private and invite your friends.
-              </Typography>
-              <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => navigate("/game/lobbyCreation")}
-                >
-                  Create Game
-                </Button>
-              </Box>
-            </TabPanel>
-            <TabPanel value={value} index={2}>
-              <Typography variant="body1">
-                You can join open lobbies by accessing them in the lobby browser. You can only join private lobbies by using the link or by entering the GameID and click on the "Join game!" button.
-              </Typography>
-              <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => navigate("/game/lobbies")}
-                >
-                  View Lobbies
-                </Button>
-              </Box>
-            </TabPanel>
-            <Divider sx={{ mt: 2 }} />
-            <Typography align="center" sx={{ p: 2 }}>
-              Need more help?
+          </TabPanel>
+          <TabPanel value={value} index={1}>
+            <Typography variant="body1">
+              You can create a new game lobby by clicking on the Create Game
+              button. You can define, which hints should appear. If your game is
+              public, other people can join or you can make the lobby private
+              and invite your friends.
+            </Typography>
+            <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
               <Button
-                  variant="outlined"
-                  color="success"
-                  onClick={() => navigate("/game/rules")}
-                  sx={{ ml: 2 }}
+                variant="contained"
+                color="primary"
+                onClick={() => navigate("/game/lobbyCreation")}
               >
-                View Guide
+                Create Game
               </Button>
+            </Box>
+          </TabPanel>
+          <TabPanel value={value} index={2}>
+            <Typography variant="body1">
+              You can join open lobbies by accessing them in the lobby browser.
+              You can only join private lobbies by using the link or by entering
+              the GameID and click on the "Join game!" button.
             </Typography>
-          </Box>
-        </Popover>
+            <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => navigate("/game/lobbies")}
+              >
+                View Lobbies
+              </Button>
+            </Box>
+          </TabPanel>
+          <Divider sx={{ mt: 2 }} />
+          <Typography align="center" sx={{ p: 2 }}>
+            Need more help?
+            <Button
+              variant="outlined"
+              color="success"
+              onClick={() => navigate("/game/rules")}
+              sx={{ ml: 2 }}
+            >
+              View Guide
+            </Button>
+          </Typography>
+        </Box>
+      </Popover>
 
-        <Box
+      <Box
         sx={{
           display: "flex",
           flexDirection: "column",
@@ -343,14 +369,11 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
             <MenuItem onClick={() => navigate(`/game/profile/${userId}`)}>
               My Account
             </MenuItem>
-            <MenuItem onClick={() => navigate("/game/countries")}>
-              All Countries
-            </MenuItem>
             <MenuItem onClick={() => navigate("/game/leaderboard")}>
               Leaderboard
             </MenuItem>
-            <MenuItem onClick={() => navigate(`/game/${userId}/friends`)}>
-              Friends
+            <MenuItem onClick={() => navigate("/game/countries")}>
+              Learn Countries
             </MenuItem>
             <MenuItem onClick={() => logout()}>Logout</MenuItem>
           </Menu>

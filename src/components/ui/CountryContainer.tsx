@@ -1,62 +1,95 @@
-import React from "react";
+import React, { useState } from "react";
 import Country from "models/Country";
 import MapContainer from "./MapContainer";
 import OutlineContainer from "./OutlineContainer";
-import { Avatar, Box, Typography, Stack } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Typography,
+  Stack,
+  Card,
+  CardHeader,
+  CardContent,
+} from "@mui/material";
+import ReactCardFlip from "react-card-flip";
 
 const CountryContainer: React.FC<Country> = (country: Country) => {
+  const [isFlipped, setIsFlipped] = useState<boolean>(false);
+
+  const handleClick = () => {
+    setIsFlipped(!isFlipped);
+  };
+
   if (!country.location) {
-    // Country does not have longitude and latitude
     return null;
   }
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "center",
-        my: 3,
-        gap: "50px",
-      }}
-    >
-      <Box
-        sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}
-      >
-        <Typography variant="h2" sx={{ mb: 4 }}>
-          {country.name}
-        </Typography>
-        <Stack flexDirection="row" gap="20px">
-          {country.flag && (
-            <Avatar
-              variant="square"
-              sx={{ width: 220, height: 150 }}
-              src={country.flag.toString()}
-              alt={`${country.name} flag`}
-            />
-          )}
-          {country.outline && (
-            <OutlineContainer
-              country={country.outline.toString()}
-              width={220}
-              height={150}
-            ></OutlineContainer>
-          )}
-        </Stack>
+    <ReactCardFlip isFlipped={isFlipped} flipDirection="horizontal">
+      <Card onClick={handleClick} sx={{ width: 500, height: 350 }}>
+        <CardHeader
+          title={country.name}
+          titleTypographyProps={{ variant: "h2", align: "center" }}
+        />
+      </Card>
+      <Card onClick={handleClick} sx={{ width: 1200, height: 500 }}>
+        <CardContent>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "center",
+              my: 3,
+              gap: "50px",
+            }}
+          ></Box>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "center",
+              my: 3,
+              gap: "50px",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <Stack flexDirection="row" gap="20px">
+                {country.flag && (
+                  <Avatar
+                    variant="square"
+                    sx={{ width: 220, height: 150 }}
+                    src={country.flag.toString()}
+                    alt={`${country.name} flag`}
+                  />
+                )}
+                {country.outline && (
+                  <OutlineContainer
+                    country={country.outline.toString()}
+                    width={220}
+                    height={150}
+                  ></OutlineContainer>
+                )}
+              </Stack>
 
-        <Typography variant="h5" sx={{ mb: 1, mt: 4 }}>
-          Population: {country.population?.toString()}
-        </Typography>
-        <Typography variant="h5" sx={{ mb: 1 }}>
-          Capital: {country.capital}
-        </Typography>
-      </Box>
-      <MapContainer country={country} height={350} width={500} />
-    </Box>
+              <Typography variant="h5" sx={{ mb: 1, mt: 4 }}>
+                Population: {country.population?.toString()}
+              </Typography>
+              <Typography variant="h5" sx={{ mb: 1 }}>
+                Capital: {country.capital}
+              </Typography>
+            </Box>
+            <MapContainer country={country} height={350} width={500} />
+          </Box>
+        </CardContent>
+      </Card>
+    </ReactCardFlip>
   );
 };
 
 export default CountryContainer;
-function useWindowSize(): { width: any; height: any } {
-  throw new Error("Function not implemented.");
-}
