@@ -358,6 +358,7 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
             </Typography>
           </Button>
           <Menu
+            sx={{mt:0.5}}
             id="basic-menu"
             anchorEl={anchorEl}
             open={open}
