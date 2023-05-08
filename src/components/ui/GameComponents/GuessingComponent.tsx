@@ -120,7 +120,7 @@ const GuessingComponent: React.FC<Props> = (props) => {
           variant="outlined"
           sx={{ marginLeft: "2%", height: "100%" }}
           onClick={() => submitGuess()}
-          disabled={hasPlayerGuessed()}
+          disabled={!valueEntered || hasPlayerGuessed()}
         >
           Submit
         </Button>

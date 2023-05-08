@@ -206,7 +206,7 @@ const Profile: React.FC = () => {
           }}
         >
           <input
-            accept="image/*"
+            accept="image/png"
             id="contained-button-file"
             type="file"
             onChange={handleImageUpload}
