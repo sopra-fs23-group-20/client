@@ -66,10 +66,10 @@ export default function Rules() {
         animate="visible"
         style={{
           color: "white",
-          minHeight: "100vh",
           display: "flex",
           justifyContent: "center",
           alignItems: "flex-start",
+          marginBottom: "40px",
         }}
       >
         <div className="rulesContainer">
@@ -173,7 +173,8 @@ export default function Rules() {
                 </ul>
               </AccordionDetails>
             </Accordion>
-            <Accordion>
+            <Accordion
+            >
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls="panel1a-content"
