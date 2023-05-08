@@ -417,6 +417,16 @@ const GuessingComponent: React.FC<Props> = (props) => {
                       </FormGroup>
                     </FormControl>
                   </Grid>
+                  <Grid item xs={6}>
+                    <FormControl>
+                      <TextField
+                        id="game-mode"
+                        label="Game Mode"
+                        value={game?.gameMode?.toString()}
+                        disabled={true}
+                      />
+                    </FormControl>
+                  </Grid>
                 </Grid>
 
                 <FormControl component="fieldset" sx={{ marginTop: "1rem" }}>

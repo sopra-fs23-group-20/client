@@ -36,6 +36,7 @@ import { AxiosError } from "axios";
 import { CategoryStack } from "models/CategoryStack";
 import Category from "models/Category";
 import { Difficulty, stringToDifficulty } from "models/constant/Difficulty";
+import { GameMode, stringToGameMode } from "models/constant/GameMode";
 
 interface Props {
   gameId: string | undefined;
@@ -71,6 +72,10 @@ const GameCreation: React.FC<Props> = (props) => {
     CategoryEnum.OUTLINE,
     CategoryEnum.POPULATION,
   ]);
+
+  const [selectedGameMode, setSelectedGameMode] = useState<GameMode>(
+    GameMode.NORMAL
+  );
 
   const allCategories = [
     CategoryEnum.CAPITAL,
@@ -176,7 +181,8 @@ const GameCreation: React.FC<Props> = (props) => {
             selectedRegions,
             openLobby,
             difficulty,
-            timeBetweenRounds
+            timeBetweenRounds,
+            selectedGameMode
           );
           console.log("Game Post DTO: ", gamePostDTO);
           const response = await api.post("/games", gamePostDTO);
@@ -438,6 +444,28 @@ const GameCreation: React.FC<Props> = (props) => {
                   </Select>
                 </FormControl>
               </Grid>
+            </Grid>
+
+            <Grid item xs={6}>
+              <FormControl
+                variant="outlined"
+                fullWidth
+                sx={{ marginTop: "10px" }}
+              >
+                <InputLabel id="game-mode-select-label">Game Mode</InputLabel>
+                <Select
+                  labelId="game-mode-select-label"
+                  id="game-mode-select"
+                  value={selectedGameMode}
+                  onChange={(event) => {
+                    setSelectedGameMode(stringToGameMode(event.target.value));
+                  }}
+                  label="Game Mode"
+                >
+                  <MenuItem value={GameMode.NORMAL}>{GameMode.NORMAL}</MenuItem>
+                  <MenuItem value={GameMode.BLITZ}>{GameMode.BLITZ}</MenuItem>
+                </Select>
+              </FormControl>
             </Grid>
 
             <Grid container spacing={3}>

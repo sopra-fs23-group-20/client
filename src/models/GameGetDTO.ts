@@ -1,5 +1,6 @@
 import { CategoryStack } from "./CategoryStack";
 import { Difficulty } from "./constant/Difficulty";
+import { GameMode } from "./constant/GameMode";
 import GameState from "./constant/GameState";
 import RegionEnum from "./constant/RegionEnum";
 import GameUser from "./GameUser";
@@ -21,6 +22,7 @@ class GameGetDTO {
   difficulty: Difficulty | null;
   timeBetweenRounds: number | null;
   nextGameId: number | null;
+  gameMode: GameMode | null;
 
   constructor(
     gameId: number | null,
@@ -38,7 +40,8 @@ class GameGetDTO {
     openLobby: boolean | null,
     difficulty: Difficulty | null,
     timeBetweenRounds: number | null,
-    nextGameId: number | null
+    nextGameId: number | null,
+    gameMode: GameMode | null
   ) {
     this.gameId = gameId;
     this.lobbyCreator = lobbyCreator;
@@ -56,6 +59,7 @@ class GameGetDTO {
     this.difficulty = difficulty;
     this.timeBetweenRounds = timeBetweenRounds;
     this.nextGameId = nextGameId;
+    this.gameMode = gameMode;
   }
 }
 
