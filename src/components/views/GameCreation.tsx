@@ -44,8 +44,7 @@ import {
     DroppableProvided,
     DraggableProvided
 } from 'react-beautiful-dnd';
-import {MoreVert} from "@material-ui/icons";
-import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
+import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 
 
 interface Props {
@@ -615,7 +614,7 @@ const GameCreation: React.FC<Props> = (props) => {
                                                                         }
                                                                         label={
                                                                             <>
-                                                                                <ListItemIcon sx={{mt:"4px", mr: "-20px"}}>
+                                                                                <ListItemIcon sx={{mr: "-20px"}}>
                                                                                     <DragIndicatorIcon/>
                                                                                 </ListItemIcon>
 
