@@ -84,8 +84,6 @@ const ScoreboardComponent: React.FC<Props> = (props) => {
     if (isGameEnded) {
       return (
         <div className="ButtonContainer">
-          <Button onClick={handlePlayAgain}>Play Again</Button>
-          <Button onClick={handleLeave}>Leave</Button>
         </div>
       );
     }
