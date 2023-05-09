@@ -67,7 +67,7 @@ const GameLobby: React.FC = () => {
       try {
         const response = await api.get("/games/" + gameId + "/countries");
         console.log("The response is: ", response);
-        setAllCountries(response.data);
+        setAllCountries(response.data.sort());
       } catch (error: AxiosError | any) {
         navigate("/game");
         console.error(error);
