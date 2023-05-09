@@ -28,7 +28,8 @@ h1.Title {
 }
 
 .currentUser {
-  background-color: #21331a;
+  background-color: #1f1f1f;
+  color: lightskyblue;
 }
 
 .Trophy.gold {
@@ -138,9 +139,11 @@ div.Board {
   0% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(-10px);
   }
+
   100% {
     transform: translateY(0);
   }
@@ -150,9 +153,11 @@ div.Board {
   0% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(-5px);
   }
+
   100% {
     transform: translateY(0);
   }
@@ -162,9 +167,11 @@ div.Board {
   0% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(-3px);
   }
+
   100% {
     transform: translateY(0);
   }
