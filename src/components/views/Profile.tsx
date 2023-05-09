@@ -544,7 +544,7 @@ const Profile: React.FC = () => {
 
   // Main content rendering
   const content = currentUser ? (
-    <AnimatePresence mode="wait">
+    <AnimatePresence>
       {editMode ? (
         <motion.div
           key="edit"

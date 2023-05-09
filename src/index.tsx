@@ -1,13 +1,12 @@
 import React from "react";
-import ReactDOM from "react-dom/client";
+import ReactDOM from "react-dom";
 import App from "./App";
 import { AlertProvider } from "./helpers/AlertContext";
-const root = ReactDOM.createRoot(
-  document.getElementById("root") as HTMLElement
-);
+const root = document.getElementById("root");
 
-root.render(
+ReactDOM.render(
   <AlertProvider>
     <App />
-  </AlertProvider>
+  </AlertProvider>,
+  root
 );
