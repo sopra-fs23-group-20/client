@@ -24,6 +24,7 @@ interface Props {
   renderInformationOnBottom: Function | undefined;
   idAttributeName: string;
   columnHeaderText: string;
+  isScoreboard: boolean;
   children?: React.ReactNode;
 }
 
@@ -40,6 +41,7 @@ const WinnerOverviewComponent: React.FC<Props> = (props) => {
     renderInformationOnBottom,
     idAttributeName,
     columnHeaderText,
+    isScoreboard
   } = props;
 
   const getPlacementString: any = (player: any, ranked: Array<Array<any>>) => {
@@ -115,6 +117,10 @@ const WinnerOverviewComponent: React.FC<Props> = (props) => {
     .reduce((a: any, b: any) => a.concat(b));
   const topThreeSliced = topThree.slice(0, 3);
   console.log(topThree);
+
+  const getCurrentPointsGained: any = (player: any) => {
+    return (Object.values(player.gamePointsHistory).slice(-2).reduce((x: any, y: any) => y - x, 0))
+  }
 
   return (
     <Grid
@@ -204,10 +210,20 @@ const WinnerOverviewComponent: React.FC<Props> = (props) => {
                         >
                           {columnHeaderText}
                         </TableCell>
+                        {
+                          isScoreboard && (
+                            <TableCell
+                              className={"tableColumnHeader"}
+                              align="right"
+                            >
+                              Points gained
+                            </TableCell>
+                          )
+                        }
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {sortedParticipantsByScore.map((player, index) => (
+                      {sortedParticipantsByScore.map((player: any, index: number): React.ReactNode => (
                         <TableRow
                           key={index}
                           sx={{
@@ -240,6 +256,14 @@ const WinnerOverviewComponent: React.FC<Props> = (props) => {
                           >
                             {renderPlayerValue(player)}
                           </TableCell>
+                          {
+                            isScoreboard && (<TableCell
+                              align="right"
+                              className={"tableColumnEntries"}
+                            >
+                              {getCurrentPointsGained(player)}
+                            </TableCell>)
+                          }
                         </TableRow>
                       ))}
                     </TableBody>

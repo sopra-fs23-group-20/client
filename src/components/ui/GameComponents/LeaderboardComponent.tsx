@@ -8,7 +8,7 @@ import { Button, Container, DialogActions, Typography } from "@mui/material";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import useTypewriter from "react-typewriter-hook/build/useTypewriter";
 
-interface Props {}
+interface Props { }
 
 const LeaderboardComponent: React.FC<Props> = (props) => {
   const navigate = useNavigate();
@@ -140,6 +140,7 @@ const LeaderboardComponent: React.FC<Props> = (props) => {
         renderPlayerUsernameTableCell={renderPlayerUsernameTableCell}
         idAttributeName={"id"}
         renderInformationOnBottom={undefined}
+        isScoreboard={false}
       />
     </Container>
   );

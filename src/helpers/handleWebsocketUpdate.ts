@@ -46,7 +46,8 @@ export function updateGameGetDTO(
 ): GameGetDTO | null {
   if (gameGetDTO === null || gameGetDTO === undefined) return null;
 
-  let gameGetDTO2 = { ...gameGetDTO };
+  let gameGetDTO2: any = { ...gameGetDTO };
+  const participants = gameGetDTO2.participants;
 
   switch (websocketPackage?.type) {
     case WebsocketType.GAMESTATEUPDATE:
@@ -78,6 +79,20 @@ export function updateGameGetDTO(
     case WebsocketType.GAMEUPDATE:
       console.log("Updating game to: " + websocketPackage.payload);
       gameGetDTO2 = { ...websocketPackage.payload };
+  }
+
+  const roundNumber = gameGetDTO2.remainingRounds === null ? 1 : gameGetDTO2.numberOfRounds - gameGetDTO2.remainingRounds;
+
+  if (!('gamePointsHistory' in gameGetDTO2.participants[0]) && roundNumber === 1) {
+    gameGetDTO2.participants = gameGetDTO2.participants.map((participant: any) => {
+      participant['gamePointsHistory'] = { [roundNumber]: participant.gamePoints }
+      return participant
+    });
+  } else {
+    gameGetDTO2.participants = gameGetDTO2.participants.map((participant: any, index: any) => {
+      participant['gamePointsHistory'] = { ...participants[index]['gamePointsHistory'], [roundNumber]: participant.gamePoints }
+      return participant
+    });
   }
   return gameGetDTO2;
 }

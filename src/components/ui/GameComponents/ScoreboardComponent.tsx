@@ -336,6 +336,7 @@ const ScoreboardComponent: React.FC<Props> = (props) => {
       renderInformationOnBottom={renderInformationOnBottom}
       idAttributeName={"userId"}
       columnHeaderText={"Points"}
+      isScoreboard
     >
       {renderButtons()}
     </WinnerOverviewComponent>
