@@ -77,19 +77,19 @@ const GameCreation: React.FC<Props> = (props) => {
         RegionEnum.OCEANIA,
     ]);
     const [selectedHints, setSelectedHints] = useState<CategoryEnum[]>([
-        CategoryEnum.CAPITAL,
-        CategoryEnum.FLAG,
-        CategoryEnum.LOCATION,
-        CategoryEnum.OUTLINE,
         CategoryEnum.POPULATION,
+        CategoryEnum.OUTLINE,
+        CategoryEnum.LOCATION,
+        CategoryEnum.FLAG,
+        CategoryEnum.CAPITAL,
     ]);
 
     const [checkedHints, setCheckedHints] = useState<Record<CategoryEnum, boolean>>({
-        [CategoryEnum.CAPITAL]: true,
-        [CategoryEnum.FLAG]: true,
-        [CategoryEnum.LOCATION]: true,
-        [CategoryEnum.OUTLINE]: true,
         [CategoryEnum.POPULATION]: true,
+        [CategoryEnum.OUTLINE]: true,
+        [CategoryEnum.LOCATION]: true,
+        [CategoryEnum.FLAG]: true,
+        [CategoryEnum.CAPITAL]: true,
     });
 
 
@@ -181,7 +181,8 @@ const GameCreation: React.FC<Props> = (props) => {
 
         try {
             if (userIdString) {
-                const filteredSelectedHints = selectedHints.filter(
+                const reversedSelectedHints = selectedHints.slice().reverse();
+                const filteredSelectedHints = reversedSelectedHints.filter(
                     (hint) => checkedHints[hint]
                 );
                 if (filteredSelectedHints && filteredSelectedHints.length > 0) {
