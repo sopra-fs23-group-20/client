@@ -394,6 +394,7 @@ export default function Rules() {
                           }}>
                 Rules and Guidelines
               </Typography>
+                <Box textAlign="center">
               <Button
                   sx={{ mb: 4 }}
                   variant="outlined"
@@ -404,6 +405,7 @@ export default function Rules() {
               >
                 Back to Dashboard
               </Button>
+                </Box>
               <Typography
                   sx={{
                     mb: 6,
