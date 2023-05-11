@@ -371,6 +371,7 @@ const Profile: React.FC = () => {
               onAccept={(newValue) => {
                 newValue ? setBirthday(newValue.toDate()) : setBirthday(null);
               }}
+              disableFuture={true}
             />
           </LocalizationProvider>
         </Typography>
