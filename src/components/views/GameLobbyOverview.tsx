@@ -42,6 +42,7 @@ const GameLobbyOverview: React.FC = () => {
 
   const [gameId, setGameId] = useState<string | null>(null);
   const [allLobbies, setAllLobbies] = useState<[GameGetDTO] | null>(null);
+  const [quickGame, setQuickGame] = useState<[GameGetDTO] | null>(null);
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
@@ -67,6 +68,9 @@ const GameLobbyOverview: React.FC = () => {
   const handleClick = () => {
     setOpen(true);
   };
+  function timeout(delay: number) {
+    return new Promise( res => setTimeout(res, delay) );
+  }
 
   const handleClose = (
     event?: React.SyntheticEvent | Event,
@@ -90,11 +94,34 @@ const GameLobbyOverview: React.FC = () => {
       console.error("Error fetching countries:", error);
     }
   }, [setAllLobbies]);
+  const fetchquickjoin = useCallback(async () => {
+    try {
+      console.log("started fetching quic k game");
+      const response = await api.get("/bestgameavailable");
+      //setAllLobbies(response.data);
+
+      console.log("response data:");
+      console.log(response.data);
+      console.log("response data game ID:");
+      console.log(response.data.gameId);
+      navigate(`/game/lobby/` +response.data.gameId)
+    } catch (error) {
+      console.error("Error fetching countries:", error);
+      <Alert
+          onClose={handleClose}
+          severity="error"
+          sx={{ width: "100%" }}
+      >
+        No game available!
+      </Alert>
+      //await timeout(1000); //for 1 sec delay
+      navigate(`/game/lobbies/`)
+    }
+  }, [setQuickGame]);
 
   useEffect(() => {
     void fetchLobbies();
   }, [fetchLobbies]);
-
   return (
     <Container
       sx={{
@@ -165,6 +192,26 @@ const GameLobbyOverview: React.FC = () => {
         startIcon={<LoginIcon />}
         disabled={isButtonDisabled}
         onClick={() => (handleClick(), navigate(`/game/lobby/${gameId}`))}
+      >
+        Join game!
+      </Button>
+      <Typography sx={{ mb: 2 }} variant="h2">
+        Quickjoin
+        <Tooltip
+            title="You can direclty join to an available game by clicking on the button"
+            placement="right"
+        >
+          <IconButton>
+            <InfoIcon />
+          </IconButton>
+        </Tooltip>
+      </Typography>
+      <Button
+          sx={{ mt: 1.5, ml: 2 }}
+          variant="contained"
+          size="small"
+          startIcon={<LoginIcon />}
+          onClick={() => (fetchquickjoin(),navigate(`/game/lobby/`))}
       >
         Join game!
       </Button>
