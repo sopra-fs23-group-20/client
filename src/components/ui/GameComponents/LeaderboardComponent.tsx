@@ -85,7 +85,7 @@ const LeaderboardComponent: React.FC<Props> = (props) => {
   };
 
   const renderPlayerUsernameTableCell = (player: any) => {
-    return <Link to={`/game/profile/${player.id}`}>{player.username}</Link>;
+    return <Link to={`/game/profile/${player.id}`} style={{ color: "#e0e0e0" }}>{player.username}</Link>;
   };
 
   return (
