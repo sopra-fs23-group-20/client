@@ -3,7 +3,7 @@ interface UserData {
   username: string | null;
   password: string | null;
   status: string | null;
-  birthday: Date | null;
+  birthDate: Date | null;
   creation_date: Date | null;
   profilePicture: string | null;
   nationality: string | null;
@@ -16,7 +16,7 @@ class User {
   username: string | null;
   password: string | null;
   status: string | null;
-  birthday: Date | null;
+  birthDate: Date | null;
   creation_date: Date | null;
   profilePicture: string | null;
   nationality: string | null;
@@ -29,7 +29,7 @@ class User {
       username: null,
       password: null,
       status: null,
-      birthday: null,
+      birthDate: null,
       creation_date: null,
       profilePicture: null,
       nationality: null,
@@ -41,7 +41,7 @@ class User {
     this.username = data.username ?? null;
     this.password = data.password ?? null;
     this.status = data.status ?? null;
-    this.birthday = data.birthday ?? null;
+    this.birthDate = data.birthDate ?? null;
     this.creation_date = data.creation_date ?? null;
     this.profilePicture = data.profilePicture ?? null;
     this.nationality = data.nationality ?? null;

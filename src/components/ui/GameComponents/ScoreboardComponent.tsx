@@ -2,7 +2,7 @@ import WinnerOverviewComponent from "./WinnerOverviewComponent";
 import User from "../../../models/User";
 import GameGetDTO from "../../../models/GameGetDTO";
 import React, { useEffect, useState, ReactNode } from "react";
-import { Box, Button, LinearProgress, Typography } from "@mui/material";
+import { Box, Button, Container, LinearProgress, Typography, Grid } from "@mui/material";
 import { api } from "../../../helpers/api";
 import GameUser from "../../../models/GameUser";
 import { Link, useNavigate } from "react-router-dom";
@@ -80,14 +80,6 @@ const ScoreboardComponent: React.FC<Props> = (props) => {
     }
   };
 
-  const renderButtons = () => {
-    if (isGameEnded) {
-      return (
-        <div className="ButtonContainer">
-        </div>
-      );
-    }
-  };
 
   const handleLeave = async () => {
     try {
@@ -211,7 +203,7 @@ const ScoreboardComponent: React.FC<Props> = (props) => {
 
   const renderPlayerUsernameTableCell = (player: any) => {
     return isGameEnded ? (
-      <Link to={`/game/profile/${player.userId}`}>{player.username}</Link>
+      <Link to={`/game/profile/${player.userId}`} style={{ color: "#e0e0e0" }}>{player.username}</Link>
     ) : (
       <>{player.username}</>
     );
@@ -239,42 +231,52 @@ const ScoreboardComponent: React.FC<Props> = (props) => {
   );
 
   const renderAdditionalInformation = () => (
-    <>
-      {isGameEnded && (
+    <Grid
+      container
+      direction="row"
+      justifyContent="center"
+      alignItems="flex-start"
+    >
+      <Grid
+        xs={12}
+        sx={{
+          textAlign: 'center' // align text to center
+        }}
+      >
         <Typography variant="h4" sx={{ marginTop: 2 }}>
-          The correct country was: {currentCountry}
+          Correct country: {currentCountry}
         </Typography>
-      )}
+      </Grid>
+
       {lastGuess !== null && (
-        <Typography variant="h4" sx={{ marginTop: 2 }}>
-          Your last guess was: {lastGuess.guess}
-        </Typography>
-      )}
-      {!isGameEnded && (
-        <Box
+        <Grid
+          xs={12}
           sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "stretch",
-            width: "100%",
+            textAlign: 'center' // align text to center
           }}
         >
-          <Box
+          <Typography variant="h4" sx={{ marginTop: 2 }}>
+            Your last guess: {lastGuess.guess}
+          </Typography>
+        </Grid>
+
+      )}
+      {!isGameEnded && (
+        <>
+          <Grid
+            xs={12}
             sx={{
-              display: "flex",
-              justifyContent: "flex-end",
-              alignItems: "flex-end",
-              width: "100%",
+              textAlign: 'center' // align text to center
             }}
           >
             {gameGetDTO?.remainingTime != null ? (
-              <Typography variant="h4">
+              <Typography variant="h4" sx={{ marginTop: 2 }}>
                 Time until next Round: {gameGetDTO.remainingTime.toString()}
               </Typography>
             ) : (
               <div></div>
             )}
-          </Box>
+          </Grid>
 
           <Box
             sx={{
@@ -311,9 +313,9 @@ const ScoreboardComponent: React.FC<Props> = (props) => {
               width: "100%",
             }}
           ></Box>
-        </Box>
+        </>
       )}
-    </>
+    </Grid>
   );
 
   const renderInformationOnBottom = () => {
@@ -324,22 +326,32 @@ const ScoreboardComponent: React.FC<Props> = (props) => {
   };
 
   return (
-    <WinnerOverviewComponent
-      renderTitle={renderTitle}
-      currentUserId={currentUser.id}
-      renderAdditionalInformation={renderAdditionalInformation}
-      sortedParticipantsByScore={sortedParticipantsByScore}
-      attributeToConsider={"gamePoints"}
-      additionalText={"points"}
-      renderPlayerValue={getPlayerGamePoints}
-      renderPlayerUsernameTableCell={renderPlayerUsernameTableCell}
-      renderInformationOnBottom={renderInformationOnBottom}
-      idAttributeName={"userId"}
-      columnHeaderText={"Points"}
-      isScoreboard
+    <Container
+      sx={{
+        marginTop: "10vh",
+        maxwidth: "100%",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
     >
-      {renderButtons()}
-    </WinnerOverviewComponent>
+      <WinnerOverviewComponent
+        renderTitle={renderTitle}
+        currentUserId={currentUser.id}
+        renderAdditionalInformation={renderAdditionalInformation}
+        sortedParticipantsByScore={sortedParticipantsByScore}
+        attributeToConsider={"gamePoints"}
+        additionalText={"points"}
+        renderPlayerValue={getPlayerGamePoints}
+        renderPlayerUsernameTableCell={renderPlayerUsernameTableCell}
+        renderInformationOnBottom={renderInformationOnBottom}
+        idAttributeName={"userId"}
+        columnHeaderText={"Total points"}
+        isScoreboard
+      >
+      </WinnerOverviewComponent>
+    </Container>
   );
 };
 

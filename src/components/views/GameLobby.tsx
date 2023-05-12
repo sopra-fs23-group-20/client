@@ -1,9 +1,9 @@
-import React, {useEffect, useRef, useState} from "react";
-import {api} from "helpers/api";
-import {Container, Typography} from "@mui/material";
-import {useNavigate} from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
+import { api } from "helpers/api";
+import { Container, Typography } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import User from "models/User";
-import {AxiosError} from "axios";
+import { AxiosError } from "axios";
 import GameState from "models/constant/GameState";
 import WebsocketType from "models/constant/WebsocketType";
 import GuessingComponent from "components/ui/GameComponents/GuessingComponent";
@@ -12,15 +12,15 @@ import SetupComponent from "components/ui/GameComponents/SetupComponent";
 import EndedComponent from "components/ui/GameComponents/EndedComponent";
 import NotJoinedComponent from "components/ui/GameComponents/NotJoinedComponent";
 import GameGetDTO from "models/GameGetDTO";
-import {Client, IMessage} from "@stomp/stompjs";
+import { Client, IMessage } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import {
     convertToGameStateEnum,
     updateGameGetDTO,
 } from "helpers/handleWebsocketUpdate";
 import WebsocketPacket from "models/WebsocketPacket";
-import {getDomain} from "helpers/getDomain";
-import {useAlert} from "helpers/AlertContext";
+import { getDomain } from "helpers/getDomain";
+import { useAlert } from "helpers/AlertContext";
 import Guess from "../../models/Guess";
 import GameUser from "models/GameUser";
 import CustomSpinner from '../ui/GameComponents/CustomSpinner';
@@ -44,7 +44,7 @@ const GameLobby: React.FC = () => {
     const gameId = window.location.pathname.split("/").pop();
     const currentUserId = localStorage.getItem("userId");
 
-    const {showAlert} = useAlert();
+    const { showAlert } = useAlert();
     console.log("GameGetDTO: ", gameGetDTO);
 
     useEffect(() => {
@@ -81,7 +81,7 @@ const GameLobby: React.FC = () => {
         async function fetchGame(): Promise<void> {
             try {
                 const response = await api.get(`/games/${gameId}`);
-                const newGameGetDTO: GameGetDTO = {...response.data};
+                const newGameGetDTO: GameGetDTO = { ...response.data };
                 console.log("Fetched Game : ", newGameGetDTO);
                 setGameGetDTO(newGameGetDTO);
             } catch (error: AxiosError | any) {
@@ -134,7 +134,7 @@ const GameLobby: React.FC = () => {
                         `/games/${gameId}/join`,
                         currentUserId
                     );
-                    const newGameGetDTO: GameGetDTO = {...response.data};
+                    const newGameGetDTO: GameGetDTO = { ...response.data };
                     console.log("Fetched Game : ", newGameGetDTO);
                     setGameGetDTO(newGameGetDTO);
                     console.log("Joined Lobby");
@@ -294,11 +294,12 @@ const GameLobby: React.FC = () => {
         });
     }
 
-    let content = <CustomSpinner/>
+    let content = <CustomSpinner />
 
     if (gameGetDTO?.currentState == null) {
         return content;
     }
+
 
     switch (gameGetDTO.currentState) {
         case GameState.SETUP:
