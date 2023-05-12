@@ -100,6 +100,8 @@ const GameCreation: React.FC<Props> = (props) => {
     GameMode.NORMAL
   );
 
+  const [numberOfGuesses, setNumberOfGuesses] = useState(1);
+
   const remainingCategories = allCategories.filter(
     (category) => !selectedHints.includes(category)
   );
@@ -202,7 +204,8 @@ const GameCreation: React.FC<Props> = (props) => {
             openLobby,
             difficulty,
             timeBetweenRounds,
-            selectedGameMode
+            selectedGameMode,
+            numberOfGuesses
           );
           console.log("Game Post DTO: ", gamePostDTO);
           const response = await api.post("/games", gamePostDTO);
@@ -278,6 +281,12 @@ const GameCreation: React.FC<Props> = (props) => {
     setTimeBetweenRounds(newValue);
   };
 
+  const handleNumberOfGuessesChange = (event: { target: { value: any } }) => {
+    let newValue = event.target.value;
+
+    setNumberOfGuesses(newValue);
+  };
+
   const handleOpenLobbyChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -350,24 +359,76 @@ const GameCreation: React.FC<Props> = (props) => {
           <DialogContent>
             <Grid item container xs={12} spacing={2}>
               <Grid item xs={6}>
+                <FormControl variant="outlined" fullWidth>
+                  <InputLabel id="game-mode-select-label">Game Mode</InputLabel>
+                  <Select
+                    labelId="game-mode-select-label"
+                    id="game-mode-select"
+                    value={selectedGameMode}
+                    onChange={(event) => {
+                      setSelectedGameMode(stringToGameMode(event.target.value));
+                    }}
+                    label="Game Mode"
+                    MenuProps={{
+                      PaperProps: {
+                        sx: {
+                          mt: "8px", // Add 8px of margin to the top
+                        },
+                      },
+                    }}
+                  >
+                    <MenuItem value={GameMode.NORMAL}>
+                      {GameMode.NORMAL}
+                    </MenuItem>
+                    <MenuItem value={GameMode.BLITZ}>{GameMode.BLITZ}</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={6}>
+                <FormControl variant="outlined" fullWidth>
+                  <InputLabel id="difficulty-select-label">
+                    Difficulty
+                  </InputLabel>
+                  <Select
+                    labelId="difficulty-select-label"
+                    id="difficulty-select"
+                    value={difficulty}
+                    onChange={(event) => {
+                      setDifficulty(stringToDifficulty(event.target.value));
+                    }}
+                    label="Difficulty"
+                  >
+                    <MenuItem value={Difficulty.EASY}>
+                      {Difficulty.EASY}
+                    </MenuItem>
+                    <MenuItem value={Difficulty.MEDIUM}>
+                      {Difficulty.MEDIUM}
+                    </MenuItem>
+                    <MenuItem value={Difficulty.HARD}>
+                      {Difficulty.HARD}
+                    </MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={6}>
                 <FormControl sx={{ width: "100%" }}>
                   <TextField
                     id="round-seconds"
-                    label="Round Seconds"
+                    label="Number of Guesses"
                     type="number"
                     InputLabelProps={{
                       shrink: true,
                     }}
-                    value={roundSeconds}
+                    value={numberOfGuesses}
                     onChange={(e) =>
-                      handleRoundSecondsChange({
+                      handleNumberOfGuessesChange({
                         target: { value: e.target.value },
                       } as SelectChangeEvent<number>)
                     }
                     inputProps={{
-                      min: 10,
-                      max: 60,
-                      step: 10,
+                      min: 1,
+                      max: 5,
+                      step: 1,
                     }}
                   />
                 </FormControl>
@@ -390,6 +451,29 @@ const GameCreation: React.FC<Props> = (props) => {
                         selectedRegions.includes(RegionEnum.ANTARCTICA)
                           ? 2
                           : 10,
+                    }}
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={6}>
+                <FormControl sx={{ width: "100%" }}>
+                  <TextField
+                    id="round-seconds"
+                    label="Seconds to Guess"
+                    type="number"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    value={roundSeconds}
+                    onChange={(e) =>
+                      handleRoundSecondsChange({
+                        target: { value: e.target.value },
+                      } as SelectChangeEvent<number>)
+                    }
+                    inputProps={{
+                      min: 10,
+                      max: 60,
+                      step: 10,
                     }}
                   />
                 </FormControl>
@@ -417,62 +501,6 @@ const GameCreation: React.FC<Props> = (props) => {
                   />
                 </FormControl>
               </Grid>
-
-              <Grid item xs={6}>
-                <FormControl variant="outlined" fullWidth>
-                  <InputLabel id="difficulty-select-label">
-                    Difficulty
-                  </InputLabel>
-                  <Select
-                    labelId="difficulty-select-label"
-                    id="difficulty-select"
-                    value={difficulty}
-                    onChange={(event) => {
-                      setDifficulty(stringToDifficulty(event.target.value));
-                    }}
-                    label="Difficulty"
-                  >
-                    <MenuItem value={Difficulty.EASY}>
-                      {Difficulty.EASY}
-                    </MenuItem>
-                    <MenuItem value={Difficulty.MEDIUM}>
-                      {Difficulty.MEDIUM}
-                    </MenuItem>
-                    <MenuItem value={Difficulty.HARD}>
-                      {Difficulty.HARD}
-                    </MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-            </Grid>
-
-            <Grid item xs={6}>
-              <FormControl
-                variant="outlined"
-                fullWidth
-                sx={{ marginTop: "10px" }}
-              >
-                <InputLabel id="game-mode-select-label">Game Mode</InputLabel>
-                <Select
-                  labelId="game-mode-select-label"
-                  id="game-mode-select"
-                  value={selectedGameMode}
-                  onChange={(event) => {
-                    setSelectedGameMode(stringToGameMode(event.target.value));
-                  }}
-                  label="Game Mode"
-                  MenuProps={{
-                    PaperProps: {
-                      sx: {
-                        mt: "8px", // Add 8px of margin to the top
-                      },
-                    },
-                  }}
-                >
-                  <MenuItem value={GameMode.NORMAL}>{GameMode.NORMAL}</MenuItem>
-                  <MenuItem value={GameMode.BLITZ}>{GameMode.BLITZ}</MenuItem>
-                </Select>
-              </FormControl>
             </Grid>
 
             <Grid container spacing={3}>

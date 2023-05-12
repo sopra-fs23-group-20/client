@@ -23,6 +23,7 @@ class GameGetDTO {
   timeBetweenRounds: number | null;
   nextGameId: number | null;
   gameMode: GameMode | null;
+  numberOfGuesses: number | null;
 
   constructor(
     gameId: number | null,
@@ -41,7 +42,8 @@ class GameGetDTO {
     difficulty: Difficulty | null,
     timeBetweenRounds: number | null,
     nextGameId: number | null,
-    gameMode: GameMode | null
+    gameMode: GameMode | null,
+    numberOfGuesses: number | null
   ) {
     this.gameId = gameId;
     this.lobbyCreator = lobbyCreator;
@@ -60,6 +62,7 @@ class GameGetDTO {
     this.timeBetweenRounds = timeBetweenRounds;
     this.nextGameId = nextGameId;
     this.gameMode = gameMode;
+    this.numberOfGuesses = numberOfGuesses;
   }
 }
 

@@ -5,12 +5,21 @@ import React from "react";
 interface ButtonSelectionProps {
   gameGetDTO: GameGetDTO | null;
   submitGuess: (countryGuess: string | null) => Promise<void>;
+  hasPlayerGuessed: () => boolean;
 }
 
 export const ButtonSelection: React.FC<ButtonSelectionProps> = (props) => {
   const game = props.gameGetDTO;
   const submitGuess = props.submitGuess;
-  const colors = ["#5EB23F", "#00A162", "#008D78", "#00767D", "#005F71", "#2F4858"];
+  const hasPlayerGuessed = props.hasPlayerGuessed;
+  const colors = [
+    "#5EB23F",
+    "#00A162",
+    "#008D78",
+    "#00767D",
+    "#005F71",
+    "#2F4858",
+  ];
 
   if (game == null) {
     return <div></div>;
@@ -46,6 +55,7 @@ export const ButtonSelection: React.FC<ButtonSelectionProps> = (props) => {
             (countryName, index: number) => (
               <Grid key={index} item xs="auto">
                 <Button
+                  disabled={hasPlayerGuessed()}
                   size="large"
                   variant="contained"
                   color="primary"

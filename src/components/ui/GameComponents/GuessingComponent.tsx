@@ -19,6 +19,7 @@ import CircularProgressWithLabel from "helpers/CircularProgressWithLabel";
 import getColorByTimeLeft from "helpers/getColorByTimeLeft";
 import { GameMode } from "models/constant/GameMode";
 import ButtonSelection from "helpers/ButtonSelection";
+import GameUser from "models/GameUser";
 
 interface Props {
   gameGetDTO: GameGetDTO | null;
@@ -56,6 +57,7 @@ const GuessingComponent: React.FC<Props> = (props) => {
         guess: countryGuess,
       };
       setLastGuess(guess);
+      setValueEntered(null);
       const request = await api.post(`/games/${game?.gameId}/guesses`, guess);
       const requestBody = request.data;
 
@@ -74,47 +76,80 @@ const GuessingComponent: React.FC<Props> = (props) => {
     return formattedNumber.replace(/,/g, "'");
   };
 
-  const hasPlayerGuessed = (): boolean => {
+  const outOfGuesses = (): boolean => {
     const gameUsers = game?.participants;
-    if (gameUsers == null || gameUsers == undefined) return false;
+    if (gameUsers == null || gameUsers == undefined || currentUserId == null)
+      return false;
     const gameUsersArray = Array.from(gameUsers);
-    for (let i = 0; i < gameUsersArray.length; i++) {
-      if (gameUsersArray[i].userId == currentUserId) {
-        if (
-          gameUsersArray[i].hasAlreadyGuessed == null ||
-          gameUsersArray[i].hasAlreadyGuessed == undefined
-        ) {
-          return false;
-        }
-        if (gameUsersArray[i].hasAlreadyGuessed == true) {
+    const userIdAsNumber = parseInt(currentUserId, 10);
+    for (const gameUser of gameUsersArray) {
+      if (
+        gameUser.userId == userIdAsNumber &&
+        gameUser.numberOfGuessesLeft != null
+      ) {
+        if (gameUser.numberOfGuessesLeft <= 0) {
           return true;
-        } else {
-          return false;
         }
       }
     }
     return false;
   };
 
+  const remainingGuesses = (): number => {
+    const gameUsers = game?.participants;
+    if (gameUsers == null || gameUsers == undefined || currentUserId == null)
+      return 0;
+    const gameUsersArray = Array.from(gameUsers);
+    const userIdAsNumber = parseInt(currentUserId, 10);
+    for (const gameUser of gameUsersArray) {
+      if (
+        gameUser.userId == userIdAsNumber &&
+        gameUser.numberOfGuessesLeft != null
+      ) {
+        return gameUser.numberOfGuessesLeft;
+      }
+    }
+    return 0;
+  };
+
   return (
     <Container>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          marginTop: "2rem",
+          justifyContent: "center",
+        }}
+      >
+        <CircularProgressWithLabel
+          value={normalise(remainingGuesses(), game?.numberOfGuesses)}
+          currentRound={remainingGuesses()}
+          numberOfRounds={game?.numberOfGuesses}
+          text="Remaining Guesses"
+        />
+      </Box>
       {game?.gameMode === GameMode.BLITZ ? (
-        <ButtonSelection gameGetDTO={game} submitGuess={submitGuess} />
+        <ButtonSelection
+          hasPlayerGuessed={outOfGuesses}
+          gameGetDTO={game}
+          submitGuess={submitGuess}
+        />
       ) : (
         <Box
           sx={{
             display: "flex",
             alignItems: "center",
-            marginTop: "5%",
-            marginBottom: "5%",
+            marginTop: "2rem",
+            marginBottom: "2rem",
             width: "100%",
-            height: "200%",
           }}
         >
           <Autocomplete
             disablePortal
             id="combo-box-demo"
             options={allCountries}
+            value={valueEntered}
             sx={{ width: "90%", height: "200%" }}
             onChange={(event, value) => setValueEntered(value)}
             renderInput={(params) => (
@@ -123,9 +158,10 @@ const GuessingComponent: React.FC<Props> = (props) => {
           />
           <Button
             variant="outlined"
+            size="large"
             sx={{ marginLeft: "2%", height: "100%" }}
             onClick={() => submitGuess(valueEntered)}
-            disabled={!valueEntered || hasPlayerGuessed()}
+            disabled={!valueEntered || outOfGuesses()}
           >
             Submit
           </Button>
@@ -168,6 +204,7 @@ const GuessingComponent: React.FC<Props> = (props) => {
             value={normalise(currentRound, game?.numberOfRounds)}
             currentRound={currentRound}
             numberOfRounds={game?.numberOfRounds}
+            text="Round"
           />
           <LinearProgress
             variant="determinate"
@@ -198,7 +235,7 @@ const GuessingComponent: React.FC<Props> = (props) => {
           )}
         </Box>
       </Box>
-      <Divider sx={{ marginTop: "5%" }}> Current Hint:</Divider>
+      <Divider sx={{ marginTop: "2rem" }}> Current Hint:</Divider>
       <Box sx={{ height: "50%", width: "100%", marginTop: "5%" }}>
         <HintContainer currentCaregory={game?.categoryStack?.currentCategory} />
       </Box>

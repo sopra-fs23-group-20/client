@@ -4,10 +4,9 @@ interface UserData {
   userId: number | null;
   username: string | null;
   gamePoints: number | null;
-  currentState: GameState | null;
-  hasAlreadyGuessed: boolean | null;
   userPlayingAgain: boolean | null;
   hasLeft: boolean | null;
+  numberOfGuessesLeft: number | null;
 }
 
 interface GameUserIndexable {
@@ -18,29 +17,26 @@ class GameUser implements GameUserIndexable {
   userId: number | null;
   username: string | null;
   gamePoints: number | null;
-  currentState: GameState | null;
-  hasAlreadyGuessed: boolean | null;
   userPlayingAgain: boolean | null;
   hasLeft: boolean | null;
+  numberOfGuessesLeft: number | null;
 
   constructor(
     data: UserData = {
       userId: null,
       username: null,
       gamePoints: null,
-      currentState: null,
-      hasAlreadyGuessed: null,
       userPlayingAgain: null,
       hasLeft: null,
+      numberOfGuessesLeft: null,
     }
   ) {
     this.userId = data.userId ?? null;
     this.username = data.username ?? null;
     this.gamePoints = data.gamePoints ?? null;
-    this.currentState = data.currentState ?? null;
-    this.hasAlreadyGuessed = data.hasAlreadyGuessed ?? null;
     this.userPlayingAgain = data.userPlayingAgain ?? null;
     this.hasLeft = data.hasLeft ?? null;
+    this.numberOfGuessesLeft = data.numberOfGuessesLeft ?? null;
   }
   [key: string]: string | number | boolean | null;
 }
