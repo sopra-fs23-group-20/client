@@ -321,22 +321,42 @@ const SetupComponent: React.FC<Props> = (props) => {
                 <Typography variant="h5">Game Settings</Typography>
               </AccordionSummary>
               <AccordionDetails>
-                <Grid item container xs={12} spacing={2} sx={{ width: "50%" }}>
-                  <Grid item xs={6}>
+                <Grid item container spacing={2} sx={{ width: "50%" }}>
+                  <Grid item xs={12} md={6}>
                     <FormControl>
                       <TextField
-                        id="round-seconds"
-                        label="Round Seconds"
-                        type="number"
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                        value={game?.roundDuration}
+                        id="game-mode"
+                        label="Game Mode"
+                        value={game?.gameMode?.toString()}
                         disabled={true}
                       />
                     </FormControl>
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={12} md={6}>
+                    <FormControl>
+                      <TextField
+                        id="difficulty-level"
+                        label="Difficulty"
+                        value={game?.difficulty?.toString()}
+                        disabled={true}
+                      />
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <FormControl>
+                      <TextField
+                        id="number-guesses"
+                        label="Number of Guesses"
+                        type="number"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        value={game?.numberOfGuesses}
+                        disabled={true}
+                      />
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12} md={6}>
                     <FormControl>
                       <TextField
                         id="number-of-rounds"
@@ -347,7 +367,18 @@ const SetupComponent: React.FC<Props> = (props) => {
                       />
                     </FormControl>
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={12} md={6}>
+                    <FormControl>
+                      <TextField
+                        id="seconds-to-guess"
+                        label="Seconds to Guess"
+                        type="number"
+                        value={game?.roundDuration}
+                        disabled={true}
+                      />
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12} md={6}>
                     <FormControl>
                       <TextField
                         id="time-between-rounds"
@@ -358,17 +389,8 @@ const SetupComponent: React.FC<Props> = (props) => {
                       />
                     </FormControl>
                   </Grid>
-                  <Grid item xs={6}>
-                    <FormControl>
-                      <TextField
-                        id="difficulty-level"
-                        label="Difficulty Level"
-                        value={game?.difficulty?.toString()}
-                        disabled={true}
-                      />
-                    </FormControl>
-                  </Grid>
-                  <Grid item xs={6}>
+
+                  <Grid item xs={12} md={6}>
                     <FormControl>
                       <FormControlLabel
                         control={
@@ -382,7 +404,7 @@ const SetupComponent: React.FC<Props> = (props) => {
                       />
                     </FormControl>
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={12} md={6}>
                     <FormControl>
                       <FormGroup>
                         <FormControlLabel
@@ -400,26 +422,22 @@ const SetupComponent: React.FC<Props> = (props) => {
                       </FormGroup>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={6}>
-                    <FormControl>
-                      <TextField
-                        id="game-mode"
-                        label="Game Mode"
-                        value={game?.gameMode?.toString()}
-                        disabled={true}
-                      />
-                    </FormControl>
-                  </Grid>
                 </Grid>
 
                 <FormControl component="fieldset" sx={{ marginTop: "1rem" }}>
-                  <Typography sx={{ marginBottom: 2 }} variant="h4">
+                  <Typography
+                    sx={{ marginBottom: 2, marginRight: "1rem" }}
+                    variant="h4"
+                  >
                     Selected Hints:
                   </Typography>
                   {game?.categoryStack?.selectedCategories ? (
                     game?.categoryStack.selectedCategories.map(
                       (category, index) => (
-                        <Box key={index} sx={{ marginBottom: "1rem" }}>
+                        <Box
+                          key={index}
+                          sx={{ marginBottom: "1rem", marginRight: "1rem" }}
+                        >
                           <FormControl sx={{ minWidth: "200px" }}>
                             <TextField
                               id={`selected-category-${index}`}
@@ -439,18 +457,12 @@ const SetupComponent: React.FC<Props> = (props) => {
                   )}
                 </FormControl>
                 <FormControl component="fieldset" sx={{ marginTop: "1rem" }}>
-                  <Typography
-                    sx={{ marginBottom: 2, marginLeft: 2 }}
-                    variant="h4"
-                  >
+                  <Typography sx={{ marginBottom: 2 }} variant="h4">
                     Selected Regions:
                   </Typography>
                   {game?.selectedRegions ? (
                     [...game.selectedRegions].map((region, index) => (
-                      <Box
-                        key={index}
-                        sx={{ marginBottom: "1rem", marginLeft: 2 }}
-                      >
+                      <Box key={index} sx={{ marginBottom: "1rem" }}>
                         <FormControl sx={{ minWidth: "200px" }}>
                           <TextField
                             id={`selected-region-${index}`}

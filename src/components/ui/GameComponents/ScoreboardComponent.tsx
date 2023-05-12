@@ -296,6 +296,7 @@ const ScoreboardComponent: React.FC<Props> = (props) => {
               value={normalise(currentRound, gameGetDTO?.numberOfRounds)}
               currentRound={currentRound}
               numberOfRounds={gameGetDTO?.numberOfRounds}
+              text="Round"
             />
             <LinearProgress
               variant="determinate"

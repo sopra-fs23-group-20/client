@@ -59,7 +59,6 @@ const HintContainer: React.FC<Props> = (props) => {
         <div></div>
       )}
       {currentCaregory.location ? (
-        // Pass the properties of currentCaregory to the new Country instance
         <MapContainer
           country={
             new Country(

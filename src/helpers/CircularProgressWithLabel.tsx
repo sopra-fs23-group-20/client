@@ -5,17 +5,18 @@ interface CircularProgressWithLabelProps {
   value: number;
   currentRound: number;
   numberOfRounds: number | null | undefined;
+  text: string;
 }
 
 const CircularProgressWithLabel: React.FC<CircularProgressWithLabelProps> = (
   props
 ) => {
-  const { value, currentRound, numberOfRounds } = props;
+  const { value, currentRound, numberOfRounds, text } = props;
 
   return (
     <Box display="flex" alignItems="center">
       <Typography variant="h4" component="div" color="text.secondary" mr={1}>
-        Round:
+        {text}:
       </Typography>
       <Box position="relative" display="inline-flex">
         <CircularProgress

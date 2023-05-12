@@ -14,6 +14,7 @@ class GamePostDTO {
   difficulty: Difficulty | null;
   timeBetweenRounds: number | null;
   gameMode: GameMode | null;
+  numberOfGuesses: number | null;
 
   constructor(
     lobbyCreatorUserId: string | null,
@@ -24,7 +25,8 @@ class GamePostDTO {
     openLobby: boolean | null,
     difficulty: Difficulty | null,
     timeBetweenRounds: number | null,
-    gameMode: GameMode | null
+    gameMode: GameMode | null,
+    numberOfGuesses: number | null
   ) {
     this.lobbyCreatorUserId = lobbyCreatorUserId;
     this.roundDuration = roundDuration;
@@ -35,6 +37,7 @@ class GamePostDTO {
     this.difficulty = difficulty;
     this.timeBetweenRounds = timeBetweenRounds;
     this.gameMode = gameMode;
+    this.numberOfGuesses = numberOfGuesses;
   }
 }
 
