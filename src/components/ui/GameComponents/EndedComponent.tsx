@@ -162,19 +162,7 @@ const EndedComponent: React.FC<Props> = (props) => {
         }}
       >
         <Button
-          variant="outlined"
-          size="large"
-          color="error"
-          startIcon={<KeyboardArrowLeftIcon />}
-          onClick={() => navigate("/game/")}
-        >
-          Back to Dashboard
-        </Button>
-
-        <Button
-          size="large"
           sx={{
-            marginLeft: "3%",
             alignContent: "center",
             position: "relative",
           }}

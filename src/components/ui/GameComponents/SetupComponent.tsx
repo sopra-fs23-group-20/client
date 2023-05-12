@@ -117,24 +117,7 @@ const SetupComponent: React.FC<Props> = (props) => {
       }}
     >
       <Typography variant="h2">Game Lobby</Typography>
-      <DialogActions
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Button
-          sx={{ mb: 4 }}
-          variant="outlined"
-          size="small"
-          color="error"
-          startIcon={<KeyboardArrowLeftIcon />}
-          onClick={() => navigate("/game/")}
-        >
-          Back to Dashboard
-        </Button>
-      </DialogActions>
+
       <Typography align="left">
         Here you can see an overview of the game you just joined and you can
         invite your friends.

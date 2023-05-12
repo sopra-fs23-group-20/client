@@ -17,6 +17,8 @@ import GameGetDTO from "models/GameGetDTO";
 import { useAlert } from "helpers/AlertContext";
 import CircularProgressWithLabel from "helpers/CircularProgressWithLabel";
 import getColorByTimeLeft from "helpers/getColorByTimeLeft";
+import { GameMode } from "models/constant/GameMode";
+import ButtonSelection from "helpers/ButtonSelection";
 
 interface Props {
   gameGetDTO: GameGetDTO | null;
@@ -46,12 +48,12 @@ const GuessingComponent: React.FC<Props> = (props) => {
     currentRound = game?.numberOfRounds - game?.remainingRounds;
   }
 
-  async function submitGuess(): Promise<void> {
+  async function submitGuess(countryGuess: string | null): Promise<void> {
     try {
       console.log("Submitting guess", valueEntered);
       const guess = {
         userId: currentUserId,
-        guess: valueEntered,
+        guess: countryGuess,
       };
       setLastGuess(guess);
       const request = await api.post(`/games/${game?.gameId}/guesses`, guess);
@@ -96,35 +98,39 @@ const GuessingComponent: React.FC<Props> = (props) => {
 
   return (
     <Container>
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          marginTop: "5%",
-          marginBottom: "5%",
-          width: "100%",
-          height: "200%",
-        }}
-      >
-        <Autocomplete
-          disablePortal
-          id="combo-box-demo"
-          options={allCountries}
-          sx={{ width: "90%", height: "200%" }}
-          onChange={(event, value) => setValueEntered(value)}
-          renderInput={(params) => (
-            <TextField {...params} label="Enter your Guess here" />
-          )}
-        />
-        <Button
-          variant="outlined"
-          sx={{ marginLeft: "2%", height: "100%" }}
-          onClick={() => submitGuess()}
-          disabled={!valueEntered || hasPlayerGuessed()}
+      {game?.gameMode === GameMode.BLITZ ? (
+        <ButtonSelection gameGetDTO={game} submitGuess={submitGuess} />
+      ) : (
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            marginTop: "5%",
+            marginBottom: "5%",
+            width: "100%",
+            height: "200%",
+          }}
         >
-          Submit
-        </Button>
-      </Box>
+          <Autocomplete
+            disablePortal
+            id="combo-box-demo"
+            options={allCountries}
+            sx={{ width: "90%", height: "200%" }}
+            onChange={(event, value) => setValueEntered(value)}
+            renderInput={(params) => (
+              <TextField {...params} label="Enter your Guess here" />
+            )}
+          />
+          <Button
+            variant="outlined"
+            sx={{ marginLeft: "2%", height: "100%" }}
+            onClick={() => submitGuess(valueEntered)}
+            disabled={!valueEntered || hasPlayerGuessed()}
+          >
+            Submit
+          </Button>
+        </Box>
+      )}
 
       <Box
         sx={{

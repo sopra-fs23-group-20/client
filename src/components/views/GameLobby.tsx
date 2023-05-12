@@ -1,6 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import { api } from "helpers/api";
-import { Container, Typography } from "@mui/material";
+import {
+  Box,
+  Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Typography,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import User from "models/User";
 import { AxiosError } from "axios";
@@ -40,6 +49,7 @@ const GameLobby: React.FC = () => {
   const [usePolling, setUsePolling] = useState(true);
   const usePollingRef = useRef(usePolling);
   const isFetching = useRef(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const gameId = window.location.pathname.split("/").pop();
   const currentUserId = localStorage.getItem("userId");
@@ -320,6 +330,21 @@ const GameLobby: React.FC = () => {
       break;
   }
 
+  const handleClickOpen = () => {
+    if (
+      gameGetDTO?.currentState === GameState.SETUP ||
+      gameGetDTO?.currentState === GameState.ENDED
+    ) {
+      leaveGame();
+    } else {
+      setDialogOpen(true);
+    }
+  };
+
+  const handleClose = () => {
+    setDialogOpen(false);
+  };
+
   return (
     <Container
       fixed
@@ -327,9 +352,54 @@ const GameLobby: React.FC = () => {
         marginTop: "1%",
       }}
     >
-      <Button color="error" onClick={leaveGame}>
-        Leave Game
-      </Button>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          margin: "1rem",
+        }}
+      >
+        <Button color="error" variant="outlined" onClick={handleClickOpen}>
+          Leave Game
+        </Button>
+      </Box>
+      <Dialog
+        open={dialogOpen}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          Are you sure you want to leave the game?
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to leave the game?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant="outlined"
+            color="error"
+            onClick={() => {
+              leaveGame();
+              handleClose();
+            }}
+          >
+            Leave Game
+          </Button>
+          <Button
+            variant="outlined"
+            color="success"
+            onClick={handleClose}
+            autoFocus
+          >
+            Keep Playing
+          </Button>
+        </DialogActions>
+      </Dialog>
       {content}
     </Container>
   );
