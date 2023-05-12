@@ -10,7 +10,7 @@ interface ButtonSelectionProps {
 export const ButtonSelection: React.FC<ButtonSelectionProps> = (props) => {
   const game = props.gameGetDTO;
   const submitGuess = props.submitGuess;
-  const colors = ["white", "red", "purple", "orange", "pink", "green"];
+  const colors = ["#5EB23F", "#00A162", "#008D78", "#00767D", "#005F71", "#2F4858"];
 
   if (game == null) {
     return <div></div>;
