@@ -18,7 +18,7 @@ import {
   TableHead,
   TableRow,
   Paper,
-  Grid
+  Grid,
 } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -42,7 +42,7 @@ const Profile: React.FC = () => {
 
   const [username, setUsername] = useState<string | null>(null);
   const [password, setPassword] = useState<string | null>(null);
-  const [birthday, setBirthday] = useState<Date | null>(null);
+  const [birthDate, setBirthDate] = useState<Date | null>(null);
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
   const [nationality, setNationality] = useState<string | null>(null);
   const [gamesWon, setGamesWon] = useState<number | null>(null);
@@ -57,7 +57,7 @@ const Profile: React.FC = () => {
       let requestBody = {
         username: username,
         password: password,
-        birthday: birthday,
+        birthDate: birthDate,
         nationality: nationality,
         profilePicture: profilePicture,
         status: "ONLINE",
@@ -72,7 +72,7 @@ const Profile: React.FC = () => {
       const copyCurrentUser = { ...currentUser! };
       copyCurrentUser.username = username!;
       copyCurrentUser.password = password!;
-      copyCurrentUser.birthday = birthday!;
+      copyCurrentUser.birthDate = birthDate!;
       copyCurrentUser.nationality = nationality!;
       copyCurrentUser.profilePicture = profilePicture!;
       copyCurrentUser.gamesWon = gamesWon!;
@@ -81,7 +81,7 @@ const Profile: React.FC = () => {
       showAlert(error.response.data.message, "error");
       currentUser ? setUsername(currentUser.username) : setUsername(null);
       currentUser ? setPassword(currentUser.password) : setPassword(null);
-      currentUser ? setBirthday(currentUser.birthday) : setBirthday(null);
+      currentUser ? setBirthDate(currentUser.birthDate) : setBirthDate(null);
       currentUser
         ? setNationality(currentUser.nationality)
         : setNationality(null);
@@ -154,9 +154,9 @@ const Profile: React.FC = () => {
         setCurrentUser(response.data);
         setUsername(response.data.username);
         setPassword(response.data.password);
-        response.data.birthday
-          ? setBirthday(new Date(response.data.birthday))
-          : setBirthday(null);
+        response.data.birthDate
+          ? setBirthDate(new Date(response.data.birthDate))
+          : setBirthDate(null);
         response.data.nationality
           ? setNationality(response.data.nationality)
           : setNationality(null);
@@ -165,7 +165,7 @@ const Profile: React.FC = () => {
           : setProfilePicture(null);
         console.log(response.data);
         setGamesWon(response.data.gamesWon);
-        return response.data
+        return response.data;
       } catch (error: AxiosError | any) {
         if (error.response.status === 404) {
           showAlert(error.response.data.message, "error");
@@ -177,51 +177,63 @@ const Profile: React.FC = () => {
           navigate("/register");
           console.error(error);
         }
-        return undefined
+        return undefined;
       }
     }
-    fetchUser()
+    fetchUser();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-
   useEffect(() => {
     if (currentUser !== null) {
-
       async function fetchGame(): Promise<any> {
         try {
           const response = await api.get(`/games`);
           const gamesDTO: Array<GameGetDTO> = [...response.data];
-          let gamesFiltered: any = []
+          let gamesFiltered: any = [];
 
           gamesDTO.forEach((x: any) => {
-            const hasParticipated = x.participants.some((y: any) => y.userId === currentUser?.id)
+            const hasParticipated = x.participants.some(
+              (y: any) => y.userId === currentUser?.id
+            );
             if (!hasParticipated) {
-              return
+              return;
             }
             const participants = x.participants;
-            const rankedParticipants = participants.sort((a: GameUser, b: GameUser) => a.gamePoints !== null && b.gamePoints !== null ? b.gamePoints - a.gamePoints : 0)
-            let winner = participants.reduce((maxObject: any, currentObject: any) => {
-              return (currentObject.gamePoints > maxObject.gamePoints) ? currentObject : maxObject;
-            });
-            const gameUser = participants.find((x: GameUser) => x.userId === currentUser?.id)
-            const rank = rankedParticipants.findIndex((x: GameUser) => x.userId === gameUser.userId) + 1;
-            const copyGame = { ...x, "winner": winner, gameUser, rank }
-            gamesFiltered = [...gamesFiltered, copyGame]
-          }
-          );
+            const rankedParticipants = participants.sort(
+              (a: GameUser, b: GameUser) =>
+                a.gamePoints !== null && b.gamePoints !== null
+                  ? b.gamePoints - a.gamePoints
+                  : 0
+            );
+            let winner = participants.reduce(
+              (maxObject: any, currentObject: any) => {
+                return currentObject.gamePoints > maxObject.gamePoints
+                  ? currentObject
+                  : maxObject;
+              }
+            );
+            const gameUser = participants.find(
+              (x: GameUser) => x.userId === currentUser?.id
+            );
+            const rank =
+              rankedParticipants.findIndex(
+                (x: GameUser) => x.userId === gameUser.userId
+              ) + 1;
+            const copyGame = { ...x, winner: winner, gameUser, rank };
+            gamesFiltered = [...gamesFiltered, copyGame];
+          });
           setGames(gamesFiltered);
         } catch (error: AxiosError | any) {
           showAlert("Lobby doesn't exist", "error");
           navigate("/game");
           console.error(error);
-          return undefined
+          return undefined;
         }
       }
-      fetchGame()
-
+      fetchGame();
     }
-  }, [currentUser])
+  }, [currentUser]);
 
   // Render profile edit form
   const renderEditForm = () => {
@@ -345,10 +357,10 @@ const Profile: React.FC = () => {
           Creation Date:{" "}
           {currentUser.creation_date
             ? new Date(currentUser.creation_date).toLocaleDateString("de-DE", {
-              day: "2-digit",
-              month: "2-digit",
-              year: "numeric",
-            })
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+              })
             : "No Creation Date"}
         </Typography>
 
@@ -362,14 +374,14 @@ const Profile: React.FC = () => {
             borderRadius: 1,
           }}
         >
-          Birthday:
+          Birth Date:
           <LocalizationProvider dateAdapter={AdapterDayjs} locale="en">
             <DatePicker
               label="Select date"
               sx={{ marginLeft: 2 }}
-              value={dayjs(birthday)}
+              value={dayjs(birthDate)}
               onAccept={(newValue) => {
-                newValue ? setBirthday(newValue.toDate()) : setBirthday(null);
+                newValue ? setBirthDate(newValue.toDate()) : setBirthDate(null);
               }}
               disableFuture={true}
             />
@@ -402,7 +414,7 @@ const Profile: React.FC = () => {
               onClick={() => {
                 setUsername(currentUser.username);
                 setPassword(currentUser.password);
-                setBirthday(new Date(currentUser.birthday!));
+                setBirthDate(new Date(currentUser.birthDate!));
                 setNationality(currentUser.nationality);
                 setProfilePicture(currentUser.profilePicture);
                 setEditMode(false);
@@ -499,7 +511,7 @@ const Profile: React.FC = () => {
               year: "numeric",
             })}
           </Typography>
-          {currentUser.birthday ? (
+          {currentUser.birthDate ? (
             <Typography
               variant="h4"
               sx={{
@@ -510,14 +522,14 @@ const Profile: React.FC = () => {
                 borderRadius: 1,
               }}
             >
-              Birthday:{" "}
-              {currentUser.birthday
-                ? new Date(currentUser.birthday).toLocaleDateString("de-DE", {
-                  day: "2-digit",
-                  month: "2-digit",
-                  year: "numeric",
-                })
-                : "No Birthday"}
+              Birth Date:{" "}
+              {currentUser.birthDate
+                ? new Date(currentUser.birthDate).toLocaleDateString("de-DE", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                  })
+                : "No Birth Date"}
             </Typography>
           ) : (
             <div></div>
@@ -595,9 +607,16 @@ const Profile: React.FC = () => {
                 <Table sx={{ width: "100%" }} aria-label="simple table">
                   <TableHead>
                     <TableRow>
-                      {["Game Id", "Game mode", "Number of rounds", "Participants", "Total points", "Rank"
+                      {[
+                        "Game Id",
+                        "Game mode",
+                        "Number of rounds",
+                        "Participants",
+                        "Total points",
+                        "Rank",
                       ].map((x: any, index: number) => (
-                        <TableCell key={`${index}, ${x}`}
+                        <TableCell
+                          key={`${index}, ${x}`}
                           className={"tableColumnHeader"}
                           align="left"
                         >
@@ -607,49 +626,29 @@ const Profile: React.FC = () => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {
-                      games?.map((game: any, index: number) => (
-                        <TableRow key={`${index}, ${game.gameId}`}>
-                          <TableCell
-                            className={"tableColumnHeader"}
-                            align="left"
-                          >
-                            {game.gameId}
-                          </TableCell>
-                          <TableCell
-                            className={"tableColumnHeader"}
-                            align="left"
-                          >
-                            {game.gameMode}
-                          </TableCell>
-                          <TableCell
-                            className={"tableColumnHeader"}
-                            align="left"
-                          >
-                            {game.numberOfRounds}
-                          </TableCell>
-                          <TableCell
-                            className={"tableColumnHeader"}
-                            align="left"
-                          >
-                            {game.participants !== null && Array.from(game.participants).length}
-                          </TableCell>
-                          <TableCell
-                            className={"tableColumnHeader"}
-                            align="left"
-                          >
-                            {game.gameUser !== null && game.gameUser.gamePoints}
-                          </TableCell>
-                          <TableCell
-                            className={"tableColumnHeader"}
-                            align="left"
-                          >
-                            {game.rank}
-                          </TableCell>
-                        </TableRow>
-                      )
-                      )
-                    }
+                    {games?.map((game: any, index: number) => (
+                      <TableRow key={`${index}, ${game.gameId}`}>
+                        <TableCell className={"tableColumnHeader"} align="left">
+                          {game.gameId}
+                        </TableCell>
+                        <TableCell className={"tableColumnHeader"} align="left">
+                          {game.gameMode}
+                        </TableCell>
+                        <TableCell className={"tableColumnHeader"} align="left">
+                          {game.numberOfRounds}
+                        </TableCell>
+                        <TableCell className={"tableColumnHeader"} align="left">
+                          {game.participants !== null &&
+                            Array.from(game.participants).length}
+                        </TableCell>
+                        <TableCell className={"tableColumnHeader"} align="left">
+                          {game.gameUser !== null && game.gameUser.gamePoints}
+                        </TableCell>
+                        <TableCell className={"tableColumnHeader"} align="left">
+                          {game.rank}
+                        </TableCell>
+                      </TableRow>
+                    ))}
                   </TableBody>
                 </Table>
               </TableContainer>

@@ -147,7 +147,7 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
         `/users/${userId}`,
         {
           username: currentUser?.username,
-          birthday: currentUser?.birthday,
+          birthDate: currentUser?.birthDate,
           status: "OFFLINE",
         },
         { headers: { Authorization: localStorage.getItem("token") ?? "" } }
@@ -358,7 +358,7 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
             </Typography>
           </Button>
           <Menu
-            sx={{mt:0.5}}
+            sx={{ mt: 0.5 }}
             id="basic-menu"
             anchorEl={anchorEl}
             open={open}
