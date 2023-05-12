@@ -35,7 +35,7 @@ const GameLobby: React.FC = () => {
   const [allCountries, setAllCountries] = useState<Array<string>>([]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [lastGuess, setLastGuess] = useState<Guess | null>(null);
-  const [gameNotFoundError, setGameNotFoundError] = useState(false);
+  const [leftGame, setLeftGame] = useState<boolean>(false);
 
   const [usePolling, setUsePolling] = useState(true);
   const usePollingRef = useRef(usePolling);
@@ -143,8 +143,9 @@ const GameLobby: React.FC = () => {
         console.error(error);
       }
     }
-
-    if (
+    if (leftGame) {
+      navigate("/");
+    } else if (
       gameGetDTO &&
       gameGetDTO?.currentState === GameState.SETUP &&
       !isUserInGame(currentUserId, gameGetDTO.participants)
@@ -162,8 +163,8 @@ const GameLobby: React.FC = () => {
 
   async function leaveGame(): Promise<void> {
     try {
-      let id = localStorage.getItem("userId");
       console.log("Leaving game");
+      setLeftGame(true);
       const response = await api.post(`/games/${gameId}/leave`, currentUserId);
       console.log("Left game");
       navigate("/game/dashboard");

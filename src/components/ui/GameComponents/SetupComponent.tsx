@@ -38,7 +38,7 @@ interface Props {
   gameGetDTO: GameGetDTO | null;
 }
 
-const GuessingComponent: React.FC<Props> = (props) => {
+const SetupComponent: React.FC<Props> = (props) => {
   const navigate = useNavigate();
   const { Canvas } = useQRCode();
   //console.log("GuessingComponent props: ", props);
@@ -502,4 +502,4 @@ const GuessingComponent: React.FC<Props> = (props) => {
     </Container>
   );
 };
-export default GuessingComponent;
+export default SetupComponent;
