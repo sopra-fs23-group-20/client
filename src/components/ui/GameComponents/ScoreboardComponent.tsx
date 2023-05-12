@@ -2,7 +2,14 @@ import WinnerOverviewComponent from "./WinnerOverviewComponent";
 import User from "../../../models/User";
 import GameGetDTO from "../../../models/GameGetDTO";
 import React, { useEffect, useState, ReactNode } from "react";
-import { Box, Button, Container, LinearProgress, Typography, Grid } from "@mui/material";
+import {
+  Box,
+  Button,
+  Container,
+  LinearProgress,
+  Typography,
+  Grid,
+} from "@mui/material";
 import { api } from "../../../helpers/api";
 import GameUser from "../../../models/GameUser";
 import { Link, useNavigate } from "react-router-dom";
@@ -79,7 +86,6 @@ const ScoreboardComponent: React.FC<Props> = (props) => {
       console.error(error);
     }
   };
-
 
   const handleLeave = async () => {
     try {
@@ -203,7 +209,9 @@ const ScoreboardComponent: React.FC<Props> = (props) => {
 
   const renderPlayerUsernameTableCell = (player: any) => {
     return isGameEnded ? (
-      <Link to={`/game/profile/${player.userId}`} style={{ color: "#e0e0e0" }}>{player.username}</Link>
+      <Link to={`/game/profile/${player.userId}`} style={{ color: "#e0e0e0" }}>
+        {player.username}
+      </Link>
     ) : (
       <>{player.username}</>
     );
@@ -240,7 +248,7 @@ const ScoreboardComponent: React.FC<Props> = (props) => {
       <Grid
         xs={12}
         sx={{
-          textAlign: 'center' // align text to center
+          textAlign: "center", // align text to center
         }}
       >
         <Typography variant="h4" sx={{ marginTop: 2 }}>
@@ -252,21 +260,20 @@ const ScoreboardComponent: React.FC<Props> = (props) => {
         <Grid
           xs={12}
           sx={{
-            textAlign: 'center' // align text to center
+            textAlign: "center", // align text to center
           }}
         >
           <Typography variant="h4" sx={{ marginTop: 2 }}>
             Your last guess: {lastGuess.guess}
           </Typography>
         </Grid>
-
       )}
       {!isGameEnded && (
         <>
           <Grid
             xs={12}
             sx={{
-              textAlign: 'center' // align text to center
+              textAlign: "center", // align text to center
             }}
           >
             {gameGetDTO?.remainingTime != null ? (
@@ -328,7 +335,7 @@ const ScoreboardComponent: React.FC<Props> = (props) => {
   return (
     <Container
       sx={{
-        marginTop: "10vh",
+        marginTop: "1rem",
         maxwidth: "100%",
         display: "flex",
         flexDirection: "column",
@@ -349,8 +356,7 @@ const ScoreboardComponent: React.FC<Props> = (props) => {
         idAttributeName={"userId"}
         columnHeaderText={"Total points"}
         isScoreboard
-      >
-      </WinnerOverviewComponent>
+      ></WinnerOverviewComponent>
     </Container>
   );
 };

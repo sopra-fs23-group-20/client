@@ -10,6 +10,7 @@ interface ButtonSelectionProps {
 export const ButtonSelection: React.FC<ButtonSelectionProps> = (props) => {
   const game = props.gameGetDTO;
   const submitGuess = props.submitGuess;
+  const colors = ["white", "red", "purple", "orange", "pink", "green"];
 
   if (game == null) {
     return <div></div>;
@@ -45,7 +46,10 @@ export const ButtonSelection: React.FC<ButtonSelectionProps> = (props) => {
             (countryName, index: number) => (
               <Grid key={index} item xs="auto">
                 <Button
-                  variant="outlined"
+                  size="large"
+                  variant="contained"
+                  color="primary"
+                  sx={{ background: colors[index] }}
                   onClick={() => submitGuess(countryName)}
                 >
                   {countryName}

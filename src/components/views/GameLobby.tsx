@@ -376,7 +376,7 @@ const GameLobby: React.FC = () => {
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Are you sure you want to leave the game?
+            If you leave you won't be able to join again.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
