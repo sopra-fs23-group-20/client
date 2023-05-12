@@ -4,6 +4,8 @@ import GameRouter from "components/routing/routers/GameRouter";
 import { LoginGuard } from "components/routing/routeProtectors/LoginGuard";
 import Login from "components/views/Login";
 import Register from "components/views/Register";
+import Landing from "components/views/Landing";
+
 import React, { FC } from "react";
 
 interface AppRouterProps {
@@ -30,6 +32,14 @@ const AppRouter: FC<AppRouterProps> = ({ onTokenChange }) => {
             </LoginGuard>
           }
         />
+          <Route
+              path="/landing"
+              element={
+                  <LoginGuard>
+                      <Landing />
+                  </LoginGuard>
+              }
+          />
         <Route
           path="/register"
           element={
