@@ -2,7 +2,7 @@ import AppRouter from "./components/routing/routers/AppRouter";
 import React, { useState } from "react";
 import { Box, CssBaseline, ThemeProvider } from "@mui/material";
 
-import currentUsedTheme from "styles/currentUsedTheme";
+import currentUsedTheme from "styles/landingTheme";
 
 const App = () => {
   const [, setToken] = useState<string | null>(null);

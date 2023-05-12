@@ -66,6 +66,8 @@
     "@types/react-router-dom": "^5.3.3",
     "@types/react-simple-maps": "^3.0.0",
     "@types/sockjs-client": "^1.5.1",
-    "@types/stompjs": "^2.3.5"
+    "@types/stompjs": "^2.3.5",
+    "@types/styled-components": "^5.1.26",
+    "styled-components": "^5.3.10"
   }
 }
