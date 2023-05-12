@@ -11,6 +11,14 @@ import {
   Typography,
   Box,
   Avatar,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Grid
 } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -23,6 +31,8 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 import Autocomplete from "@mui/material/Autocomplete";
 import { useAlert } from "helpers/AlertContext";
+import GameGetDTO from "models/GameGetDTO";
+import GameUser from "models/GameUser";
 
 const Profile: React.FC = () => {
   const id = window.location.pathname.split("/").pop();
@@ -36,6 +46,7 @@ const Profile: React.FC = () => {
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
   const [nationality, setNationality] = useState<string | null>(null);
   const [gamesWon, setGamesWon] = useState<number | null>(null);
+  const [games, setGames] = useState<Array<GameGetDTO> | null>(null);
   const [allCountries, setAllCountries] = useState<Array<string>>([]);
   const { showAlert } = useAlert();
 
@@ -134,7 +145,7 @@ const Profile: React.FC = () => {
   // Fetch user data on component mount
   useEffect(() => {
     getRandomColor();
-    async function fetchUser() {
+    async function fetchUser(): Promise<User | undefined> {
       try {
         const response = await api.get(`/users/${id}`, {
           headers: { Authorization: localStorage.getItem("token")! },
@@ -154,6 +165,7 @@ const Profile: React.FC = () => {
           : setProfilePicture(null);
         console.log(response.data);
         setGamesWon(response.data.gamesWon);
+        return response.data
       } catch (error: AxiosError | any) {
         if (error.response.status === 404) {
           showAlert(error.response.data.message, "error");
@@ -165,12 +177,51 @@ const Profile: React.FC = () => {
           navigate("/register");
           console.error(error);
         }
+        return undefined
       }
     }
-
-    fetchUser();
+    fetchUser()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+
+  useEffect(() => {
+    if (currentUser !== null) {
+
+      async function fetchGame(): Promise<any> {
+        try {
+          const response = await api.get(`/games`);
+          const gamesDTO: Array<GameGetDTO> = [...response.data];
+          let gamesFiltered: any = []
+
+          gamesDTO.forEach((x: any) => {
+            const hasParticipated = x.participants.some((y: any) => y.userId === currentUser?.id)
+            if (!hasParticipated) {
+              return
+            }
+            const participants = x.participants;
+            const rankedParticipants = participants.sort((a: GameUser, b: GameUser) => a.gamePoints !== null && b.gamePoints !== null ? b.gamePoints - a.gamePoints : 0)
+            let winner = participants.reduce((maxObject: any, currentObject: any) => {
+              return (currentObject.gamePoints > maxObject.gamePoints) ? currentObject : maxObject;
+            });
+            const gameUser = participants.find((x: GameUser) => x.userId === currentUser?.id)
+            const rank = rankedParticipants.findIndex((x: GameUser) => x.userId === gameUser.userId) + 1;
+            const copyGame = { ...x, "winner": winner, gameUser, rank }
+            gamesFiltered = [...gamesFiltered, copyGame]
+          }
+          );
+          setGames(gamesFiltered);
+        } catch (error: AxiosError | any) {
+          showAlert("Lobby doesn't exist", "error");
+          navigate("/game");
+          console.error(error);
+          return undefined
+        }
+      }
+      fetchGame()
+
+    }
+  }, [currentUser])
 
   // Render profile edit form
   const renderEditForm = () => {
@@ -294,10 +345,10 @@ const Profile: React.FC = () => {
           Creation Date:{" "}
           {currentUser.creation_date
             ? new Date(currentUser.creation_date).toLocaleDateString("de-DE", {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric",
-              })
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+            })
             : "No Creation Date"}
         </Typography>
 
@@ -320,6 +371,7 @@ const Profile: React.FC = () => {
               onAccept={(newValue) => {
                 newValue ? setBirthday(newValue.toDate()) : setBirthday(null);
               }}
+              disableFuture={true}
             />
           </LocalizationProvider>
         </Typography>
@@ -461,10 +513,10 @@ const Profile: React.FC = () => {
               Birthday:{" "}
               {currentUser.birthday
                 ? new Date(currentUser.birthday).toLocaleDateString("de-DE", {
-                    day: "2-digit",
-                    month: "2-digit",
-                    year: "numeric",
-                  })
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "numeric",
+                })
                 : "No Birthday"}
             </Typography>
           ) : (
@@ -518,6 +570,91 @@ const Profile: React.FC = () => {
               />
             </span>
           </Typography>
+          <Grid
+            container
+            direction="row"
+            justifyContent="center"
+            alignItems="flex-start"
+          >
+            <Grid item xs={12}>
+              <Typography
+                variant="h4"
+                sx={{
+                  marginTop: 2,
+                  marginBottom: 1,
+                  backgroundColor: "rgba(0, 0, 0, 0.1)",
+                  padding: 1,
+                  borderRadius: 1,
+                }}
+              >
+                Game History:
+              </Typography>
+            </Grid>
+            <Grid item xs>
+              <TableContainer component={Paper}>
+                <Table sx={{ width: "100%" }} aria-label="simple table">
+                  <TableHead>
+                    <TableRow>
+                      {["Game Id", "Game mode", "Number of rounds", "Participants", "Total points", "Rank"
+                      ].map((x: any, index: number) => (
+                        <TableCell key={`${index}, ${x}`}
+                          className={"tableColumnHeader"}
+                          align="left"
+                        >
+                          {x}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {
+                      games?.map((game: any, index: number) => (
+                        <TableRow key={`${index}, ${game.gameId}`}>
+                          <TableCell
+                            className={"tableColumnHeader"}
+                            align="left"
+                          >
+                            {game.gameId}
+                          </TableCell>
+                          <TableCell
+                            className={"tableColumnHeader"}
+                            align="left"
+                          >
+                            {game.gameMode}
+                          </TableCell>
+                          <TableCell
+                            className={"tableColumnHeader"}
+                            align="left"
+                          >
+                            {game.numberOfRounds}
+                          </TableCell>
+                          <TableCell
+                            className={"tableColumnHeader"}
+                            align="left"
+                          >
+                            {game.participants !== null && Array.from(game.participants).length}
+                          </TableCell>
+                          <TableCell
+                            className={"tableColumnHeader"}
+                            align="left"
+                          >
+                            {game.gameUser !== null && game.gameUser.gamePoints}
+                          </TableCell>
+                          <TableCell
+                            className={"tableColumnHeader"}
+                            align="left"
+                          >
+                            {game.rank}
+                          </TableCell>
+                        </TableRow>
+                      )
+                      )
+                    }
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Grid>
+          </Grid>
         </motion.div>
 
         {String(localStorage.getItem("id")) === String(currentUser.id) ? (

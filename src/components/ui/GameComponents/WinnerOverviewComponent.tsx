@@ -116,7 +116,6 @@ const WinnerOverviewComponent: React.FC<Props> = (props) => {
     )
     .reduce((a: any, b: any) => a.concat(b));
   const topThreeSliced = topThree.slice(0, 3);
-  console.log(topThree);
 
   const getCurrentPointsGained: any = (player: any) => {
     return (Object.values(player.gamePointsHistory).slice(-2).reduce((x: any, y: any) => y - x, 0))
@@ -126,22 +125,22 @@ const WinnerOverviewComponent: React.FC<Props> = (props) => {
     <Grid
       container
       direction="row"
-      justifyContent="flex-start"
+      justifyContent="center"
       alignItems="flex-start"
     >
       <Grid xs={12} className={"scoreBoardContainer"}>
         <Grid
           container
           direction="row"
-          justifyContent="flex-start"
-          alignItems="flex-start"
+          justifyContent="center"
+          alignItems="center"
         >
           <Grid xs={12}>{renderTitle()}</Grid>
         </Grid>
         <Grid
           container
           direction="row"
-          justifyContent="flex-start"
+          justifyContent="center"
           alignItems="flex-start"
         >
           <Grid xs={12}>
@@ -151,14 +150,16 @@ const WinnerOverviewComponent: React.FC<Props> = (props) => {
           </Grid>
         </Grid>
 
+
         <Grid
           container
           direction="row"
-          justifyContent="flex-start"
+          justifyContent="center"
           alignItems="flex-start"
         >
+
           <Grid xs className="PrizeCabinet">
-            <ul>
+            <ul style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
               {topThreeSliced.map((trophy: any, index: number) => {
                 return (
                   <li
@@ -166,6 +167,7 @@ const WinnerOverviewComponent: React.FC<Props> = (props) => {
                     className={`Trophy ${trophy.trophy} ${getCurrentUserStyling(
                       trophy.id
                     )}`}
+                    style={{ textAlign: 'center' }}
                   >
                     <EmojiEventsIcon className="icon" name="trophy" />
                     <p className={`name`}> {trophy.username}</p>
@@ -181,14 +183,14 @@ const WinnerOverviewComponent: React.FC<Props> = (props) => {
         <Grid
           container
           direction="row"
-          justifyContent="flex-start"
+          justifyContent="center"
           alignItems="flex-start"
         >
           <Grid xs>
             <Grid
               container
               direction="row"
-              justifyContent="flex-start"
+              justifyContent="center"
               alignItems="flex-start"
               className="Board"
             >
@@ -204,22 +206,22 @@ const WinnerOverviewComponent: React.FC<Props> = (props) => {
                         >
                           Username
                         </TableCell>
-                        <TableCell
-                          className={"tableColumnHeader"}
-                          align="right"
-                        >
-                          {columnHeaderText}
-                        </TableCell>
                         {
                           isScoreboard && (
                             <TableCell
                               className={"tableColumnHeader"}
                               align="right"
                             >
-                              Points gained
+                              Points +
                             </TableCell>
                           )
                         }
+                        <TableCell
+                          className={"tableColumnHeader"}
+                          align="right"
+                        >
+                          {columnHeaderText}
+                        </TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -250,12 +252,6 @@ const WinnerOverviewComponent: React.FC<Props> = (props) => {
                               <>{player.username}</>
                             )}
                           </TableCell>
-                          <TableCell
-                            align="right"
-                            className={"tableColumnEntries"}
-                          >
-                            {renderPlayerValue(player)}
-                          </TableCell>
                           {
                             isScoreboard && (<TableCell
                               align="right"
@@ -264,6 +260,13 @@ const WinnerOverviewComponent: React.FC<Props> = (props) => {
                               {getCurrentPointsGained(player)}
                             </TableCell>)
                           }
+                          <TableCell
+                            align="right"
+                            className={"tableColumnEntries"}
+                          >
+                            {renderPlayerValue(player)}
+                          </TableCell>
+
                         </TableRow>
                       ))}
                     </TableBody>
@@ -277,7 +280,7 @@ const WinnerOverviewComponent: React.FC<Props> = (props) => {
         <Grid
           container
           direction="row"
-          justifyContent="flex-start"
+          justifyContent="center"
           alignItems="flex-start"
         >
           <Grid xs>
