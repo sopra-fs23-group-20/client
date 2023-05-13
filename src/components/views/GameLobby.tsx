@@ -55,7 +55,6 @@ const GameLobby: React.FC = () => {
   const currentUserId = localStorage.getItem("userId");
 
   const { showAlert } = useAlert();
-  console.log("GameGetDTO: ", gameGetDTO);
 
   useEffect(() => {
     usePollingRef.current = usePolling;
@@ -80,7 +79,6 @@ const GameLobby: React.FC = () => {
     async function fetchCountries(): Promise<void> {
       try {
         const response = await api.get("/games/" + gameId + "/countries");
-        console.log("The response is: ", response);
         setAllCountries(response.data.sort());
       } catch (error: AxiosError | any) {
         navigate("/game");
@@ -92,7 +90,6 @@ const GameLobby: React.FC = () => {
       try {
         const response = await api.get(`/games/${gameId}`);
         const newGameGetDTO: GameGetDTO = { ...response.data };
-        console.log("Fetched Game : ", newGameGetDTO);
         setGameGetDTO(newGameGetDTO);
       } catch (error: AxiosError | any) {
         showAlert("Lobby doesn't exist", "error");
@@ -138,16 +135,12 @@ const GameLobby: React.FC = () => {
           );
           navigate("/");
         } else {
-          let id = localStorage.getItem("userId");
-          console.log("Joining lobby");
           const response = await api.post(
             `/games/${gameId}/join`,
             currentUserId
           );
           const newGameGetDTO: GameGetDTO = { ...response.data };
-          console.log("Fetched Game : ", newGameGetDTO);
           setGameGetDTO(newGameGetDTO);
-          console.log("Joined Lobby");
         }
       } catch (error) {
         console.error(error);
@@ -173,10 +166,8 @@ const GameLobby: React.FC = () => {
 
   async function leaveGame(): Promise<void> {
     try {
-      console.log("Leaving game");
       setLeftGame(true);
       const response = await api.post(`/games/${gameId}/leave`, currentUserId);
-      console.log("Left game");
       navigate("/game/dashboard");
     } catch (error) {
       console.error(error);
@@ -223,13 +214,10 @@ const GameLobby: React.FC = () => {
         return;
       }
       const userIdAsNumber = parseInt(currentUserId, 10);
-      console.log("userIdAsNumber: ", userIdAsNumber);
       let userWantsToPlayAgain = false;
 
       gameGetDTO.participants.forEach((participant: GameUser) => {
-        console.log("participant: ", participant.userPlayingAgain);
         if (participant.userPlayingAgain) {
-          console.log("participant is playing again");
         }
         if (
           participant.userId === userIdAsNumber &&
@@ -240,11 +228,9 @@ const GameLobby: React.FC = () => {
       });
 
       if (userWantsToPlayAgain) {
-        console.log("In function playAgain");
         navigate(`/game/lobby/${gameGetDTO.nextGameId}`);
         window.location.reload();
       } else {
-        console.log("User does not want to play again");
       }
     }
 
@@ -325,7 +311,6 @@ const GameLobby: React.FC = () => {
       content = <NotJoinedComponent gameId={gameId}></NotJoinedComponent>;
       break;
     default:
-      console.log("Unexpected game state:", gameGetDTO?.currentState);
       content = <div>Unexpected game state</div>;
       break;
   }

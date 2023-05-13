@@ -51,7 +51,6 @@ const GuessingComponent: React.FC<Props> = (props) => {
 
   async function submitGuess(countryGuess: string | null): Promise<void> {
     try {
-      console.log("Submitting guess", valueEntered);
       const guess = {
         userId: currentUserId,
         guess: countryGuess,
