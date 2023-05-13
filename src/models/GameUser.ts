@@ -7,6 +7,7 @@ interface UserData {
   userPlayingAgain: boolean | null;
   hasLeft: boolean | null;
   numberOfGuessesLeft: number | null;
+  guessedCorrectly: boolean | null;
 }
 
 interface GameUserIndexable {
@@ -20,6 +21,7 @@ class GameUser implements GameUserIndexable {
   userPlayingAgain: boolean | null;
   hasLeft: boolean | null;
   numberOfGuessesLeft: number | null;
+  guessedCorrectly: boolean | null;
 
   constructor(
     data: UserData = {
@@ -29,6 +31,7 @@ class GameUser implements GameUserIndexable {
       userPlayingAgain: null,
       hasLeft: null,
       numberOfGuessesLeft: null,
+      guessedCorrectly: null,
     }
   ) {
     this.userId = data.userId ?? null;
@@ -37,6 +40,7 @@ class GameUser implements GameUserIndexable {
     this.userPlayingAgain = data.userPlayingAgain ?? null;
     this.hasLeft = data.hasLeft ?? null;
     this.numberOfGuessesLeft = data.numberOfGuessesLeft ?? null;
+    this.guessedCorrectly = data.guessedCorrectly ?? null;
   }
   [key: string]: string | number | boolean | null;
 }

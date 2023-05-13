@@ -86,7 +86,7 @@ const GuessingComponent: React.FC<Props> = (props) => {
         gameUser.userId == userIdAsNumber &&
         gameUser.numberOfGuessesLeft != null
       ) {
-        if (gameUser.numberOfGuessesLeft <= 0) {
+        if (gameUser.numberOfGuessesLeft <= 0 || gameUser.guessedCorrectly) {
           return true;
         }
       }
