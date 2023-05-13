@@ -48,7 +48,7 @@ export default function Landing() {
 
     return (
         <StyledDiv>
-            <div style={divstyle}>
+            <div>
 
             </div>
             <head>
@@ -61,13 +61,13 @@ export default function Landing() {
             <img
                 src={Logo}
                 alt="Logo"
-                style={{ width: "100px", objectFit: "cover" }}
+                style={{ width: "100px",position: "absolute", top:5, left:5 }}
             />
             </header>
-            <Typography variant="h2" id="Title" position="relative" maxWidth="600px" padding="1em">
+            <Typography variant="h2" id="Title"  maxWidth="600px" padding="3em">
                 Learning & Fun
             </Typography>
-            <Typography variant="h5" id="maintext" style={{}} position="relative" maxWidth="600px" top="50%" padding="1em">
+            <Typography variant="h5" id="maintext" style={{}} maxWidth="600px" top="50%" padding="1em">
                 <Box sx={{ fontWeight: '500'}}>"Guess The Country" is the new webapp: Learn more about Countries by competing in fun quiz rounds.
                 You can also learn more about countries by using the all new learning cards. You can challenge your
                 friends by playing against them and you can see your progress by looking at the leaderboard of
@@ -86,13 +86,18 @@ export default function Landing() {
             >
                 Register
             </Button>
+            <div id="green-circle" style={{ borderRadius: "50%", width:"90vh", height:"90vh", background:"#5EB23F",
+                position:"absolute",top:0, right:-300,}}>
+
+
+            </div>
             <div id="mockup">
                 <img
                     src={Mockup}
                     alt="Mockup of the website"
-                    style={{ width: "600px", objectFit: "cover" }}
-                />
+                    style={{ maxWidth: "300px", objectFit: "cover",position: "absolute", top:"30%", right:20 }}                />
             </div>
+
 
            <Typography position="absolute" bottom="0" align="right">
                <a href="https://github.com/sopra-fs23-group-20/">by Group 20</a>
