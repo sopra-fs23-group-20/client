@@ -53,7 +53,6 @@ const Profile: React.FC = () => {
   // Save user changes
   const saveChanges = async () => {
     try {
-      console.log("Updating User");
       let requestBody = {
         username: username,
         password: password,
@@ -62,11 +61,9 @@ const Profile: React.FC = () => {
         profilePicture: profilePicture,
         status: "ONLINE",
       };
-      console.log(" The Request Body is: ", requestBody);
       const response = await api.put(`/users/${id}`, requestBody, {
         headers: { Authorization: localStorage.getItem("token")! },
       });
-      console.log(response.data);
 
       setEditMode(false);
       const copyCurrentUser = { ...currentUser! };
@@ -163,7 +160,6 @@ const Profile: React.FC = () => {
         response.data.profilePicture
           ? setProfilePicture(response.data.profilePicture)
           : setProfilePicture(null);
-        console.log(response.data);
         setGamesWon(response.data.gamesWon);
         return response.data;
       } catch (error: AxiosError | any) {

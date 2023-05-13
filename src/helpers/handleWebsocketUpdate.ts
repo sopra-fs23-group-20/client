@@ -51,48 +51,54 @@ export function updateGameGetDTO(
 
   switch (websocketPackage?.type) {
     case WebsocketType.GAMESTATEUPDATE:
-      console.log("Updating game state to: " + websocketPackage.payload);
       gameGetDTO2.currentState = websocketPackage.payload;
       break;
     case WebsocketType.CATEGORYUPDATE:
-      console.log("Updating category stack to: " + websocketPackage.payload);
       gameGetDTO2.categoryStack = websocketPackage.payload;
       break;
     case WebsocketType.TIMEUPDATE:
-      console.log("Updating remaining time to: " + websocketPackage.payload);
       gameGetDTO2.remainingTime = websocketPackage.payload;
       break;
     case WebsocketType.POINTSUPDATE:
-      console.log(
-        "Updating remaining round points to: " + websocketPackage.payload
-      );
       gameGetDTO2.remainingRoundPoints = websocketPackage.payload;
       break;
     case WebsocketType.PLAYERUPDATE:
-      console.log("Updating players to: " + websocketPackage.payload);
       gameGetDTO2.participants = websocketPackage.payload;
       break;
     case WebsocketType.ROUNDUPDATE:
-      console.log("Updating round to: " + websocketPackage.payload);
       gameGetDTO2.remainingRounds = websocketPackage.payload;
       break;
     case WebsocketType.GAMEUPDATE:
-      console.log("Updating game to: " + websocketPackage.payload);
       gameGetDTO2 = { ...websocketPackage.payload };
   }
 
-  const roundNumber = gameGetDTO2.remainingRounds === null ? 1 : gameGetDTO2.numberOfRounds - gameGetDTO2.remainingRounds;
+  const roundNumber =
+    gameGetDTO2.remainingRounds === null
+      ? 1
+      : gameGetDTO2.numberOfRounds - gameGetDTO2.remainingRounds;
 
-  if (!('gamePointsHistory' in gameGetDTO2.participants[0]) && roundNumber === 1) {
-    gameGetDTO2.participants = gameGetDTO2.participants.map((participant: any) => {
-      participant['gamePointsHistory'] = { [roundNumber]: participant.gamePoints }
-      return participant
-    });
+  if (
+    !("gamePointsHistory" in gameGetDTO2.participants[0]) &&
+    roundNumber === 1
+  ) {
+    gameGetDTO2.participants = gameGetDTO2.participants.map(
+      (participant: any) => {
+        participant["gamePointsHistory"] = {
+          [roundNumber]: participant.gamePoints,
+        };
+        return participant;
+      }
+    );
   } else {
-    gameGetDTO2.participants = gameGetDTO2.participants.map((participant: any, index: any) => {
-      participant['gamePointsHistory'] = { ...participants[index]['gamePointsHistory'], [roundNumber]: participant.gamePoints }
-      return participant
-    });
+    gameGetDTO2.participants = gameGetDTO2.participants.map(
+      (participant: any, index: any) => {
+        participant["gamePointsHistory"] = {
+          ...participants[index]["gamePointsHistory"],
+          [roundNumber]: participant.gamePoints,
+        };
+        return participant;
+      }
+    );
   }
   return gameGetDTO2;
 }

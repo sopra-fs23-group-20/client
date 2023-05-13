@@ -113,7 +113,6 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
     if (token) {
       onTokenChange(token);
     } else {
-      console.log("No token found in local storage");
     }
   }, [onTokenChange, token]);
 
@@ -152,7 +151,6 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
         },
         { headers: { Authorization: localStorage.getItem("token") ?? "" } }
       );
-      console.log(response.data);
 
       localStorage.removeItem("token");
       localStorage.removeItem("id");

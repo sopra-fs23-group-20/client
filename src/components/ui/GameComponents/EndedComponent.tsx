@@ -145,7 +145,7 @@ const EndedComponent: React.FC<Props> = (props) => {
           showAlert("Cannot join, Game is already started", "error");
         }
       } catch (error) {
-        console.log("Game doesnt exist");
+        console.log("Game doesn't exist");
         showAlert("Cannot join, Game doesn't exist", "error");
       }
     }

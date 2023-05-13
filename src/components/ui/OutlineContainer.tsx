@@ -13,11 +13,7 @@ const OutlineContainer: React.FC<OutlineContainerProps> = ({
   height,
 }) => {
   const countryJSON = JSON.parse(country);
-  //const country = geoJSONCountries.features.find(
-  //  (feature: any) => feature.properties.ISO_A3 === countryCode
-  //);
 
-  console.log(countryJSON);
   if (!countryJSON) {
     return <div>Country not found</div>;
   }

@@ -37,12 +37,6 @@ export const AlertProvider: React.FC<{ children: React.ReactNode }> = ({
     message: string,
     severity: "error" | "success" | "info" | "warning" = "error"
   ) => {
-    console.log(
-      "showAlert called with message:",
-      message,
-      "severity:",
-      severity
-    );
     setAlertMessage(message);
     setAlertSeverity(severity);
     setAlertOpen(true);

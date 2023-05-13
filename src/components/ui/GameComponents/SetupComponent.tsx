@@ -41,7 +41,6 @@ interface Props {
 const SetupComponent: React.FC<Props> = (props) => {
   const navigate = useNavigate();
   const { Canvas } = useQRCode();
-  //console.log("GuessingComponent props: ", props);
   const game = props.gameGetDTO;
   const userId = localStorage.getItem("userId");
   const url = window.location.href;
@@ -62,10 +61,6 @@ const SetupComponent: React.FC<Props> = (props) => {
       return 0;
     });
   }
-
-  console.log("url:");
-
-  console.log(url);
 
   const [open, setOpen] = React.useState(false);
   const [openLink, setOpenLink] = React.useState(false);
@@ -93,7 +88,6 @@ const SetupComponent: React.FC<Props> = (props) => {
         userId
       );
       const requestBody = request.data;
-      console.log(requestBody);
     } catch (error: AxiosError | any) {
       console.log(error);
     }

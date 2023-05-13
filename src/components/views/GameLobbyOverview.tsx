@@ -69,7 +69,7 @@ const GameLobbyOverview: React.FC = () => {
     setOpen(true);
   };
   function timeout(delay: number) {
-    return new Promise( res => setTimeout(res, delay) );
+    return new Promise((res) => setTimeout(res, delay));
   }
 
   const handleClose = (
@@ -85,37 +85,24 @@ const GameLobbyOverview: React.FC = () => {
 
   const fetchLobbies = useCallback(async () => {
     try {
-      console.log("started fetching all games");
       const response = await api.get("/gamesplayable");
       setAllLobbies(response.data);
-      console.log("response:");
-      console.log(response);
     } catch (error) {
       console.error("Error fetching countries:", error);
     }
   }, [setAllLobbies]);
   const fetchquickjoin = useCallback(async () => {
     try {
-      console.log("started fetching quic k game");
       const response = await api.get("/bestgameavailable");
-      //setAllLobbies(response.data);
 
-      console.log("response data:");
-      console.log(response.data);
-      console.log("response data game ID:");
-      console.log(response.data.gameId);
-      navigate(`/game/lobby/` +response.data.gameId)
+      navigate(`/game/lobby/` + response.data.gameId);
     } catch (error) {
       console.error("Error fetching countries:", error);
-      <Alert
-          onClose={handleClose}
-          severity="error"
-          sx={{ width: "100%" }}
-      >
+      <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
         No game available!
-      </Alert>
+      </Alert>;
       //await timeout(1000); //for 1 sec delay
-      navigate(`/game/lobbies/`)
+      navigate(`/game/lobbies/`);
     }
   }, [setQuickGame]);
 
@@ -198,8 +185,8 @@ const GameLobbyOverview: React.FC = () => {
       <Typography sx={{ mb: 2 }} variant="h2">
         Quickjoin
         <Tooltip
-            title="You can direclty join to an available game by clicking on the button"
-            placement="right"
+          title="You can direclty join to an available game by clicking on the button"
+          placement="right"
         >
           <IconButton>
             <InfoIcon />
@@ -207,11 +194,11 @@ const GameLobbyOverview: React.FC = () => {
         </Tooltip>
       </Typography>
       <Button
-          sx={{ mt: 1.5, ml: 2 }}
-          variant="contained"
-          size="small"
-          startIcon={<LoginIcon />}
-          onClick={() => (fetchquickjoin(),navigate(`/game/lobby/`))}
+        sx={{ mt: 1.5, ml: 2 }}
+        variant="contained"
+        size="small"
+        startIcon={<LoginIcon />}
+        onClick={() => (fetchquickjoin(), navigate(`/game/lobby/`))}
       >
         Join game!
       </Button>

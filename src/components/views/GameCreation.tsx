@@ -176,8 +176,6 @@ const GameCreation: React.FC<Props> = (props) => {
   async function startGame(): Promise<void> {
     const userIdString = localStorage.getItem("userId");
 
-    console.log(selectedRegions);
-
     try {
       if (userIdString) {
         const reversedSelectedHints = selectedHints.slice().reverse();
@@ -207,9 +205,7 @@ const GameCreation: React.FC<Props> = (props) => {
             selectedGameMode,
             numberOfGuesses
           );
-          console.log("Game Post DTO: ", gamePostDTO);
           const response = await api.post("/games", gamePostDTO);
-          console.log("Game Post Response: ", response.data);
           navigate(`/game/lobby/${response.data.gameId}`);
         } else {
           showAlert("Please select at least one category", "warning");
