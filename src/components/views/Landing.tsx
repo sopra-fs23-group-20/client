@@ -95,7 +95,7 @@ export default function Landing() {
                 <img
                     src={Mockup}
                     alt="Mockup of the website"
-                    style={{ maxWidth: "300px", objectFit: "cover",position: "absolute", top:"30%", right:20 }}                />
+                    style={{ width: "20%", objectFit: "cover",position: "absolute", top:"30%", right:20 }}                />
             </div>
 
 
