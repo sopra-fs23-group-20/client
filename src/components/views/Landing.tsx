@@ -35,7 +35,7 @@ const ButtonCircle = styled.button`
 const divstyle = {
     top:0,
     right:-300,
-    position:'absolute',
+    //position:'absolute',
     borderRadius: "50%",
     width:"100vh",
     height:"100vh",
