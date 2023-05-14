@@ -153,7 +153,7 @@ const GameLobbyOverview: React.FC = () => {
       <Typography sx={{ mb: 2 }} variant="h2">
         Join using a code
         <Tooltip
-          title="You need a three digit code to join a specific game"
+          title="You need a five digit code to join a specific game"
           placement="right"
         >
           <IconButton>
