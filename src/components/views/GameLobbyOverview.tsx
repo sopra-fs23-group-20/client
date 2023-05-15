@@ -182,20 +182,21 @@ const GameLobbyOverview: React.FC = () => {
       >
         Join game!
       </Button>
-      <Typography sx={{ mb: 2 }} variant="h2">
-
+      <Typography sx={{ mb: 2, display: 'flex', alignItems: 'center' }} variant="h2">
+        {/* Your typography content */}
       </Typography>
       <Button
-        sx={{mb: 2}}
-        variant="contained"
-        size="small"
-        startIcon={<LoginIcon />}
-        onClick={() => (fetchquickjoin(), navigate(`/game/lobby/`))}
+          sx={{ mb: 2 }}
+          variant="contained"
+          size="small"
+          startIcon={<LoginIcon />}
+          onClick={() => (fetchquickjoin(), navigate(`/game/lobby/`))}
       >
         Quickjoin
       </Button>
       <Tooltip
-          title="You can directly join to an available game by clicking on the button"
+          sx={{mb:2}}
+          title="You can directly join an available game by clicking on the button"
           placement="right"
       >
         <IconButton>

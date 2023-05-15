@@ -251,7 +251,7 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
           horizontal: "left",
         }}
       >
-        <Box sx={{ maxWidth: "500p", p: 2 }}>
+        <Box sx={{ width: "500px", p: 1 }}>
           <Typography variant="h5" sx={{ mb: 2 }}>
             Quick Tutorial
           </Typography>
