@@ -385,7 +385,11 @@ export default function Rules() {
                                     country correctly. With a combination of
                                     quick thinking and accurate typing, you'll
                                     be on your way to becoming a master of
-                                    geographical knowledge.{" "}
+                                    geographical knowledge. You can use the
+                                    "Quickjoin" button in order to get directly
+                                    into a lobby, if a lobby is available.
+
+                                    {" "}
                                   </Typography>
                                 </Box>
                               </Grid>
