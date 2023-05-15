@@ -86,6 +86,24 @@ export default function Landing() {
             >
                 Register
             </Button>
+            <Typography variant="h5" id="maintext" style={{}} maxWidth="600px" top="50%" padding="1em">
+                <Box sx={{ fontWeight: '500'}}>If you already have an account:
+                </Box>
+            </Typography>
+            <Button
+                sx={{
+                    marginLeft: 2,
+                    backgroundColor: "primary.main",
+                    color: "primary.contrastText",
+                    left:"200px",
+                }}
+                variant="contained"
+                onClick={() => navigate("/login")}
+            >
+                Login
+            </Button>
+
+
             <div id="green-circle" style={{ borderRadius: "50%", width:"90vh", height:"90vh", background:"#5EB23F",
                 position:"absolute",top:0, right:-300,}}>
 
