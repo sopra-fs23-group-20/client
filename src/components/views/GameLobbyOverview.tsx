@@ -185,7 +185,7 @@ const GameLobbyOverview: React.FC = () => {
       <Typography sx={{ mb: 2 }} variant="h2">
         Quickjoin
         <Tooltip
-          title="You can direclty join to an available game by clicking on the button"
+          title="You can directly join to an available game by clicking on the button"
           placement="right"
         >
           <IconButton>
