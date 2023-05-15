@@ -18,7 +18,7 @@ export const ButtonSelection: React.FC<ButtonSelectionProps> = (props) => {
     "#008D78",
     "#00767D",
     "#005F71",
-    "#2F4858",
+    "#7b92a6",
   ];
 
   if (game == null) {
