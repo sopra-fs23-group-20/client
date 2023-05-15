@@ -139,48 +139,56 @@ const Profile: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Fetch user data on component mount
-  useEffect(() => {
-    getRandomColor();
-    async function fetchUser(): Promise<User | undefined> {
-      try {
-        const response = await api.get(`/users/${id}`, {
-          headers: { Authorization: localStorage.getItem("token")! },
-        });
+    useEffect(() => {
+        getRandomColor();
 
-        setCurrentUser(response.data);
-        setUsername(response.data.username);
-        setPassword(response.data.password);
-        response.data.birthDate
-          ? setBirthDate(new Date(response.data.birthDate))
-          : setBirthDate(null);
-        response.data.nationality
-          ? setNationality(response.data.nationality)
-          : setNationality(null);
-        response.data.profilePicture
-          ? setProfilePicture(response.data.profilePicture)
-          : setProfilePicture(null);
-        setGamesWon(response.data.gamesWon);
-        return response.data;
-      } catch (error: AxiosError | any) {
-        if (error.response.status === 404) {
-          showAlert(error.response.data.message, "error");
-          navigate("/game");
-        } else {
-          showAlert(error.response.data.message, "error");
-          localStorage.removeItem("token");
-          localStorage.removeItem("id");
-          navigate("/register");
-          console.error(error);
+        async function fetchUser(): Promise<User | undefined> {
+            try {
+                const response = await api.get(`/users/${id}`, {
+                    headers: { Authorization: localStorage.getItem("token")! },
+                });
+
+                setCurrentUser(response.data);
+                setUsername(response.data.username);
+                setPassword(response.data.password);
+                response.data.birthDate
+                    ? setBirthDate(new Date(response.data.birthDate))
+                    : setBirthDate(null);
+                response.data.nationality
+                    ? setNationality(response.data.nationality)
+                    : setNationality(null);
+                response.data.profilePicture
+                    ? setProfilePicture(response.data.profilePicture)
+                    : setProfilePicture(null);
+                setGamesWon(response.data.gamesWon);
+
+                // Set the initial value for nationality if it exists
+                response.data.nationality
+                    ? setNationality(response.data.nationality)
+                    : setNationality(null);
+
+                return response.data;
+            } catch (error: AxiosError | any) {
+                // Handle error
+                return undefined;
+            }
         }
-        return undefined;
-      }
-    }
-    fetchUser();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
-  useEffect(() => {
+        fetchUser();
+
+        // Fetch countries when the component mounts
+        async function fetchCountries() {
+            const fetchedCountries = await getNationalities();
+            setAllCountries(fetchedCountries);
+        }
+
+        fetchCountries();
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+
+    useEffect(() => {
     if (currentUser !== null) {
       async function fetchGame(): Promise<any> {
         try {
@@ -231,7 +239,19 @@ const Profile: React.FC = () => {
     }
   }, [currentUser]);
 
-  // Render profile edit form
+    async function getNationalities(): Promise<string[]> {
+        try {
+            const response = await api.get("/countries");
+            const countries = response.data.map((country: { name: string }) => country.name);
+            return countries;
+        } catch (error) {
+            console.error(error);
+            return []; // Return an empty array in case of an error
+        }
+    }
+
+
+    // Render profile edit form
   const renderEditForm = () => {
     if (!currentUser) return null;
     return (
@@ -383,27 +403,30 @@ const Profile: React.FC = () => {
             />
           </LocalizationProvider>
         </Typography>
-        <Typography
-          variant="h4"
-          sx={{
-            marginTop: 2,
-            marginBottom: 1,
-            backgroundColor: "rgba(0, 0, 0, 0.1)",
-            padding: 1,
-            borderRadius: 1,
-          }}
-        >
-          Nationality:
-          <Autocomplete
-            sx={{ marginLeft: 2 }}
-            value={nationality}
-            onChange={(_, newValue) => setNationality(newValue)}
-            options={allCountries}
-            renderInput={(params) => <TextField {...params} />}
-          />
-        </Typography>
+          <Typography
+              variant="h4"
+              sx={{
+                  marginTop: 2,
+                  marginBottom: 1,
+                  backgroundColor: "rgba(0, 0, 0, 0.1)",
+                  padding: 1,
+                  borderRadius: 1,
+              }}
+          >
+              Nationality:
+              <Autocomplete
+                  sx={{ marginLeft: 2, mt:2 }}
+                  value={nationality}
+                  onChange={(_, newValue) => setNationality(newValue)}
+                  options={allCountries}
+                  renderInput={(params) => (
+                      <TextField {...params} label="Select a country" />
+                  )}
+              />
+          </Typography>
 
-        {String(localStorage.getItem("id")) === String(currentUser.id) ? (
+
+          {String(localStorage.getItem("id")) === String(currentUser.id) ? (
           <div>
             <Button
               variant="outlined"
