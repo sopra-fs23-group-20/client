@@ -47,7 +47,7 @@ export const AlertProvider: React.FC<{ children: React.ReactNode }> = ({
       {children}
       <StyledSnackbar
         open={alertOpen}
-        autoHideDuration={6000}
+        autoHideDuration={2500}
         onClose={() => setAlertOpen(false)}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
