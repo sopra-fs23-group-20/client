@@ -137,7 +137,7 @@ const GameLobbyOverview: React.FC = () => {
         <Button
           sx={{ mb: 4 }}
           variant="outlined"
-          size="small"
+          size="large"
           color="error"
           startIcon={<KeyboardArrowLeftIcon />}
           onClick={() => navigate("/game/")}
@@ -176,7 +176,7 @@ const GameLobbyOverview: React.FC = () => {
       <Button
         sx={{ mt: 1.5, ml: 2 }}
         variant="contained"
-        size="small"
+        size="large"
         startIcon={<LoginIcon />}
         disabled={isButtonDisabled}
         onClick={() => (handleClick(), navigate(`/game/lobby/${gameId}`))}
@@ -247,6 +247,7 @@ const GameLobbyOverview: React.FC = () => {
                     <TableCell align="center">{playerArray.length}</TableCell>
                     <TableCell align="center">
                       <Button
+                        size="large"
                         variant="contained"
                         color="success"
                         endIcon={<SendIcon />}
@@ -266,7 +267,7 @@ const GameLobbyOverview: React.FC = () => {
         <Button
           sx={{ mt: 2 }}
           variant="outlined"
-          size="small"
+          size="large"
           startIcon={<RefreshIcon />}
           onClick={() => fetchLobbies()}
         >

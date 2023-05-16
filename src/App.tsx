@@ -1,7 +1,7 @@
 import AppRouter from "./components/routing/routers/AppRouter";
 import React, { useState } from "react";
 import { Box, CssBaseline, ThemeProvider } from "@mui/material";
-
+import landingTheme from "styles/landingTheme";
 import currentUsedTheme from "styles/currentUsedTheme";
 
 const App = () => {
@@ -14,7 +14,6 @@ const App = () => {
         sx={{
           minHeight: "100vh",
           width: "100%",
-
           background: currentUsedTheme.palette.background.default,
         }}
       >

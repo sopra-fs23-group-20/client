@@ -83,7 +83,7 @@ const CountriesOverview: React.FC = () => {
           {...countries[currentCountryIndex]}
         />
         {currentCountryIndex === countries.length - 1 ? (
-          <Button sx={{ marginTop: 4 }} onClick={playAgain}>
+          <Button size="large" sx={{ marginTop: 4 }} onClick={playAgain}>
             Shuffle Deck
           </Button>
         ) : (
@@ -95,6 +95,7 @@ const CountriesOverview: React.FC = () => {
             }}
           >
             <Button
+              size="large"
               onClick={goToNextCountry}
               endIcon={<KeyboardArrowRightIcon />}
               color="success"
@@ -123,7 +124,7 @@ const CountriesOverview: React.FC = () => {
         <Button
           sx={{ mb: 4 }}
           variant="outlined"
-          size="small"
+          size="large"
           color="error"
           startIcon={<KeyboardArrowLeftIcon />}
           onClick={() => navigate("/game/")}

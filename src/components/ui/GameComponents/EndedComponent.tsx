@@ -162,6 +162,7 @@ const EndedComponent: React.FC<Props> = (props) => {
         }}
       >
         <Button
+          size="large"
           sx={{
             alignContent: "center",
             position: "relative",
