@@ -5,8 +5,10 @@ import { LoginGuard } from "components/routing/routeProtectors/LoginGuard";
 import Login from "components/views/Login";
 import Register from "components/views/Register";
 import Landing from "components/views/Landing";
+import landingTheme from "styles/landingTheme";
 
 import React, { FC } from "react";
+import { ThemeProvider } from "@mui/material";
 
 interface AppRouterProps {
   onTokenChange: (token: string | null) => void;
@@ -32,14 +34,14 @@ const AppRouter: FC<AppRouterProps> = ({ onTokenChange }) => {
             </LoginGuard>
           }
         />
-          <Route
-              path="/landing"
-              element={
-                  <LoginGuard>
-                      <Landing />
-                  </LoginGuard>
-              }
-          />
+        <Route
+          path="/landing"
+          element={
+            <LoginGuard>
+              <Landing />
+            </LoginGuard>
+          }
+        />
         <Route
           path="/register"
           element={
@@ -48,7 +50,7 @@ const AppRouter: FC<AppRouterProps> = ({ onTokenChange }) => {
             </LoginGuard>
           }
         />
-        <Route path="/" element={<Navigate to="/game" />} />
+        <Route path="/" element={<Navigate to="/landing" />} />
       </Routes>
     </BrowserRouter>
   );
