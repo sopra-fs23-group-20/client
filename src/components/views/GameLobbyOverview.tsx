@@ -28,6 +28,7 @@ import LoginIcon from "@mui/icons-material/Login";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import useTypewriter from "react-typewriter-hook/build/useTypewriter";
 import GameUser from "models/GameUser";
+import { useAlert } from "helpers/AlertContext";
 
 //for snackbar
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
@@ -51,6 +52,8 @@ const GameLobbyOverview: React.FC = () => {
     setGameId(value);
     setIsButtonDisabled(value === "");
   };
+
+  const { showAlert } = useAlert();
 
   const setToArray = (gameUsersSet: Set<GameUser> | null): GameUser[] => {
     if (!gameUsersSet) return [];
@@ -94,14 +97,12 @@ const GameLobbyOverview: React.FC = () => {
   const fetchquickjoin = useCallback(async () => {
     try {
       const response = await api.get("/bestgameavailable");
-
       navigate(`/game/lobby/` + response.data.gameId);
     } catch (error) {
       console.error("Error fetching countries:", error);
-      <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
-        No game available!
-      </Alert>;
-      //await timeout(1000); //for 1 sec delay
+      showAlert("No game available!", "error");
+      setOpen(true);
+      await timeout(500);
       navigate(`/game/lobbies/`);
     }
   }, [setQuickGame]);
@@ -182,38 +183,30 @@ const GameLobbyOverview: React.FC = () => {
       >
         Join game!
       </Button>
-      <Typography sx={{ mb: 2, display: 'flex', alignItems: 'center' }} variant="h2">
+      <Typography
+        sx={{ mb: 2, display: "flex", alignItems: "center" }}
+        variant="h2"
+      >
         {/* Your typography content */}
       </Typography>
       <Button
-          sx={{ mb: 2 }}
-          variant="contained"
-          size="small"
-          startIcon={<LoginIcon />}
-          onClick={() => (fetchquickjoin(), navigate(`/game/lobby/`))}
+        sx={{ mb: 2 }}
+        variant="contained"
+        size="small"
+        startIcon={<LoginIcon />}
+        onClick={fetchquickjoin}
       >
         Quickjoin
       </Button>
       <Tooltip
-          sx={{mb:2}}
-          title="You can directly join an available game by clicking on the button"
-          placement="right"
+        sx={{ mb: 2 }}
+        title="You can directly join an available game by clicking on the button"
+        placement="right"
       >
         <IconButton>
           <InfoIcon />
         </IconButton>
       </Tooltip>
-      <Stack spacing={2} sx={{ width: "100%" }}>
-        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-          <Alert
-            onClose={handleClose}
-            severity="success"
-            sx={{ width: "100%" }}
-          >
-            Joined Lobby!
-          </Alert>
-        </Snackbar>
-      </Stack>
 
       <TableContainer component={Paper}>
         <Typography variant="h2">Game Lobbies</Typography>
@@ -270,15 +263,6 @@ const GameLobbyOverview: React.FC = () => {
             <div></div>
           )}
         </Table>
-        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-          <Alert
-            onClose={handleClose}
-            severity="success"
-            sx={{ width: "100%" }}
-          >
-            This is a success message!
-          </Alert>
-        </Snackbar>
         <Button
           sx={{ mt: 2 }}
           variant="outlined"
