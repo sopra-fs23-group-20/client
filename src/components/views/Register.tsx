@@ -40,7 +40,7 @@ const AppName = styled("h1")({
   WebkitBackgroundClip: "text",
   color: "transparent",
   backgroundImage:
-      "linear-gradient(90deg, #3498DB 0%, #21618C 10%, #186A3B 25%, #239B56 40%, #B3B6B7 55%, #F4F6F7 70%, #C39BD3 85%, #3498DB 100%)",
+    "linear-gradient(90deg, #3498DB 0%, #21618C 10%, #186A3B 25%, #239B56 40%, #B3B6B7 55%, #F4F6F7 70%, #C39BD3 85%, #3498DB 100%)",
   backgroundSize: "200% 200%",
   animation: "textShimmer 6s linear infinite",
 });
@@ -242,6 +242,7 @@ const Register: React.FC = () => {
           </Grid>
           <Box sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}>
             <Button
+              size="large"
               fullWidth
               id="regular-register"
               variant="contained"
@@ -258,6 +259,7 @@ const Register: React.FC = () => {
           </Box>
           <Box sx={{ display: "flex", justifyContent: "center" }}>
             <Button
+              size="large"
               fullWidth
               variant="contained"
               type="button"
@@ -290,6 +292,7 @@ const Register: React.FC = () => {
         >
           <Typography variant="h5">Already Registered? </Typography>
           <Button
+            size="large"
             sx={{
               marginLeft: 2,
               backgroundColor: "primary.main",

@@ -8,7 +8,7 @@ import { Button, Container, DialogActions, Typography } from "@mui/material";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import useTypewriter from "react-typewriter-hook/build/useTypewriter";
 
-interface Props { }
+interface Props {}
 
 const LeaderboardComponent: React.FC<Props> = (props) => {
   const navigate = useNavigate();
@@ -85,7 +85,11 @@ const LeaderboardComponent: React.FC<Props> = (props) => {
   };
 
   const renderPlayerUsernameTableCell = (player: any) => {
-    return <Link to={`/game/profile/${player.id}`} style={{ color: "#e0e0e0" }}>{player.username}</Link>;
+    return (
+      <Link to={`/game/profile/${player.id}`} style={{ color: "#e0e0e0" }}>
+        {player.username}
+      </Link>
+    );
   };
 
   return (
@@ -120,7 +124,7 @@ const LeaderboardComponent: React.FC<Props> = (props) => {
         <Button
           sx={{ mb: 4 }}
           variant="outlined"
-          size="small"
+          size="large"
           color="error"
           startIcon={<KeyboardArrowLeftIcon />}
           onClick={() => navigate("/game/")}

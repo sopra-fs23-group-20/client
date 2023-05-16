@@ -136,7 +136,7 @@ const GameLobbyOverview: React.FC = () => {
         <Button
           sx={{ mb: 4 }}
           variant="outlined"
-          size="small"
+          size="large"
           color="error"
           startIcon={<KeyboardArrowLeftIcon />}
           onClick={() => navigate("/game/")}
@@ -175,29 +175,32 @@ const GameLobbyOverview: React.FC = () => {
       <Button
         sx={{ mt: 1.5, ml: 2 }}
         variant="contained"
-        size="small"
+        size="large"
         startIcon={<LoginIcon />}
         disabled={isButtonDisabled}
         onClick={() => (handleClick(), navigate(`/game/lobby/${gameId}`))}
       >
         Join game!
       </Button>
-      <Typography sx={{ mb: 2, display: 'flex', alignItems: 'center' }} variant="h2">
+      <Typography
+        sx={{ mb: 2, display: "flex", alignItems: "center" }}
+        variant="h2"
+      >
         {/* Your typography content */}
       </Typography>
       <Button
-          sx={{ mb: 2 }}
-          variant="contained"
-          size="small"
-          startIcon={<LoginIcon />}
-          onClick={() => (fetchquickjoin(), navigate(`/game/lobby/`))}
+        sx={{ mb: 2 }}
+        variant="contained"
+        size="large"
+        startIcon={<LoginIcon />}
+        onClick={() => (fetchquickjoin(), navigate(`/game/lobby/`))}
       >
         Quickjoin
       </Button>
       <Tooltip
-          sx={{mb:2}}
-          title="You can directly join an available game by clicking on the button"
-          placement="right"
+        sx={{ mb: 2 }}
+        title="You can directly join an available game by clicking on the button"
+        placement="right"
       >
         <IconButton>
           <InfoIcon />
@@ -254,6 +257,7 @@ const GameLobbyOverview: React.FC = () => {
                     <TableCell align="center">{playerArray.length}</TableCell>
                     <TableCell align="center">
                       <Button
+                        size="large"
                         variant="contained"
                         color="success"
                         endIcon={<SendIcon />}
@@ -282,7 +286,7 @@ const GameLobbyOverview: React.FC = () => {
         <Button
           sx={{ mt: 2 }}
           variant="outlined"
-          size="small"
+          size="large"
           startIcon={<RefreshIcon />}
           onClick={() => fetchLobbies()}
         >

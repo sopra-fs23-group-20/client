@@ -342,7 +342,7 @@ const GameCreation: React.FC<Props> = (props) => {
           <Button
             sx={{ mb: 4 }}
             variant="outlined"
-            size="small"
+            size="large"
             color="error"
             startIcon={<KeyboardArrowLeftIcon />}
             onClick={() => navigate("/game/")}
@@ -710,6 +710,7 @@ const GameCreation: React.FC<Props> = (props) => {
               }}
             >
               <Button
+                size="large"
                 sx={{ mt: 2, mb: 2 }}
                 variant="outlined"
                 onClick={() => startGame()}

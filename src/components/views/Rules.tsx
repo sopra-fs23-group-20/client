@@ -112,9 +112,9 @@ export default function Rules() {
                     }}
                   >
                     <Button
+                      size="large"
                       sx={{ mb: 4 }}
                       variant="outlined"
-                      size="small"
                       color="error"
                       startIcon={<KeyboardArrowLeftIcon />}
                       onClick={() => navigate("/game/")}
@@ -387,9 +387,7 @@ export default function Rules() {
                                     be on your way to becoming a master of
                                     geographical knowledge. You can use the
                                     "Quickjoin" button in order to get directly
-                                    into a lobby, if a lobby is available.
-
-                                    {" "}
+                                    into a lobby, if a lobby is available.{" "}
                                   </Typography>
                                 </Box>
                               </Grid>
@@ -432,7 +430,7 @@ export default function Rules() {
             <Button
               sx={{ mb: 4 }}
               variant="outlined"
-              size="small"
+              size="large"
               color="error"
               startIcon={<KeyboardArrowLeftIcon />}
               onClick={() => navigate("/game/")}

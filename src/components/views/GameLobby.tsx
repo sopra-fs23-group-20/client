@@ -347,7 +347,12 @@ const GameLobby: React.FC = () => {
           margin: "1rem",
         }}
       >
-        <Button color="error" variant="outlined" onClick={handleClickOpen}>
+        <Button
+          size="large"
+          color="error"
+          variant="outlined"
+          onClick={handleClickOpen}
+        >
           Leave Game
         </Button>
       </Box>
@@ -367,6 +372,7 @@ const GameLobby: React.FC = () => {
         </DialogContent>
         <DialogActions>
           <Button
+            size="large"
             variant="outlined"
             color="error"
             onClick={() => {
@@ -377,6 +383,7 @@ const GameLobby: React.FC = () => {
             Leave Game
           </Button>
           <Button
+            size="large"
             variant="outlined"
             color="success"
             onClick={handleClose}

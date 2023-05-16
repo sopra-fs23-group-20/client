@@ -233,6 +233,7 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
         </div>
       </Box>
       <Button
+        size="large"
         aria-describedby={id}
         variant="contained"
         color="success"
@@ -283,6 +284,7 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
             </Typography>
             <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
               <Button
+                size="large"
                 variant="contained"
                 color="primary"
                 onClick={() => navigate("/game/lobbyCreation")}
@@ -299,6 +301,7 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
             </Typography>
             <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
               <Button
+                size="large"
                 variant="contained"
                 color="primary"
                 onClick={() => navigate("/game/lobbies")}
@@ -311,6 +314,7 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
           <Typography align="center" sx={{ p: 2 }}>
             Need more help?
             <Button
+              size="large"
               variant="outlined"
               color="success"
               onClick={() => navigate("/game/rules")}
@@ -344,6 +348,7 @@ const MainPage: React.FC<Props> = ({ onTokenChange }) => {
           }}
         >
           <Button
+            size="large"
             id="basic-button"
             aria-controls={open ? "basic-menu" : undefined}
             aria-haspopup="true"

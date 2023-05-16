@@ -171,6 +171,7 @@ const SetupComponent: React.FC<Props> = (props) => {
                     title="Copied Game ID!"
                   >
                     <Button
+                      size="large"
                       variant="contained"
                       color="success"
                       endIcon={<ContentCopyIcon />}
@@ -203,6 +204,7 @@ const SetupComponent: React.FC<Props> = (props) => {
                     title="Copied Game Link!"
                   >
                     <Button
+                      size="large"
                       variant="contained"
                       color="success"
                       endIcon={<ContentCopyIcon />}
@@ -480,7 +482,12 @@ const SetupComponent: React.FC<Props> = (props) => {
         </DialogContent>
       </FormControl>
       {parseInt(userId ?? "0") === game?.lobbyCreator?.userId ? (
-        <Button sx={{ mb: 4 }} variant="outlined" onClick={() => startGame()}>
+        <Button
+          size="large"
+          sx={{ mb: 4 }}
+          variant="outlined"
+          onClick={() => startGame()}
+        >
           Start Game
         </Button>
       ) : (
