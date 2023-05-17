@@ -133,7 +133,7 @@ So far we have the following 5 hints based on which the users can try to guess a
 
 ### Friends System
 
-The option to add friends, compare yourself with them and invite them to a lobby
+The option to add friends, compare yourself with them and invite them to a lobby.
 
 ### Achievements
 
