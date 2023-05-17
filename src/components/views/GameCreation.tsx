@@ -686,12 +686,13 @@ const GameCreation: React.FC<Props> = (props) => {
                         color="primary"
                       />
                     }
-                    label="Open Lobby"
+                    label="Public Lobby"
                   />
                 </Grid>
                 <Grid item>
                   <Tooltip
-                    title="Open lobbies can be found by everyone in the lobby browser"
+                    title="Public lobbies can be found by everyone in the lobby browser. If you want to play only with your friends
+                    you can deactivate this field and share the link/code only with your friends"
                     placement="right"
                   >
                     <IconButton>
