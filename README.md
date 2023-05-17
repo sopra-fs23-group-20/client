@@ -93,32 +93,32 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 
 ### Main Page
 
-After registering the user will be redirected to the main page. There the user will have the option to either start a game, join a game, read the rules or click on the menu to have further options such as editing the profile, learning the countries in a flashcard mode and logging out. <br />
+After registering the user will be redirected to the main page. There the user will have the option to either start a game, join a game, read the rules or click on the menu to have further options such as editing the profile, learning the countries in a flashcard mode and logging out. <br /> <br />
 ![Main Page](src/components/views/images/main_page.png)
 
 ### Game Creation
 
-On the game creation page the user has the option to create a game and modify different settings as shown in the picture. <br />
+On the game creation page the user has the option to create a game and modify different settings as shown in the picture. <br /> <br />
 ![Game Creation](src/components/views/images/game_settings.png)
 
 ### Lobby Overview
 
-In the lobby overview page the user has 3 possiblilities to join a game: Either use the Quickjoin button to join the lobby with the most participants, use a lobby code, or use the lobby overview table to join any of the open lobbies. <br />
+In the lobby overview page the user has 3 possiblilities to join a game: Either use the Quickjoin button to join the lobby with the most participants, use a lobby code, or use the lobby overview table to join any of the open lobbies. <br /> <br />
 ![Lobby Overview](src/components/views/images/lobby_overview.png)
 
 ### Game Lobby
 
-In the game lobby the users can see the lobby joining information where a QR code to the lobby is provided as well as the lobby code and the lobby link. On this page there is also some additional information such as the current participants and an overview of the game settings. <br />
+In the game lobby the users can see the lobby joining information where a QR code to the lobby is provided as well as the lobby code and the lobby link. On this page there is also some additional information such as the current participants and an overview of the game settings. <br /> <br />
 ![Game Lobby](src/components/views/images/game_lobby.png)
 
 ### Gameplay
 
-During a game the particiapants are supposed to guess a country based on the various hints which will appear in intervals of 9 seconds (per default). In the "Classic" mode the user is supposed to type in the guess using the search box which has autocompleton. In the "Blitz" mode there are several buttons and the user is supposed to click on the correct button. The faster a correct guess is made the more points you get. <br />
+During a game the particiapants are supposed to guess a country based on the various hints which will appear in intervals of 9 seconds (per default). In the "Classic" mode the user is supposed to type in the guess using the search box which has autocompleton. In the "Blitz" mode there are several buttons and the user is supposed to click on the correct button. The faster a correct guess is made the more points you get. <br /> <br />
 ![Gameplay](src/components/views/images/during_game.png)
 
 ### Scoreboard
 
-At the end of each round and at the end of the game the scoreboard is displayed, showing the placement of each user and how many points everyone has gained in the previous round. <br />
+At the end of each round and at the end of the game the scoreboard is displayed, showing the placement of each user and how many points everyone has gained in the previous round. <br /> <br />
 ![Scoreboard](src/components/views/images/scoreboard.png)
 
 ## Roadmap
