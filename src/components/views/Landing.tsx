@@ -69,7 +69,7 @@ export default function Landing() {
               style={{ width: "100px", position: "absolute", top: 5, left: 5 }}
             />
           </header>
-          <Typography variant="h2" id="Title" maxWidth="600px" padding="3em">
+          <Typography variant="h2" id="Title" maxWidth="600px" padding="3em" color="black">
             Learning & Fun
           </Typography>
           <Typography
