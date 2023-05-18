@@ -168,7 +168,7 @@ const WinnerOverviewComponent: React.FC<Props> = (props) => {
                     className={`Trophy ${trophy.trophy} ${getCurrentUserStyling(
                       trophy.id
                     )}`}
-                    style={{ textAlign: 'center' }}
+                    style={{ textAlign: 'center', maxWidth:'20%' }}
                   >
                     <EmojiEventsIcon className="icon" name="trophy" />
                     <p className={`name`}> {trophy.username}</p>
