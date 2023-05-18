@@ -1,7 +1,7 @@
-import { GoogleMap, useLoadScript, MarkerF } from "@react-google-maps/api";
+import { GoogleMap, useLoadScript, Marker } from "@react-google-maps/api";
 import * as React from "react";
 import Country from "models/Country";
-import Category from "models/Category";
+import { useState } from "react";
 
 interface MapContainerProps {
   country: Country;
@@ -17,6 +17,9 @@ const MapContainer: React.FC<MapContainerProps> = ({
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY || "",
   });
+
+  const [lastCenter, setLastCenter] = useState<google.maps.LatLng | null>(null);
+  const [map, setMap] = useState<google.maps.Map | null>(null);
 
   const mapContainerStyle = {
     width: width,
@@ -72,6 +75,7 @@ const MapContainer: React.FC<MapContainerProps> = ({
     gestureHandling: "cooperative",
     mapTypeId: "hybrid",
     tilt: 0,
+
     mapTypeControlOptions: {
       mapTypeIds: ["hybrid", "roadmap"],
     },
@@ -90,16 +94,59 @@ const MapContainer: React.FC<MapContainerProps> = ({
   }
   if (loadError) return <div>Error loading maps</div>;
   if (!isLoaded) return <div>Loading maps</div>;
+
+  const handleClick = (e: google.maps.MapMouseEvent) => {
+    if (
+      lastCenter &&
+      e.latLng &&
+      lastCenter.lat().toFixed(6) === e.latLng.lat().toFixed(6) &&
+      lastCenter.lng().toFixed(6) === e.latLng.lng().toFixed(6)
+    ) {
+      e.stop();
+    } else if (e.latLng) {
+      setLastCenter(e.latLng);
+    }
+  };
+
+  const handleLoad = (map: google.maps.Map) => {
+    setMap(map);
+  };
+
+  const handleCenterChanged = () => {
+    if (map) {
+      const newCenter = map.getCenter();
+      if (newCenter)
+        if (!newCenter.equals(lastCenter)) {
+          setLastCenter(newCenter);
+        }
+    }
+  };
+
   return (
-    <div>
+    <div style={{ position: "relative" }}>
       <GoogleMap
         mapContainerStyle={mapContainerStyle}
         center={center}
         zoom={5}
         options={mapOptions}
+        onClick={handleClick}
+        onLoad={handleLoad}
+        onCenterChanged={handleCenterChanged}
       >
-        <MarkerF position={center} />
+        <Marker position={center} />
       </GoogleMap>
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          height: "100%",
+          width: "100%",
+          zIndex: 1,
+          cursor: "pointer",
+        }}
+        onClick={(e) => e.stopPropagation()}
+      />
     </div>
   );
 };
