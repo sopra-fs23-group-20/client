@@ -16,13 +16,28 @@ const CountriesOverview: React.FC = () => {
   const [countries, setCountries] = useState<Country[] | null>(null);
   const [currentCountryIndex, setCurrentCountryIndex] = useState<number>(0);
 
-  const shuffleArray = (array: any[]) => {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-  };
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      switch (event.key) {
+        case "ArrowRight":
+          goToNextCountry();
+          break;
+        case "ArrowLeft":
+          goToPreviousCountry();
+          if (currentCountryIndex > 0) {
+            setCurrentCountryIndex((prevIndex) => prevIndex - 1);
+          }
+          break;
+        default:
+          break;
+      }
+    };
 
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [currentCountryIndex]);
   useEffect(() => {
     async function getCountries(): Promise<void> {
       try {
@@ -39,7 +54,6 @@ const CountriesOverview: React.FC = () => {
                 getCountry.outline.outline
               )
           );
-          shuffleArray(randomizedCountries);
           setCountries(randomizedCountries);
         }
       } catch (error) {
@@ -54,6 +68,14 @@ const CountriesOverview: React.FC = () => {
     if (countries !== null) {
       setCurrentCountryIndex((prevIndex) =>
         prevIndex === countries.length - 1 ? 0 : prevIndex + 1
+      );
+    }
+  };
+
+  const goToPreviousCountry = () => {
+    if (countries !== null) {
+      setCurrentCountryIndex((prevIndex) =>
+        prevIndex === 0 ? countries.length - 1 : prevIndex - 1
       );
     }
   };
@@ -82,29 +104,23 @@ const CountriesOverview: React.FC = () => {
           key={currentCountryIndex}
           {...countries[currentCountryIndex]}
         />
-        {currentCountryIndex === countries.length - 1 ? (
-          <Button size="large" sx={{ marginTop: 4 }} onClick={playAgain}>
-            Shuffle Deck
-          </Button>
-        ) : (
-          <Container
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              marginTop: 4,
-            }}
+        <Container
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            marginTop: 4,
+          }}
+        >
+          <Button
+            size="large"
+            onClick={goToNextCountry}
+            endIcon={<KeyboardArrowRightIcon />}
+            color="success"
+            variant="contained"
           >
-            <Button
-              size="large"
-              onClick={goToNextCountry}
-              endIcon={<KeyboardArrowRightIcon />}
-              color="success"
-              variant="contained"
-            >
-              Next Country
-            </Button>
-          </Container>
-        )}
+            Next Country
+          </Button>
+        </Container>
       </div>
     );
   }
