@@ -107,7 +107,7 @@ const LeaderboardComponent: React.FC<Props> = (props) => {
         variant="h1"
         sx={{
           textAlign: "center",
-          minHeight: "56px",
+          minHeight: "32px",
           textShadow: "2px 2px 4px rgba(0, 0, 0, 0.25)",
         }}
       >
@@ -122,7 +122,7 @@ const LeaderboardComponent: React.FC<Props> = (props) => {
         }}
       >
         <Button
-          sx={{ mb: 4 }}
+          sx={{ mb: 2 }}
           variant="outlined"
           size="large"
           color="error"

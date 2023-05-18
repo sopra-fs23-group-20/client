@@ -232,10 +232,10 @@ const ScoreboardComponent: React.FC<Props> = (props) => {
   };
 
   const renderTitle = () => (
-    <h1 className="Title">
+    <h2 className="Title">
       {" "}
       {isGameEnded ? "Final Scoreboard" : "Scoreboard"}
-    </h1>
+    </h2>
   );
 
   const renderAdditionalInformation = () => (
@@ -277,7 +277,7 @@ const ScoreboardComponent: React.FC<Props> = (props) => {
             }}
           >
             {gameGetDTO?.remainingTime != null ? (
-              <Typography variant="h4" sx={{ marginTop: 2 }}>
+              <Typography variant="h4" sx={{ marginTop: 1 }}>
                 Time until next Round: {gameGetDTO.remainingTime.toString()}
               </Typography>
             ) : (
