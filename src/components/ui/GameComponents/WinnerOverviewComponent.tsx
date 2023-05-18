@@ -159,7 +159,8 @@ const WinnerOverviewComponent: React.FC<Props> = (props) => {
         >
 
           <Grid xs className="PrizeCabinet">
-            <ul style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <ul style={{ display: 'flex', justifyContent: 'center', alignItems: 'center',
+            minWidth:'20%'}}>
               {topThreeSliced.map((trophy: any, index: number) => {
                 return (
                   <li

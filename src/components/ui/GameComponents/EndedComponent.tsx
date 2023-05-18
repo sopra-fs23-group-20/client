@@ -159,6 +159,7 @@ const EndedComponent: React.FC<Props> = (props) => {
           justifyContent: "center",
           alignItems: "center",
           height: "100%",
+          maxWidth:"100%",
         }}
       >
         <Button
@@ -278,6 +279,7 @@ const EndedComponent: React.FC<Props> = (props) => {
                 listStyle: "none",
                 margin: 0,
                 padding: 0,
+                maxWidth:"100%",
               }}
             >
               {playersPlayingAgain.map((data) => (
@@ -290,7 +292,7 @@ const EndedComponent: React.FC<Props> = (props) => {
                   <Chip
                     avatar={
                       <Avatar
-                        alt="Natacha"
+                        alt="Avatar"
                         src={`https://api.dicebear.com/6.x/pixel-art/svg?seed=${data.username}`}
                       />
                     }
