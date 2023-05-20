@@ -376,6 +376,7 @@ const GameLobby: React.FC = () => {
             variant="outlined"
             color="error"
             onClick={() => {
+              showAlert("You left the Game", "warning");
               leaveGame();
               handleClose();
             }}

@@ -3,6 +3,7 @@ import { api } from "helpers/api";
 import {
   Box,
   Button,
+  Chip,
   CircularProgress,
   Container,
   Divider,
@@ -70,11 +71,6 @@ const GuessingComponent: React.FC<Props> = (props) => {
     }
   }
 
-  const formatNumber = (number: number): string => {
-    const formattedNumber = new Intl.NumberFormat("en-US").format(number);
-    return formattedNumber.replace(/,/g, "'");
-  };
-
   const outOfGuesses = (): boolean => {
     const gameUsers = game?.participants;
     if (gameUsers == null || gameUsers == undefined || currentUserId == null)
@@ -109,6 +105,48 @@ const GuessingComponent: React.FC<Props> = (props) => {
       }
     }
     return 0;
+  };
+
+  const dividerText = (): string => {
+    if (
+      game == null ||
+      game.roundDuration == null ||
+      game.categoryStack == null ||
+      game.categoryStack.selectedCategories == null ||
+      game.categoryStack.remainingCategories == null ||
+      game.remainingTime == null ||
+      game.categoryStack.currentCategory?.type == undefined
+    ) {
+      return "Yeet";
+    }
+    const timeBetweenCategoryUpdates =
+      game?.roundDuration / game.categoryStack.selectedCategories.length;
+    const timeToNextUpdate =
+      game.remainingTime +
+      2 -
+      timeBetweenCategoryUpdates *
+        game.categoryStack.remainingCategories.length;
+    let currentActualHint = game.categoryStack.currentCategory?.type.toString();
+    currentActualHint =
+      currentActualHint.charAt(0).toUpperCase() +
+      currentActualHint.slice(1).toLowerCase();
+
+    const currentHintText = `Current Hint: ${currentActualHint}`;
+    let nextHintText = "";
+    if (game.categoryStack.remainingCategories.length >= 1) {
+      let nextActualHint =
+        game.categoryStack.remainingCategories[
+          game.categoryStack.remainingCategories.length - 1
+        ].toString();
+      nextActualHint =
+        nextActualHint.charAt(0).toUpperCase() +
+        nextActualHint.slice(1).toLowerCase();
+      nextHintText = ` | Next Hint: ${nextActualHint} in ${timeToNextUpdate} seconds`;
+    } else {
+      nextHintText = ` | Game finished in ${game.remainingTime} seconds`;
+    }
+
+    return currentHintText + nextHintText;
   };
 
   return (
@@ -234,7 +272,14 @@ const GuessingComponent: React.FC<Props> = (props) => {
           )}
         </Box>
       </Box>
-      <Divider sx={{ marginTop: "2rem" }}> Current Hint:</Divider>
+      <Divider sx={{ marginTop: "2rem" }}>
+        <Chip
+          size="medium"
+          color="info"
+          variant="outlined"
+          label={dividerText()}
+        ></Chip>{" "}
+      </Divider>
       <Box sx={{ height: "50%", width: "100%", marginTop: "5%" }}>
         <HintContainer currentCaregory={game?.categoryStack?.currentCategory} />
       </Box>
