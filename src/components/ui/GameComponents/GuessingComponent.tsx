@@ -141,7 +141,7 @@ const GuessingComponent: React.FC<Props> = (props) => {
       nextActualHint =
         nextActualHint.charAt(0).toUpperCase() +
         nextActualHint.slice(1).toLowerCase();
-      nextHintText = ` | Next Hint: ${nextActualHint} in ${timeToNextUpdate} seconds`;
+      nextHintText = ` | Next: ${nextActualHint} in ${timeToNextUpdate} seconds`;
     } else {
       nextHintText = ` | Round ends in ${game.remainingTime} seconds`;
     }
@@ -272,13 +272,20 @@ const GuessingComponent: React.FC<Props> = (props) => {
           )}
         </Box>
       </Box>
-      <Divider sx={{ marginTop: "2rem" }}>
-        <Chip
-          size="medium"
-          color="info"
-          variant="outlined"
-          label={dividerText()}
-        ></Chip>{" "}
+
+      <Divider textAlign="center" sx={{ marginTop: "2rem" }}>
+        <Box width="100%">
+          <Chip
+            sx={{
+              height: "3rem",
+              width: "100%",
+            }}
+            size="medium"
+            color="info"
+            variant="outlined"
+            label={dividerText()}
+          />
+        </Box>
       </Divider>
       <Box sx={{ height: "50%", width: "100%", marginTop: "5%" }}>
         <HintContainer currentCaregory={game?.categoryStack?.currentCategory} />
