@@ -143,7 +143,7 @@ const GuessingComponent: React.FC<Props> = (props) => {
         nextActualHint.slice(1).toLowerCase();
       nextHintText = ` | Next Hint: ${nextActualHint} in ${timeToNextUpdate} seconds`;
     } else {
-      nextHintText = ` | Game finished in ${game.remainingTime} seconds`;
+      nextHintText = ` | Round ends in ${game.remainingTime} seconds`;
     }
 
     return currentHintText + nextHintText;
