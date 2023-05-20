@@ -187,7 +187,7 @@ const GuessingComponent: React.FC<Props> = (props) => {
             id="combo-box-demo"
             options={allCountries}
             value={valueEntered}
-            sx={{ width: "90%", height: "200%" }}
+            sx={{ width: "88%", height: "3.5rem" }}
             onChange={(event, value) => setValueEntered(value)}
             renderInput={(params) => (
               <TextField {...params} label="Enter your Guess here" />
@@ -195,8 +195,7 @@ const GuessingComponent: React.FC<Props> = (props) => {
           />
           <Button
             variant="outlined"
-            size="large"
-            sx={{ marginLeft: "2%", height: "100%" }}
+            sx={{ marginLeft: "2%", height: "3.5rem", width: "12%" }}
             onClick={() => submitGuess(valueEntered)}
             disabled={!valueEntered || outOfGuesses()}
           >
@@ -280,7 +279,7 @@ const GuessingComponent: React.FC<Props> = (props) => {
               height: "3rem",
               width: "100%",
             }}
-            size="medium"
+            size="small"
             color="info"
             variant="outlined"
             label={dividerText()}
