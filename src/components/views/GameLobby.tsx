@@ -320,7 +320,7 @@ const GameLobby: React.FC = () => {
       gameGetDTO?.currentState === GameState.SETUP ||
       gameGetDTO?.currentState === GameState.ENDED
     ) {
-      showAlert("Warning: Game has been left!", "warning");
+      showAlert("You left the Game", "warning");
       leaveGame();
     } else {
       setDialogOpen(true);
