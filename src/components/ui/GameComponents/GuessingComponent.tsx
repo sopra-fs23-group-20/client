@@ -281,7 +281,7 @@ const GuessingComponent: React.FC<Props> = (props) => {
             }}
             size="small"
             color="info"
-            variant="outlined"
+            variant="filled"
             label={dividerText()}
           />
         </Box>
