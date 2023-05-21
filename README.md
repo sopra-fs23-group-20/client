@@ -27,6 +27,9 @@ Our project aims to create an interactive platform that makes learning geography
 
 ## High-level components
 
+### Landing Page
+The landing page should inform the user about what GTC actually is. The next step is to make the user click on either the register button (if the user does not has an account) or click on the login button.
+
 ### Main Page
 
 After registering the user will be redirected to the main page. There the user will have the option to either start a game, join a game, read the rules or click on the menu to have further options such as editing the profile, learning the countries in a flashcard mode and logging out.
@@ -90,6 +93,9 @@ It correctly bundles React in production mode and optimizes the build for the be
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
 ## Illustrations
+### Landing Page
+The landing page should look like a modern "landing page" by giving the user a short introduction and should make the user clicking on the register button.  <br /> <br />
+![Landing Page](src/components/views/images/LandingPage.png)
 
 ### Main Page
 
