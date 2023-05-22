@@ -46,118 +46,139 @@ const divstyle = {
 
 export default function Landing() {
   const navigate = useNavigate();
+    const [width, setWidth] = React.useState(window.innerWidth);
+    const breakPoint = 1080;
+
+
+
+    useEffect(() => {
+        const handleWindowResize = () => setWidth(window.innerWidth);
+        window.addEventListener("resize", handleWindowResize);
+
+
+        return () => window.removeEventListener("resize", handleWindowResize);
+    },[]);
 
   return (
+      <div>
+          {width > breakPoint? (
+              <div>
+                  <Box
+                      sx={{
+                          minHeight: "100vh",
+                          width: "100%",
+                          background: landingTheme.palette.background.default,
+                      }}
+                  >
+                      <StyledDiv>
+                          <div></div>
+                          <head>
+                              <title>Guess the Country - Welcome!</title>
+                          </head>
+                          <header>
+                              <style></style>
+                              <img
+                                  src={Logo}
+                                  alt="Logo"
+                                  style={{ width: "100px", position: "absolute", top: 5, left: 5 }}
+                              />
+                          </header>
+                          <Typography variant="h2" id="Title" maxWidth="600px" padding="3em" color="black">
+                              Learning & Fun
+                          </Typography>
+                          <Typography
+                              variant="h5"
+                              id="maintext"
+                              style={{}}
+                              maxWidth="600px"
+                              top="50%"
+                              padding="1em"
+                          >
+                              <Box sx={{ fontWeight: "500" }}>
+                                  "Guess The Country" is the new webapp: Learn more about Countries
+                                  by competing in fun quiz rounds. You can also learn more about
+                                  countries by using the all new learning cards. You can challenge
+                                  your friends by playing against them and you can see your progress
+                                  by looking at the leaderboard of all players. Join Now!
+                              </Box>
+                          </Typography>
+                          <Button
+                              size="large"
+                              sx={{
+                                  marginLeft: 2,
+                                  backgroundColor: "primary.main",
+                                  color: "primary.contrastText",
+                                  left: "200px",
+                              }}
+                              variant="contained"
+                              onClick={() => navigate("/register")}
+                          >
+                              Register
+                          </Button>
+                          <Typography
+                              variant="h5"
+                              id="maintext"
+                              style={{}}
+                              maxWidth="600px"
+                              top="50%"
+                              padding="1em"
+                          >
+                              <Box sx={{ fontWeight: "500" }}>
+                                  If you already have an account:
+                              </Box>
+                          </Typography>
+                          <Button
+                              size="large"
+                              sx={{
+                                  marginLeft: 2,
+                                  backgroundColor: "primary.main",
+                                  color: "primary.contrastText",
+                                  left: "200px",
+                              }}
+                              variant="contained"
+                              onClick={() => navigate("/login")}
+                          >
+                              Login
+                          </Button>
+
+                          <div
+                              id="green-circle"
+                              style={{
+                                  borderRadius: "50%",
+                                  width: "90vh",
+                                  height: "90vh",
+                                  background: "#5EB23F",
+                                  position: "absolute",
+                                  top: 0,
+                                  right: -300,
+                              }}
+                          ></div>
+                          <div id="mockup">
+                              <img
+                                  src={Mockup}
+                                  alt="Mockup of the website"
+                                  style={{
+                                      width: "20%",
+                                      objectFit: "cover",
+                                      position: "absolute",
+                                      top: "30%",
+                                      right: 20,
+                                  }}
+                              />
+                          </div>
+
+                          <Typography position="absolute" bottom="0" align="right">
+                              <a href="https://github.com/sopra-fs23-group-20/">by Group 20</a>
+                          </Typography>
+                      </StyledDiv>
+                  </Box>
+              </div>
+          ) : (
+              <div>create mobile version</div>
+          )}
     <ThemeProvider theme={landingTheme}>
-      <Box
-        sx={{
-          minHeight: "100vh",
-          width: "100%",
-          background: landingTheme.palette.background.default,
-        }}
-      >
-        <StyledDiv>
-          <div></div>
-          <head>
-            <title>Guess the Country - Welcome!</title>
-          </head>
-          <header>
-            <style></style>
-            <img
-              src={Logo}
-              alt="Logo"
-              style={{ width: "100px", position: "absolute", top: 5, left: 5 }}
-            />
-          </header>
-          <Typography variant="h2" id="Title" maxWidth="600px" padding="3em" color="black">
-            Learning & Fun
-          </Typography>
-          <Typography
-            variant="h5"
-            id="maintext"
-            style={{}}
-            maxWidth="600px"
-            top="50%"
-            padding="1em"
-          >
-            <Box sx={{ fontWeight: "500" }}>
-              "Guess The Country" is the new webapp: Learn more about Countries
-              by competing in fun quiz rounds. You can also learn more about
-              countries by using the all new learning cards. You can challenge
-              your friends by playing against them and you can see your progress
-              by looking at the leaderboard of all players. Join Now!
-            </Box>
-          </Typography>
-          <Button
-            size="large"
-            sx={{
-              marginLeft: 2,
-              backgroundColor: "primary.main",
-              color: "primary.contrastText",
-              left: "200px",
-            }}
-            variant="contained"
-            onClick={() => navigate("/register")}
-          >
-            Register
-          </Button>
-          <Typography
-            variant="h5"
-            id="maintext"
-            style={{}}
-            maxWidth="600px"
-            top="50%"
-            padding="1em"
-          >
-            <Box sx={{ fontWeight: "500" }}>
-              If you already have an account:
-            </Box>
-          </Typography>
-          <Button
-            size="large"
-            sx={{
-              marginLeft: 2,
-              backgroundColor: "primary.main",
-              color: "primary.contrastText",
-              left: "200px",
-            }}
-            variant="contained"
-            onClick={() => navigate("/login")}
-          >
-            Login
-          </Button>
 
-          <div
-            id="green-circle"
-            style={{
-              borderRadius: "50%",
-              width: "90vh",
-              height: "90vh",
-              background: "#5EB23F",
-              position: "absolute",
-              top: 0,
-              right: -300,
-            }}
-          ></div>
-          <div id="mockup">
-            <img
-              src={Mockup}
-              alt="Mockup of the website"
-              style={{
-                width: "20%",
-                objectFit: "cover",
-                position: "absolute",
-                top: "30%",
-                right: 20,
-              }}
-            />
-          </div>
-
-          <Typography position="absolute" bottom="0" align="right">
-            <a href="https://github.com/sopra-fs23-group-20/">by Group 20</a>
-          </Typography>
-        </StyledDiv>
-      </Box>
     </ThemeProvider>
+      </div>
   );
 }
