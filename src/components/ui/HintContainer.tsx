@@ -41,8 +41,7 @@ const HintContainer: React.FC<Props> = (props) => {
   return (
     <div ref={hintRef}>
       {currentCaregory.population ? (
-        <Typography align="center" variant="h3">
-          {" "}
+        <Typography sx={{ margin: "2rem" }} align="center" variant="h2">
           Population:{" "}
           {formatNumber(currentCaregory.population.valueOf()).toString()}{" "}
         </Typography>
@@ -50,35 +49,48 @@ const HintContainer: React.FC<Props> = (props) => {
         <div></div>
       )}
       {currentCaregory.outline ? (
-        <OutlineContainer
-          country={currentCaregory.outline.toString()}
-          height={width * 0.6}
-          width={width}
-        />
+        <div>
+          <Typography align="center" sx={{ margin: "2rem" }} variant="h2">
+            Outline:
+          </Typography>
+          <OutlineContainer
+            country={currentCaregory.outline.toString()}
+            height={width * 0.6}
+            width={width}
+          />
+        </div>
       ) : (
         <div></div>
       )}
       {currentCaregory.location ? (
-        <MapContainer
-          country={
-            new Country(
-              null,
-              currentCaregory.population,
-              currentCaregory.capital,
-              currentCaregory.flag,
-              currentCaregory.location,
-              currentCaregory.outline
-            )
-          }
-          width={width}
-          height={width * 0.6}
-        />
+        <div>
+          <Typography align="center" sx={{ margin: "2rem" }} variant="h2">
+            Location:
+          </Typography>
+          <MapContainer
+            country={
+              new Country(
+                null,
+                currentCaregory.population,
+                currentCaregory.capital,
+                currentCaregory.flag,
+                currentCaregory.location,
+                currentCaregory.outline
+              )
+            }
+            width={width}
+            height={width * 0.6}
+          />
+        </div>
       ) : (
         <div></div>
       )}
 
       {currentCaregory.flag ? (
         <div>
+          <Typography align="center" sx={{ margin: "2rem" }} variant="h2">
+            Flag:
+          </Typography>
           <img
             src={currentCaregory.flag.toString()}
             style={{
@@ -91,8 +103,7 @@ const HintContainer: React.FC<Props> = (props) => {
       )}
 
       {currentCaregory.capital ? (
-        <Typography align="center" variant="h3">
-          {" "}
+        <Typography sx={{ margin: "2rem" }} align="center" variant="h2">
           Capital: {currentCaregory.capital.toString()}{" "}
         </Typography>
       ) : (

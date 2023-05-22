@@ -126,12 +126,7 @@ const GuessingComponent: React.FC<Props> = (props) => {
       2 -
       timeBetweenCategoryUpdates *
         game.categoryStack.remainingCategories.length;
-    let currentActualHint = game.categoryStack.currentCategory?.type.toString();
-    currentActualHint =
-      currentActualHint.charAt(0).toUpperCase() +
-      currentActualHint.slice(1).toLowerCase();
 
-    const currentHintText = `Current Hint: ${currentActualHint}`;
     let nextHintText = "";
     if (game.categoryStack.remainingCategories.length >= 1) {
       let nextActualHint =
@@ -141,12 +136,12 @@ const GuessingComponent: React.FC<Props> = (props) => {
       nextActualHint =
         nextActualHint.charAt(0).toUpperCase() +
         nextActualHint.slice(1).toLowerCase();
-      nextHintText = ` | Next: ${nextActualHint} in ${timeToNextUpdate} seconds`;
+      nextHintText = `Next Hint: ${nextActualHint} in ${timeToNextUpdate} seconds`;
     } else {
-      nextHintText = ` | Round ends in ${game.remainingTime} seconds`;
+      nextHintText = `Round ends in ${game.remainingTime} seconds`;
     }
 
-    return currentHintText + nextHintText;
+    return nextHintText;
   };
 
   return (
@@ -278,15 +273,16 @@ const GuessingComponent: React.FC<Props> = (props) => {
             sx={{
               height: "3rem",
               width: "100%",
+              fontSize: "1rem",
             }}
-            size="small"
+            size="medium"
             color="info"
             variant="filled"
             label={dividerText()}
           />
         </Box>
       </Divider>
-      <Box sx={{ height: "50%", width: "100%", marginTop: "5%" }}>
+      <Box sx={{ height: "50%", width: "100%" }}>
         <HintContainer currentCaregory={game?.categoryStack?.currentCategory} />
       </Box>
     </Container>
