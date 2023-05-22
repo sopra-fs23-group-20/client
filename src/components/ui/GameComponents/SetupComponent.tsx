@@ -396,7 +396,7 @@ const SetupComponent: React.FC<Props> = (props) => {
                             color="primary"
                           />
                         }
-                        label="Open Lobby"
+                        label="Public Lobby"
                       />
                     </FormControl>
                   </Grid>
