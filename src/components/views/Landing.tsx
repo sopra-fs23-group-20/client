@@ -94,7 +94,7 @@ export default function Landing() {
                               top="50%"
                               padding="1em"
                           >
-                              <Box sx={{ fontWeight: "500" }}>
+                              <Box sx={{ fontWeight: "500", color:"black" }}>
                                   "Guess The Country" is the new webapp: Learn more about Countries
                                   by competing in fun quiz rounds. You can also learn more about
                                   countries by using the all new learning cards. You can challenge
@@ -123,7 +123,7 @@ export default function Landing() {
                               top="50%"
                               padding="1em"
                           >
-                              <Box sx={{ fontWeight: "500" }}>
+                              <Box sx={{ fontWeight: "500" , color:"black"}}>
                                   If you already have an account:
                               </Box>
                           </Typography>
