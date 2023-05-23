@@ -54,7 +54,7 @@ const CountriesOverview: React.FC = () => {
                 getCountry.outline.outline
               )
           );
-          setCountries(randomizedCountries);
+          setCountries(randomizedCountries.sort(() => Math.random() - 0.5));
         }
       } catch (error) {
         console.error(error);
