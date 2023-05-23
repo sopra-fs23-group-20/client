@@ -174,7 +174,94 @@ export default function Landing() {
                   </Box>
               </div>
           ) : (
-              <div>create mobile version</div>
+              <div>
+                  <Box
+                      sx={{
+                          minHeight: "100vh",
+                          width: "100%",
+                          background: landingTheme.palette.background.default,
+                      }}
+                  >
+                      <img
+                          src={Logo}
+                          alt="Logo"
+                          style={{ width: "60px", position: "absolute", top: 2, left: 2 }}
+                      />
+                      <Typography variant="h2" id="Title" maxWidth="100%" padding="3em" color="black">
+                          Learning & Fun
+                      </Typography>
+                      <div id="description">
+                          <Typography
+                              variant="h5"
+                              id="maintext-description"
+                              style={{}}
+                              maxWidth="80%"
+                              padding="1rm"
+                              align="center"
+                              left="10%"
+                              color="black"
+                          >
+
+                              <Box sx={{ fontWeight: "500" }}>
+                                  "Guess The Country" is the new webapp: Learn more about Countries
+                                  by competing in fun quiz rounds. You can also learn more about
+                                  countries by using the all new learning cards. You can challenge
+                                  your friends by playing against them and you can see your progress
+                                  by looking at the leaderboard of all players. Join Now!
+                              </Box>
+                          </Typography>
+                      </div>
+                      <div id="buttons-to-join">
+                          <Button
+                              size="medium"
+                              sx={{
+                                  marginLeft: 2,
+                                  marginBottom:2,
+                                  backgroundColor: "primary.main",
+                                  color: "primary.contrastText",
+                                  left: "20%",
+                              }}
+                              variant="contained"
+                              onClick={() => navigate("/register")}
+                          >
+                              Register
+                          </Button>
+                          <Typography
+                              variant="h5"
+                              id="maintext-description"
+                              style={{}}
+                              maxWidth="80%"
+                              padding="2rm"
+                              align="center"
+                              left="10%"
+                              color="black"
+                          >
+
+                              <Box sx={{ fontWeight: "500" }}>
+                                  If you already have an account:
+
+                              </Box>
+                          </Typography>
+                          <Button
+                              size="medium"
+                              sx={{
+                                  marginLeft: 2,
+                                  marginTop:2,
+                                  backgroundColor: "primary.main",
+                                  color: "primary.contrastText",
+                                  left: "20%",
+                              }}
+                              variant="contained"
+                              onClick={() => navigate("/login")}
+                          >
+                              Login
+                          </Button>
+                      </div>
+
+                  </Box>
+
+
+              </div>
           )}
     <ThemeProvider theme={landingTheme}>
 
