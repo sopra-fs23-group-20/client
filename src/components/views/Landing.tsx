@@ -15,6 +15,10 @@ const useStyles = makeStyles((theme: Theme) => ({
         padding: theme.spacing(3),
         textAlign: 'center',
     },
+    container: {
+        minHeight: "950px", // Set the maximum height as per your requirement
+        overflow: "auto", // Add overflow property to handle content that exceeds the maximum height
+    },
     button: {
         marginTop: theme.spacing(2),
         width: "100%",
@@ -58,8 +62,7 @@ export default function Landing() {
     }
 
     return (
-        <Container maxWidth="sm" className={classes.root}>
-            <div style={{marginTop: '100px'}}></div>
+        <Container maxWidth="sm" className={`${classes.root} ${classes.container}`}>            <div style={{marginTop: '100px'}}></div>
 
             <Typography variant="h1" component="h1" className={classes.appName} gutterBottom>
                 Guess The Country
