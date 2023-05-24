@@ -27,7 +27,6 @@ Our project aims to create an interactive platform that makes learning geography
 
 
 ![](https://placehold.it/400x90/ff0000/000000?text=Disclaimer!)
-## Disclaimer
 <bold>Be sure to use the "https" protocol when using the App. </bold>
 
 
