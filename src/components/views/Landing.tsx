@@ -11,13 +11,14 @@ const useStyles = makeStyles((theme: Theme) => ({
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        height: '100vh',
         padding: theme.spacing(3),
         textAlign: 'center',
     },
     container: {
-        minHeight: "950px", // Set the maximum height as per your requirement
-        overflow: "auto", // Add overflow property to handle content that exceeds the maximum height
+        minHeight: "100vh", // Set the maximum height as per your requirement
+        padding: "25px",
+        overflowX: "scroll",
+        overflowY: "scroll", // Add overflow property to handle content that exceeds the maximum height
     },
     button: {
         marginTop: theme.spacing(2),
@@ -62,7 +63,7 @@ export default function Landing() {
     }
 
     return (
-        <Container maxWidth="sm" className={`${classes.root} ${classes.container}`}>            <div style={{marginTop: '100px'}}></div>
+        <Container maxWidth="sm" className={`${classes.root} ${classes.container}`}>
 
             <Typography variant="h1" component="h1" className={classes.appName} gutterBottom>
                 Guess The Country
@@ -108,8 +109,6 @@ export default function Landing() {
                     Login
                 </Button>
             </Box>
-            <div style={{marginBottom: '100px'}}></div>
-
         </Container>
     );
 }
