@@ -25,6 +25,10 @@ Our project aims to create an interactive platform that makes learning geography
 - [Google Cloud](https://cloud.google.com/) - Deployment
 - [SonarCloud](https://sonarcloud.io/) - Testing & Feedback of code quality
 
+## Disclaimer
+<bold>Be sure to use the "https" protocol when using the App. </bold>
+
+
 ## High-level components
 
 ### Landing Page
