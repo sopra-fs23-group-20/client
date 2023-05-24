@@ -1,258 +1,112 @@
-import React, { useEffect, useState } from "react";
-import Button from "@mui/material/Button";
-import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
-import useTypewriter from "react-typewriter-hook/build/useTypewriter";
-import {
-  DialogActions,
-  Container,
-  Typography,
-  ThemeProvider,
-  CssBaseline,
-} from "@mui/material";
-import Accordion from "@mui/material/Accordion";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import Box from "@mui/material/Box";
-import Tab from "@mui/material/Tab";
-import TabContext from "@mui/lab/TabContext";
-import TabList from "@mui/lab/TabList";
-import TabPanel from "@mui/lab/TabPanel";
-import LobbyBrowser from "./images/LobbyBrowser.png";
-import GameSettings from "./images/GameSettings.png";
-import InTheGame from "./images/InTheGame.png";
-import GameLobby from "./images/GameLobby.png";
-import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
-import { Paper, Grid } from "@mui/material";
-import landingTheme from "../../styles/landingTheme";
-import styled from "styled-components";
-import backgroundimage from "./images/pattern-landingpage.png";
-import Logo from "./images/GTC-Logo.png";
-import Mockup from "./images/mockups.png";
+import React from 'react';
+import {useNavigate} from 'react-router-dom';
+import {Button, Typography, Container, Box} from '@material-ui/core';
+import {makeStyles, Theme} from '@material-ui/core/styles';
+import {Grid} from '@material-ui/core';
+import image from "../views/images/iPhoneImage.png"
 
-const StyledDiv = styled.div``;
-const ButtonCircle = styled.button``;
-
-const divstyle = {
-  top: 0,
-  right: -300,
-  //position:'absolute',
-  borderRadius: "50%",
-  width: "100vh",
-  height: "100vh",
-  background: "#5EB23F",
-};
+const useStyles = makeStyles((theme: Theme) => ({
+    root: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100vh',
+        padding: theme.spacing(3),
+        textAlign: 'center',
+    },
+    button: {
+        marginTop: theme.spacing(2),
+        width: "100%",
+    },
+    buttonContainer: {
+        display: 'grid', // This will create a grid layout
+        gap: '1em', // This will add a gap between your buttons
+    },
+    image: {
+        maxWidth: '100%',
+        height: 'auto',
+        marginBottom: theme.spacing(2),
+    },
+    appName: {
+        fontFamily: "'Roboto', sans-serif",
+        fontSize: "3.5rem",
+        fontWeight: 900,
+        backgroundClip: "text",
+        WebkitBackgroundClip: "text",
+        color: "transparent",
+        backgroundImage: "linear-gradient(90deg, #3498DB 0%, #21618C 10%, #186A3B 25%, #239B56 40%, #B3B6B7 55%, #F4F6F7 70%, #C39BD3 85%, #3498DB 100%)",
+        backgroundSize: "200% 200%",
+        animation: "$textShimmer 6s linear infinite",
+    },
+    '@keyframes textShimmer': {
+        '0%': {
+            backgroundPosition: "200% 0%",
+        },
+        '100%': {
+            backgroundPosition: "-200% 0%",
+        },
+    },
+}));
 
 export default function Landing() {
-  const navigate = useNavigate();
-    const [width, setWidth] = React.useState(window.innerWidth);
-    const breakPoint = 1080;
+    const navigate = useNavigate();
+    const classes = useStyles();
+
+    const handleButtonClick = (path: string) => {
+        navigate(path);
+    }
+
+    return (
+        <Container maxWidth="sm" className={classes.root}>
+            <div style={{marginTop: '100px'}}></div>
+
+            <Typography variant="h1" component="h1" className={classes.appName} gutterBottom>
+                Guess The Country
+            </Typography>
+            <Typography variant="h5" component="h2" gutterBottom>
+                Explore. Learn. Conquer. A Journey Through Geography.
+            </Typography>
+            <div style={{marginBottom: '25px'}}></div>
+
+            <Grid container spacing={2}>
+                <Grid item xs={12} sm={6}>
+                    <Box>
+                        <img src={image} alt="Your alt text" className={classes.image}/>
+                    </Box>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                    <Typography variant="body1" gutterBottom style={{textAlign: 'justify'}}>
+                        "Guess The Country" is the new webapp: Learn more about Countries by competing in fun quiz
+                        rounds. You can also learn more about countries by using the all new learning cards. You can
+                        challenge your friends by playing against them and you can see your progress by looking at the
+                        leaderboard of all players. Join Now!
+                    </Typography>
+                </Grid>
 
 
+            </Grid>
 
-    useEffect(() => {
-        const handleWindowResize = () => setWidth(window.innerWidth);
-        window.addEventListener("resize", handleWindowResize);
+            <Box className={classes.buttonContainer} style={{display: 'flex'}}>
+                <Button
+                    variant="contained"
+                    color="secondary"
+                    className={classes.button}
+                    onClick={() => handleButtonClick("/register")}
+                >
+                    Register
+                </Button>
+                <Button
+                    variant="contained"
+                    color="default"
+                    className={classes.button}
+                    onClick={() => handleButtonClick("/login")}
+                >
+                    Login
+                </Button>
+            </Box>
+            <div style={{marginBottom: '100px'}}></div>
 
-
-        return () => window.removeEventListener("resize", handleWindowResize);
-    },[]);
-
-  return (
-      <div>
-          {width > breakPoint? (
-              <div>
-                  <Box
-                      sx={{
-                          minHeight: "100vh",
-                          width: "100%",
-                          background: landingTheme.palette.background.default,
-                      }}
-                  >
-                      <StyledDiv>
-                          <div></div>
-                          <head>
-                              <title>Guess the Country - Welcome!</title>
-                          </head>
-                          <header>
-                              <style></style>
-                              <img
-                                  src={Logo}
-                                  alt="Logo"
-                                  style={{ width: "100px", position: "absolute", top: 5, left: 5 }}
-                              />
-                          </header>
-                          <Typography variant="h2" id="Title" maxWidth="600px" padding="3em" color="black">
-                              Learning & Fun
-                          </Typography>
-                          <Typography
-                              variant="h5"
-                              id="maintext"
-                              style={{}}
-                              maxWidth="600px"
-                              top="50%"
-                              padding="1em"
-                          >
-                              <Box sx={{ fontWeight: "500", color:"black" }}>
-                                  "Guess The Country" is the new webapp: Learn more about Countries
-                                  by competing in fun quiz rounds. You can also learn more about
-                                  countries by using the all new learning cards. You can challenge
-                                  your friends by playing against them and you can see your progress
-                                  by looking at the leaderboard of all players. Join Now!
-                              </Box>
-                          </Typography>
-                          <Button
-                              size="large"
-                              sx={{
-                                  marginLeft: 2,
-                                  backgroundColor: "primary.main",
-                                  color: "primary.contrastText",
-                                  left: "200px",
-                              }}
-                              variant="contained"
-                              onClick={() => navigate("/register")}
-                          >
-                              Register
-                          </Button>
-                          <Typography
-                              variant="h5"
-                              id="maintext"
-                              style={{}}
-                              maxWidth="600px"
-                              top="50%"
-                              padding="1em"
-                          >
-                              <Box sx={{ fontWeight: "500" , color:"black"}}>
-                                  If you already have an account:
-                              </Box>
-                          </Typography>
-                          <Button
-                              size="large"
-                              sx={{
-                                  marginLeft: 2,
-                                  backgroundColor: "primary.main",
-                                  color: "primary.contrastText",
-                                  left: "200px",
-                              }}
-                              variant="contained"
-                              onClick={() => navigate("/login")}
-                          >
-                              Login
-                          </Button>
-                          <div id="mockup">
-                              <img
-                                  src={Mockup}
-                                  alt="Mockup of the website"
-                                  style={{
-                                      width: "20%",
-                                      objectFit: "cover",
-                                      position: "absolute",
-                                      top: "30%",
-                                      right: 20,
-                                  }}
-                              />
-                          </div>
-
-                          <Typography position="absolute" bottom="0" align="right">
-                              <a href="https://github.com/sopra-fs23-group-20/">by Group 20</a>
-                          </Typography>
-                      </StyledDiv>
-                  </Box>
-              </div>
-          ) : (
-              <div>
-                  <Box
-                      sx={{
-                          minHeight: "100vh",
-                          width: "100%",
-                          background: landingTheme.palette.background.default,
-                      }}
-                  >
-                      <img
-                          src={Logo}
-                          alt="Logo"
-                          style={{ width: "60px", position: "absolute", top: 2, left: 2 }}
-                      />
-                      <Typography variant="h2" id="Title" maxWidth="100%" padding="3em" color="black">
-                          Learning & Fun
-                      </Typography>
-                      <div id="description">
-                          <Typography
-                              variant="h5"
-                              id="maintext-description"
-                              style={{}}
-                              maxWidth="80%"
-                              padding="1rm"
-                              align="center"
-                              left="10%"
-                              color="black"
-                          >
-
-                              <Box sx={{ fontWeight: "500" }}>
-                                  "Guess The Country" is the new webapp: Learn more about Countries
-                                  by competing in fun quiz rounds. You can also learn more about
-                                  countries by using the all new learning cards. You can challenge
-                                  your friends by playing against them and you can see your progress
-                                  by looking at the leaderboard of all players. Join Now!
-                              </Box>
-                          </Typography>
-                      </div>
-                      <div id="buttons-to-join">
-                          <Button
-                              size="medium"
-                              sx={{
-                                  marginLeft: 2,
-                                  marginBottom:2,
-                                  backgroundColor: "primary.main",
-                                  color: "primary.contrastText",
-                                  left: "20%",
-                              }}
-                              variant="contained"
-                              onClick={() => navigate("/register")}
-                          >
-                              Register
-                          </Button>
-                          <Typography
-                              variant="h5"
-                              id="maintext-description"
-                              style={{}}
-                              maxWidth="80%"
-                              padding="2rm"
-                              align="center"
-                              left="10%"
-                              color="black"
-                          >
-
-                              <Box sx={{ fontWeight: "500" }}>
-                                  If you already have an account:
-
-                              </Box>
-                          </Typography>
-                          <Button
-                              size="medium"
-                              sx={{
-                                  marginLeft: 2,
-                                  marginTop:2,
-                                  backgroundColor: "primary.main",
-                                  color: "primary.contrastText",
-                                  left: "20%",
-                              }}
-                              variant="contained"
-                              onClick={() => navigate("/login")}
-                          >
-                              Login
-                          </Button>
-                      </div>
-
-                  </Box>
-
-
-              </div>
-          )}
-    <ThemeProvider theme={landingTheme}>
-
-    </ThemeProvider>
-      </div>
-  );
+        </Container>
+    );
 }
