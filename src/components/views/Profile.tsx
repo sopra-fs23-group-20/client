@@ -594,7 +594,7 @@ const Profile: React.FC = () => {
               borderRadius: 1,
             }}
           >
-            Games Won:{" "}
+            Multiplayer Games Won:{" "}
             <span>{currentUser.gamesWon ? currentUser.gamesWon : 0}</span>
           </Typography>
           <Typography
