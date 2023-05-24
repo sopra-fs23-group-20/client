@@ -26,8 +26,7 @@ Our project aims to create an interactive platform that makes learning geography
 - [SonarCloud](https://sonarcloud.io/) - Testing & Feedback of code quality
 
 
-![#ff0000](https://placehold.it/12/ff0000?text=+) red!
-![](https://placehold.it/400x90/ff0000/000000?text=IMPORTANT!)
+![](https://placehold.it/400x90/ff0000/000000?text=Disclaimer!)
 ## Disclaimer
 <bold>Be sure to use the "https" protocol when using the App. </bold>
 
