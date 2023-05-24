@@ -17,8 +17,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     container: {
         minHeight: "100vh", // Set the maximum height as per your requirement
         padding: "25px",
-        overflowX: "scroll",
-        overflowY: "scroll", // Add overflow property to handle content that exceeds the maximum height
+        overflowX: "auto",
+        overflowY: "auto", // Add overflow property to handle content that exceeds the maximum height
     },
     button: {
         marginTop: theme.spacing(2),
