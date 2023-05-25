@@ -56,10 +56,6 @@ const GameLobby: React.FC = () => {
 
   const { showAlert } = useAlert();
 
-  useEffect(() => {
-    usePollingRef.current = usePolling;
-  }, [usePolling]);
-
   function isUserInGame(
     userId: string | null,
     players: Set<GameUser> | null
@@ -175,7 +171,7 @@ const GameLobby: React.FC = () => {
   }
 
   useEffect(() => {
-    const websocketUrl = `${getDomain()}/socket`;
+    const websocketUrl = `${getDomain()}/sockets`;
     const socket = new SockJS(websocketUrl);
 
     const stompClient = new Client({
@@ -253,6 +249,44 @@ const GameLobby: React.FC = () => {
       return newGameGetDTO;
     });
   }
+
+  //Automatic Polling Stuff
+  useEffect(() => {
+    async function PollingfetchGame(): Promise<void> {
+      try {
+        const response = await api.get(`/games/${gameId}`);
+        const newGameGetDTO: GameGetDTO = { ...response.data };
+        console.log("Fetched Game : ", newGameGetDTO);
+        setGameGetDTO(newGameGetDTO);
+      } catch (error: AxiosError | any) {
+        showAlert("Lobby doesn't exist", "error");
+        console.error(error);
+      }
+    }
+
+    let timeoutId: NodeJS.Timeout | undefined;
+
+    const startPolling = async () => {
+      if (!isFetching.current) {
+        isFetching.current = true;
+        await PollingfetchGame();
+        isFetching.current = false;
+      }
+      if (usePollingRef.current) {
+        timeoutId = setTimeout(startPolling, 200);
+      }
+    };
+
+    if (usePolling) {
+      startPolling();
+    }
+
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [usePolling]);
 
   let content = <CustomSpinner />;
 
